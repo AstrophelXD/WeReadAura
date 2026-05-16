@@ -1,8 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import {
+  DATA_STATUS_BANNER_CHANGE_EVENT,
+  readDataStatusBannerVisible,
+  writeDataStatusBannerVisible,
+} from "@/lib/data-status-banner-preference";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -32,6 +37,29 @@ export function SettingsPanel({
   const [apiKey, setApiKey] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [showDataBanner, setShowDataBanner] = useState(true);
+
+  useEffect(() => {
+    setShowDataBanner(readDataStatusBannerVisible());
+
+    function onPreferenceChange(event: Event) {
+      const detail = (event as CustomEvent<{ visible: boolean }>).detail;
+      if (typeof detail?.visible === "boolean") {
+        setShowDataBanner(detail.visible);
+        return;
+      }
+      setShowDataBanner(readDataStatusBannerVisible());
+    }
+
+    window.addEventListener(DATA_STATUS_BANNER_CHANGE_EVENT, onPreferenceChange);
+    return () => window.removeEventListener(DATA_STATUS_BANNER_CHANGE_EVENT, onPreferenceChange);
+  }, []);
+
+  function toggleDataBanner() {
+    const next = !showDataBanner;
+    writeDataStatusBannerVisible(next);
+    setShowDataBanner(next);
+  }
 
   async function saveApiKey() {
     setBusy(true);
@@ -120,6 +148,18 @@ export function SettingsPanel({
 
   return (
     <div className="grid gap-5 lg:grid-cols-3">
+      <Card className="lg:col-span-3">
+        <p className="type-label">界面</p>
+        <p className="type-body mt-3">
+          顶部绿色/黄色连接状态横幅（已连接、上次同步等）。隐藏后仍可在本页重新打开。
+        </p>
+        <div className="mt-5">
+          <Button type="button" secondary onClick={toggleDataBanner}>
+            {showDataBanner ? "隐藏连接状态横幅" : "显示连接状态横幅"}
+          </Button>
+        </div>
+      </Card>
+
       <Card>
         <p className="type-label">数据源</p>
         <p className="type-metric-sm mt-3">{source}</p>
