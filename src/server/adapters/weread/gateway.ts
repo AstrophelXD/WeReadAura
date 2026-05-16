@@ -1,4 +1,5 @@
 import type {
+  ExternalBestBookmarksResponse,
   ExternalBookInfo,
   ExternalBookProgress,
   ExternalBookmarkListResponse,
@@ -30,6 +31,11 @@ export interface WeReadGateway {
     count?: number,
   ): Promise<ExternalReviewListResponse>;
   getBookInfo(context: GatewayContext, bookId: string): Promise<ExternalBookInfo>;
+  getBestBookmarks(
+    context: GatewayContext,
+    bookId: string,
+    chapterUid?: number,
+  ): Promise<ExternalBestBookmarksResponse>;
   getBookProgress(context: GatewayContext, bookId: string): Promise<ExternalBookProgress>;
   searchBooks(context: GatewayContext, keyword: string, count?: number): Promise<ExternalSearchResponse>;
   getRecommendations(context: GatewayContext, count?: number): Promise<ExternalRecommendResponse>;

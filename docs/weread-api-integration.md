@@ -18,6 +18,7 @@
 | 单书划线 | `/book/bookmarklist` |
 | 单书想法 | `/review/list/mine` |
 | 书籍详情 | `/book/info` |
+| 热门划线 | `/book/bestbookmarks` |
 | 阅读进度 | `/book/getprogress` |
 | 书城搜索 | `/store/search` |
 | 个性化推荐 | `/book/recommend` |

@@ -1,10 +1,13 @@
 import type { ReadingStatus } from "@/lib/types";
 import type {
   Book,
+  BookDiscoverDetail,
+  BookDiscoverPreview,
   DashboardData,
   DistributionPoint,
   HighlightItem,
   Metric,
+  PopularHighlight,
   RecommendationItem,
 } from "@/lib/types";
 import {
@@ -23,6 +26,8 @@ import {
 } from "@/server/services/weread-progress";
 import type { NotebookBookMeta } from "@/server/services/weread-progress";
 import type {
+  ExternalBestBookmarksResponse,
+  ExternalBookInfo,
   ExternalBookProgress,
   ExternalBookmark,
   ExternalBookmarkListResponse,
@@ -255,9 +260,98 @@ export function transformSearchResult(item: ExternalSearchBook): Book {
   };
 }
 
-export function buildDashboardHero(bookCount: number): Pick<DashboardData, "heroTitle" | "heroBody"> {
+export function buildDashboardHero(bookCount: number): Pick<DashboardData, "heroBody" | "heroTitle"> {
   return {
     heroTitle: "你的微信读书阅读全貌，一屏看清。",
     heroBody: `已从微信读书同步 ${bookCount} 个书架条目——书架、统计、划线与推荐集中展示。`,
+  };
+}
+
+export function formatStoreRating(newRating?: number): number | undefined {
+  if (newRating === undefined) {
+    return undefined;
+  }
+  return Math.round(newRating) / 10;
+}
+
+export function transformBookDiscoverDetail(info: ExternalBookInfo): BookDiscoverDetail {
+  return {
+    intro: info.intro?.trim() || "暂无简介。",
+    publisher: info.publisher?.trim() || undefined,
+    rating: formatStoreRating(info.newRating),
+    ratingCount: info.newRatingCount,
+    wordCount: info.wordCount,
+  };
+}
+
+export function transformPopularHighlights(payload: ExternalBestBookmarksResponse): PopularHighlight[] {
+  const chapterMap = new Map(
+    (payload.chapters ?? []).map((chapter) => [chapter.chapterUid, chapter.title]),
+  );
+
+  return (payload.items ?? []).map((item) => ({
+    id: item.bookmarkId,
+    quote: item.markText,
+    highlightCount: item.totalCount ?? 0,
+    chapter:
+      item.chapterUid !== undefined
+        ? chapterMap.get(item.chapterUid) ?? `第 ${item.chapterUid} 章`
+        : "热门划线",
+    chapterUid: item.chapterUid,
+    range: item.range,
+  }));
+}
+
+export function bookFromStoreInfo(info: ExternalBookInfo): Book {
+  const rating = formatStoreRating(info.newRating);
+  const ratingLabel = rating !== undefined ? `${rating}` : "—";
+
+  return {
+    id: info.bookId,
+    title: info.title,
+    author: info.author,
+    category: info.category?.trim() || "书城",
+    coverTone: pickCoverTone(info.bookId),
+    status: "queued",
+    progress: 0,
+    minutesRead: 0,
+    lastReadAt: "",
+    startedAt: "",
+    highlights: 0,
+    notes: 0,
+    summary:
+      info.intro?.trim().slice(0, 140) ||
+      `书城评分 ${ratingLabel}，${info.newRatingCount ?? 0} 人参与评分。`,
+  };
+}
+
+export function buildDiscoverPreview(
+  info: ExternalBookInfo,
+  onShelf: boolean,
+  shelfBook: Book | undefined,
+  popularHighlights: PopularHighlight[],
+): BookDiscoverPreview {
+  const book = shelfBook ?? bookFromStoreInfo(info);
+
+  return {
+    book: {
+      ...book,
+      title: info.title || book.title,
+      author: info.author || book.author,
+      category: info.category?.trim() || book.category,
+      summary: info.intro?.trim().slice(0, 140) || book.summary,
+    },
+    onShelf,
+    detail: transformBookDiscoverDetail(info),
+    popularHighlights: onShelf ? [] : popularHighlights,
+    shelfProgress: onShelf
+      ? {
+          status: book.status,
+          progress: book.progress,
+          minutesRead: book.minutesRead,
+          highlights: book.highlights,
+          notes: book.notes,
+        }
+      : undefined,
   };
 }

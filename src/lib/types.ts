@@ -49,6 +49,32 @@ export interface StoreSearchHit {
   onShelf: boolean;
 }
 
+/** 书城热门划线（/book/bestbookmarks） */
+export interface PopularHighlight {
+  id: string;
+  quote: string;
+  highlightCount: number;
+  chapter: string;
+  chapterUid?: number;
+  range?: string;
+}
+
+export interface BookDiscoverDetail {
+  intro: string;
+  publisher?: string;
+  rating?: number;
+  ratingCount?: number;
+  wordCount?: number;
+}
+
+export interface BookDiscoverPreview {
+  book: Book;
+  onShelf: boolean;
+  detail: BookDiscoverDetail;
+  popularHighlights: PopularHighlight[];
+  shelfProgress?: Pick<Book, "status" | "progress" | "minutesRead" | "highlights" | "notes">;
+}
+
 export interface RecommendationItem {
   id: string;
   title: string;

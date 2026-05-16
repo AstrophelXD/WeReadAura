@@ -1,25 +1,66 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import { RecommendationCard } from "@/components/layout/RecommendationCard";
+import { BookDiscoverDialog } from "@/components/features/discover/BookDiscoverDialog";
 import { StoreSearchHitCard } from "@/components/features/discover/StoreSearchHitCard";
+import { RecommendationCard } from "@/components/layout/RecommendationCard";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
-import type { RecommendationItem, StoreSearchHit } from "@/lib/types";
+import type { Book, RecommendationItem, StoreSearchHit } from "@/lib/types";
 
 interface DiscoverExplorerProps {
   recommendations: RecommendationItem[];
   hasLiveData: boolean;
+  initialBookId?: string;
+  initialBookTitle?: string;
+  initialBookAuthor?: string;
 }
 
-export function DiscoverExplorer({ recommendations, hasLiveData }: DiscoverExplorerProps) {
+type DetailTarget = {
+  bookId: string;
+  title: string;
+  author: string;
+};
+
+export function DiscoverExplorer({
+  recommendations,
+  hasLiveData,
+  initialBookId,
+  initialBookTitle,
+  initialBookAuthor,
+}: DiscoverExplorerProps) {
   const [keyword, setKeyword] = useState("");
   const [hits, setHits] = useState<StoreSearchHit[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searched, setSearched] = useState(false);
+  const [detailTarget, setDetailTarget] = useState<DetailTarget | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
+
+  const openBookDetails = useCallback((bookId: string, title: string, author: string) => {
+    setDetailTarget({ bookId, title, author });
+    setDetailOpen(true);
+  }, []);
+
+  const openFromBook = useCallback((book: Book) => {
+    openBookDetails(book.id, book.title, book.author);
+  }, [openBookDetails]);
+
+  const openFromRecommendation = useCallback(
+    (item: RecommendationItem) => {
+      openBookDetails(item.id, item.title, item.author);
+    },
+    [openBookDetails],
+  );
+
+  useEffect(() => {
+    if (!initialBookId) {
+      return;
+    }
+    openBookDetails(initialBookId, initialBookTitle ?? "", initialBookAuthor ?? "");
+  }, [initialBookAuthor, initialBookId, initialBookTitle, openBookDetails]);
 
   async function runSearch(event?: React.FormEvent) {
     event?.preventDefault();
@@ -73,8 +114,8 @@ export function DiscoverExplorer({ recommendations, hasLiveData }: DiscoverExplo
             {!searched ? (
               <p className="type-body text-[color-mix(in_srgb,var(--ink)_75%,transparent)]">
                 {hasLiveData
-                  ? "在上方输入关键词搜索微信读书书城；结果会标注是否已在你的书架中。"
-                  : "连接并同步微信读书后，可搜索书城。未连接时仅在本地演示数据中搜索。"}
+                  ? "搜索书城后点击「查看详情」：未在书架的书可预览热门划线；已在书架的可查看阅读进度。"
+                  : "连接并同步微信读书后，可搜索书城并查看详情。未连接时仅在本地演示数据中搜索。"}
               </p>
             ) : null}
             {error ? <p className="type-body">{error}</p> : null}
@@ -82,16 +123,16 @@ export function DiscoverExplorer({ recommendations, hasLiveData }: DiscoverExplo
               <p className="type-body">没有找到相关书籍，换个关键词试试。</p>
             ) : null}
             {hits.map((hit) => (
-              <StoreSearchHitCard key={hit.book.id} hit={hit} />
+              <StoreSearchHitCard key={hit.book.id} hit={hit} onViewDetails={openFromBook} />
             ))}
           </div>
         </Card>
         <Card className="neo-paper">
           <p className="type-label">提示</p>
           <ul className="type-body mt-4 space-y-3">
-            <li>已在书架的书可点进详情查看进度与划线。</li>
-            <li>推荐区在下方，来自微信读书「为你推荐」。</li>
-            <li>搜索依赖 API Key；请确保设置页已配置并同步。</li>
+            <li>「查看详情」拉取书城简介；未加入书架时展示热门划线（约 Top 20）。</li>
+            <li>已在书架的书可进入「我的阅读」查看进度与个人划线。</li>
+            <li>加入书架需在微信读书 App 内完成；详情页可跳转打开。</li>
           </ul>
         </Card>
       </div>
@@ -100,10 +141,18 @@ export function DiscoverExplorer({ recommendations, hasLiveData }: DiscoverExplo
         <p className="neo-eyebrow mb-4">为你推荐</p>
         <div className="grid gap-5 lg:grid-cols-3">
           {recommendations.map((item) => (
-            <RecommendationCard key={item.id} item={item} />
+            <RecommendationCard key={item.id} item={item} onViewDetails={openFromRecommendation} />
           ))}
         </div>
       </div>
+
+      <BookDiscoverDialog
+        bookId={detailTarget?.bookId ?? null}
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+        fallbackTitle={detailTarget?.title}
+        fallbackAuthor={detailTarget?.author}
+      />
     </>
   );
 }

@@ -102,6 +102,10 @@ function getAllBookshelfBooks(): Book[] {
   return Array.from(new Map(books.map((book) => [book.id, book])).values());
 }
 
+export function findBookshelfBook(bookId: string): Book | undefined {
+  return getAllBookshelfBooks().find((book) => book.id === bookId);
+}
+
 function getShelfBookIdSet(): Set<string> {
   const ids = getSyncSnapshot()?.books.map((book) => book.id) ?? mockBooks.map((book) => book.id);
   return new Set(ids);

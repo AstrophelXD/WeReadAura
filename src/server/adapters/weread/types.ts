@@ -62,8 +62,27 @@ export interface ExternalBookInfo {
   intro?: string;
   category?: string;
   publisher?: string;
+  publishTime?: string;
+  isbn?: string;
+  wordCount?: number;
   newRating?: number;
   newRatingCount?: number;
+}
+
+export interface ExternalBestBookmarkItem {
+  bookId: string;
+  bookmarkId: string;
+  chapterUid?: number;
+  range?: string;
+  markText: string;
+  totalCount?: number;
+}
+
+export interface ExternalBestBookmarksResponse {
+  synckey?: number;
+  totalCount?: number;
+  items?: ExternalBestBookmarkItem[];
+  chapters?: Array<{ chapterUid: number; title: string; chapterIdx?: number }>;
 }
 
 export interface ExternalReadDataDetail {

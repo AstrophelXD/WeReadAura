@@ -1,6 +1,7 @@
 import { callWeReadGateway } from "@/server/adapters/weread/client";
 import type { GatewayContext, WeReadGateway } from "@/server/adapters/weread/gateway";
 import type {
+  ExternalBestBookmarksResponse,
   ExternalBookInfo,
   ExternalBookProgress,
   ExternalBookmarkListResponse,
@@ -60,6 +61,15 @@ export class SkillWeReadGateway implements WeReadGateway {
     return withKey<ExternalBookInfo>(context, {
       api_name: "/book/info",
       bookId,
+    });
+  }
+
+  getBestBookmarks(context: GatewayContext, bookId: string, chapterUid = 0) {
+    return withKey<ExternalBestBookmarksResponse>(context, {
+      api_name: "/book/bestbookmarks",
+      bookId,
+      chapterUid,
+      synckey: 0,
     });
   }
 

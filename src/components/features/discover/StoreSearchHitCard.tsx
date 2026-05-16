@@ -1,9 +1,15 @@
-import Link from "next/link";
+"use client";
 
 import { Badge } from "@/components/ui/Badge";
-import type { StoreSearchHit } from "@/lib/types";
+import { Button } from "@/components/ui/Button";
+import type { Book, StoreSearchHit } from "@/lib/types";
 
-export function StoreSearchHitCard({ hit }: { hit: StoreSearchHit }) {
+type StoreSearchHitCardProps = {
+  hit: StoreSearchHit;
+  onViewDetails: (book: Book) => void;
+};
+
+export function StoreSearchHitCard({ hit, onViewDetails }: StoreSearchHitCardProps) {
   const { book, onShelf } = hit;
 
   return (
@@ -16,12 +22,17 @@ export function StoreSearchHitCard({ hit }: { hit: StoreSearchHit }) {
         </div>
         <Badge tone={onShelf ? "green" : "white"}>{onShelf ? "已在书架" : "未加入"}</Badge>
       </div>
-      <p className="type-caption mt-3">{book.summary}</p>
-      {onShelf ? (
-        <Link className="type-link mt-4 inline-flex" href={`/books/${book.id}`}>
-          查看我的阅读进度
-        </Link>
-      ) : null}
+      <p className="type-caption mt-3 line-clamp-2">{book.summary}</p>
+      <div className="mt-4 flex flex-wrap gap-2">
+        <Button type="button" className="min-h-10 w-auto px-4 text-sm" onClick={() => onViewDetails(book)}>
+          查看详情
+        </Button>
+        {onShelf ? (
+          <Button href={`/books/${book.id}`} secondary className="min-h-10 w-auto px-4 text-sm">
+            我的阅读
+          </Button>
+        ) : null}
+      </div>
     </div>
   );
 }

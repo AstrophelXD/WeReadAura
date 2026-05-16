@@ -115,6 +115,20 @@
     line-height: 1.375;
   }
 
+  /* 划线 / 想法引用原文（聚珍新仿） */
+  .type-quote-preview {
+    font-weight: var(--base-font-weight);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  .type-quote-display {
+    font-weight: var(--base-font-weight);
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    line-height: 1.75;
+    text-wrap: pretty;
+  }
+
   .type-body-snug {
     font-weight: var(--base-font-weight);
     line-height: 1.375;

@@ -29,6 +29,15 @@
   font-display: swap;
 }
 
+/* Quote / highlight excerpts — 方正聚珍新仿简繁 */
+@font-face {
+  font-family: "WeReadAura JuZhen";
+  src: local("方正聚珍新仿简繁");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
   --ink: #1a1814;
   --paper: #f4efe6;
@@ -55,6 +64,11 @@
   /* Latin first; CJK: 标 / 中 primary, 粗 optional. */
   --font-serif: var(--font-source-serif), "Source Serif 4", "WeReadAura YaSong", "方正标雅宋_GBK",
     "方正中雅宋_GBK", "方正粗雅宋_GBK", serif;
+  --font-quote: "WeReadAura JuZhen", "方正聚珍新仿简繁", var(--font-serif);
+}
+
+.font-quote {
+  font-family: var(--font-quote);
 }
 
 * {
