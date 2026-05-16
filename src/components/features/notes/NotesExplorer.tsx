@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { HighlightList } from "@/components/layout/HighlightList";
+import { ListPagination } from "@/components/layout/ListPagination";
 import { Button } from "@/components/ui/Button";
 import { Input, Select } from "@/components/ui/Input";
 import {
@@ -12,6 +13,12 @@ import {
   type NotesQuery,
   type NotesRangeFilter,
 } from "@/lib/notes-query";
+import {
+  NOTES_PAGE_SIZE,
+  pageRangeLabel,
+  paginateSlice,
+  parsePageParam,
+} from "@/lib/pagination";
 import type { HighlightItem } from "@/lib/types";
 import { useQueryParams } from "@/lib/use-query-params";
 
@@ -41,11 +48,38 @@ export function NotesExplorer({ allItems, initialQuery }: NotesExplorerProps) {
 
   const filtered = useMemo(() => applyNotesQuery(allItems, query), [allItems, query]);
 
+  const requestedPage = parsePageParam(searchParams.get("page"));
+  const { slice: pageItems, page, pageCount } = useMemo(
+    () => paginateSlice(filtered, requestedPage, NOTES_PAGE_SIZE),
+    [filtered, requestedPage],
+  );
+
+  function goToPage(nextPage: number) {
+    replaceParams({ page: nextPage <= 1 ? null : String(nextPage) });
+  }
+
+  const pageParam = searchParams.get("page");
+
+  useEffect(() => {
+    if (!pageParam) {
+      return;
+    }
+    const requested = parsePageParam(pageParam);
+    if (requested <= pageCount) {
+      return;
+    }
+    replaceParams({ page: pageCount <= 1 ? null : String(pageCount) });
+  }, [pageCount, pageParam, replaceParams]);
+
   return (
     <>
       <div className="type-caption mb-3">
         <p>
-          显示 {filtered.length} / {allItems.length} 条
+          {filtered.length > 0
+            ? `显示 ${pageRangeLabel(page, NOTES_PAGE_SIZE, filtered.length)} / ${filtered.length} 条`
+            : `显示 0 / ${allItems.length} 条`}
+          {filtered.length !== allItems.length ? `（笔记库共 ${allItems.length} 条）` : null}
+          {pageCount > 1 ? ` · 第 ${page} / ${pageCount} 页` : null}
           {isPending ? " · 更新中…" : null}
         </p>
       </div>
@@ -54,7 +88,7 @@ export function NotesExplorer({ allItems, initialQuery }: NotesExplorerProps) {
         className="mb-5 grid gap-4 md:grid-cols-3"
         onSubmit={(event) => {
           event.preventDefault();
-          replaceParams({ q: searchDraft.trim() || null });
+          replaceParams({ q: searchDraft.trim() || null, page: null });
         }}
       >
         <div className="flex gap-2 md:col-span-1">
@@ -69,7 +103,7 @@ export function NotesExplorer({ allItems, initialQuery }: NotesExplorerProps) {
         </div>
         <Select
           value={query.bookId ?? ""}
-          onChange={(event) => replaceParams({ bookId: event.target.value || null })}
+          onChange={(event) => replaceParams({ bookId: event.target.value || null, page: null })}
         >
           <option value="">全部书籍</option>
           {bookOptions.map((book) => (
@@ -82,7 +116,7 @@ export function NotesExplorer({ allItems, initialQuery }: NotesExplorerProps) {
           value={query.range ?? "all"}
           onChange={(event) => {
             const value = event.target.value as NotesRangeFilter;
-            replaceParams({ range: value === "all" ? null : value });
+            replaceParams({ range: value === "all" ? null : value, page: null });
           }}
         >
           {NOTES_RANGE_OPTIONS.map((option) => (
@@ -93,7 +127,8 @@ export function NotesExplorer({ allItems, initialQuery }: NotesExplorerProps) {
         </Select>
       </form>
 
-      <HighlightList items={filtered} />
+      <HighlightList items={pageItems} />
+      <ListPagination currentPage={page} pageCount={pageCount} onPageChange={goToPage} />
     </>
   );
 }

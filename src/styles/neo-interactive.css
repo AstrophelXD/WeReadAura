@@ -30,7 +30,13 @@
     justify-content: center;
     gap: 0.5rem;
     border-radius: var(--radius-sm);
-    font-weight: var(--base-font-weight);
+    font-weight: var(--biao-font-weight);
+  }
+
+  @media (min-width: 768px) {
+    .neo-button {
+      font-weight: var(--base-font-weight);
+    }
   }
 
   .neo-button:focus-visible {
@@ -63,7 +69,7 @@
     background: var(--secondary-background);
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
-    font-weight: var(--base-font-weight);
+    font-weight: var(--biao-font-weight);
     color: var(--ink);
     box-shadow: var(--box-shadow-x) var(--box-shadow-y) 0 var(--ink);
     transition:
@@ -88,29 +94,12 @@
     cursor: not-allowed;
   }
 
-  /* --- Badge --- */
+  /* --- Badge (plain text placeholder; styling in Badge.tsx / type-field-label) --- */
   .neo-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    border: 2px solid var(--ink);
-    padding: 0.25rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: var(--base-font-weight);
-    line-height: 1.25;
-    box-shadow: 2px 2px 0 var(--ink);
-    transition:
-      transform 120ms ease-out,
-      box-shadow 120ms ease-out;
-  }
-
-  .neo-badge--interactive {
-    cursor: default;
-  }
-
-  .neo-badge--interactive:hover {
-    transform: translate(2px, 2px);
+    display: inline;
+    padding: 0;
+    border: none;
+    background: transparent;
     box-shadow: none;
   }
 
@@ -139,7 +128,6 @@
 @media (prefers-reduced-motion: reduce) {
   .neo-press,
   .neo-control,
-  .neo-badge,
   .neo-card {
     transition: none;
   }
@@ -147,14 +135,9 @@
   .neo-press:hover:not(:disabled),
   .neo-press:active:not(:disabled),
   .neo-control:focus-visible,
-  .neo-badge--interactive:hover,
   .neo-card--lift:hover,
   .neo-card--press:hover {
     transform: none;
     box-shadow: var(--box-shadow-x) var(--box-shadow-y) 0 var(--ink);
-  }
-
-  .neo-badge--interactive:hover {
-    box-shadow: 2px 2px 0 var(--ink);
   }
 }

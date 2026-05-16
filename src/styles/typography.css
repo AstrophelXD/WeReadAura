@@ -29,6 +29,11 @@
     font-weight: var(--base-font-weight);
   }
 
+  /* 方正标雅宋 — 小字号辅助文案、标签、说明 */
+  .font-biao {
+    font-weight: var(--biao-font-weight);
+  }
+
   .type-hero {
     font-weight: var(--heading-font-weight);
     line-height: 1.5;
@@ -51,18 +56,17 @@
 
   .type-eyebrow,
   .neo-eyebrow {
-    font-weight: var(--base-font-weight);
+    font-weight: var(--biao-font-weight);
     font-size: 0.875rem;
     line-height: 1.25;
   }
 
   .neo-eyebrow {
-    display: inline-flex;
-    border: var(--border-thin);
-    border-radius: 999px;
-    background: var(--muted);
-    padding: 0.45rem 0.7rem;
-    box-shadow: 2px 2px 0 var(--ink);
+    display: inline;
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
   }
 
   .hero-title {
@@ -98,7 +102,7 @@
   }
 
   .type-card-subtitle {
-    font-weight: var(--base-font-weight);
+    font-weight: var(--biao-font-weight);
     font-size: 0.875rem;
     line-height: 1.25;
   }
@@ -137,7 +141,7 @@
 
   /* 卡片内字段名（指标名、表单项标签） */
   .type-field-label {
-    font-weight: var(--heading-font-weight);
+    font-weight: var(--biao-font-weight);
     font-size: 0.9375rem;
     line-height: 1.25;
     color: color-mix(in srgb, var(--ink) 80%, transparent);
@@ -145,7 +149,7 @@
 
   /* 兼容旧用法：小标题、表单项 */
   .type-label {
-    font-weight: var(--heading-font-weight);
+    font-weight: var(--biao-font-weight);
     font-size: 0.9375rem;
     line-height: 1.25;
   }
@@ -180,13 +184,13 @@
   }
 
   .type-caption {
-    font-weight: var(--base-font-weight);
+    font-weight: var(--biao-font-weight);
     font-size: 0.875rem;
     line-height: 1.25;
   }
 
   .type-caption-muted {
-    font-weight: var(--base-font-weight);
+    font-weight: var(--biao-font-weight);
     font-size: 0.875rem;
     line-height: 1.25;
     color: color-mix(in srgb, var(--ink) 72%, transparent);

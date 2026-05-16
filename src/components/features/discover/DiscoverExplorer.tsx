@@ -1,13 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { BookDiscoverDialog } from "@/components/features/discover/BookDiscoverDialog";
 import { StoreSearchHitCard } from "@/components/features/discover/StoreSearchHitCard";
+import { ListPagination } from "@/components/layout/ListPagination";
 import { RecommendationCard } from "@/components/layout/RecommendationCard";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
+import { DISCOVER_SEARCH_PAGE_SIZE, paginateSlice } from "@/lib/pagination";
 import type { Book, RecommendationItem, StoreSearchHit } from "@/lib/types";
 
 interface DiscoverExplorerProps {
@@ -36,6 +38,7 @@ export function DiscoverExplorer({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searched, setSearched] = useState(false);
+  const [searchPage, setSearchPage] = useState(1);
   const [detailTarget, setDetailTarget] = useState<DetailTarget | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
 
@@ -75,6 +78,7 @@ export function DiscoverExplorer({
     setLoading(true);
     setError("");
     setSearched(true);
+    setSearchPage(1);
 
     try {
       const response = await fetch(`/api/discover/search?q=${encodeURIComponent(q)}`);
@@ -92,6 +96,11 @@ export function DiscoverExplorer({
       setLoading(false);
     }
   }
+
+  const { slice: pageHits, page: hitPage, pageCount: hitPageCount } = useMemo(
+    () => paginateSlice(hits, searchPage, DISCOVER_SEARCH_PAGE_SIZE),
+    [hits, searchPage],
+  );
 
   return (
     <>
@@ -122,9 +131,21 @@ export function DiscoverExplorer({
             {searched && !loading && hits.length === 0 && !error ? (
               <p className="type-body">没有找到相关书籍，换个关键词试试。</p>
             ) : null}
-            {hits.map((hit) => (
+            {pageHits.map((hit) => (
               <StoreSearchHitCard key={hit.book.id} hit={hit} onViewDetails={openFromBook} />
             ))}
+            {hits.length > 0 ? (
+              <p className="type-caption">
+                共 {hits.length} 条结果
+                {hitPageCount > 1 ? ` · 第 ${hitPage} / ${hitPageCount} 页` : null}
+              </p>
+            ) : null}
+            <ListPagination
+              currentPage={hitPage}
+              pageCount={hitPageCount}
+              onPageChange={setSearchPage}
+              className="mt-4"
+            />
           </div>
         </Card>
         <Card className="neo-paper">

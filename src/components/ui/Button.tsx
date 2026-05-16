@@ -25,7 +25,7 @@ type ButtonProps = LinkButtonProps | ActionButtonProps;
 
 const buttonClassName = (secondary: boolean | undefined, className?: string) =>
   cn(
-    "neo-button neo-press min-h-12 px-5 text-sm md:text-base max-sm:w-full",
+    "neo-button neo-press min-h-12 px-5 text-sm font-biao md:text-base md:font-base max-sm:w-full",
     secondary ? "neo-button--neutral" : "neo-button--primary",
     className,
   );

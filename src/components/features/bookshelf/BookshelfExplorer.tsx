@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { BookCard } from "@/components/layout/BookCard";
+import { ListPagination } from "@/components/layout/ListPagination";
 import { Button } from "@/components/ui/Button";
 import { Input, Select } from "@/components/ui/Input";
 import {
@@ -13,6 +14,12 @@ import {
   type BookshelfSort,
   type BookshelfStatusFilter,
 } from "@/lib/bookshelf-query";
+import {
+  BOOKSHELF_PAGE_SIZE,
+  pageRangeLabel,
+  paginateSlice,
+  parsePageParam,
+} from "@/lib/pagination";
 import type { Book } from "@/lib/types";
 import { useQueryParams } from "@/lib/use-query-params";
 
@@ -48,15 +55,42 @@ export function BookshelfExplorer({ allBooks, initialQuery }: BookshelfExplorerP
 
   const filtered = useMemo(() => applyBookshelfQuery(allBooks, query), [allBooks, query]);
 
+  const requestedPage = parsePageParam(searchParams.get("page"));
+  const { slice: pageBooks, page, pageCount } = useMemo(
+    () => paginateSlice(filtered, requestedPage, BOOKSHELF_PAGE_SIZE),
+    [filtered, requestedPage],
+  );
+
   function commitSearch() {
-    replaceParams({ q: searchDraft.trim() || null });
+    replaceParams({ q: searchDraft.trim() || null, page: null });
   }
+
+  function goToPage(nextPage: number) {
+    replaceParams({ page: nextPage <= 1 ? null : String(nextPage) });
+  }
+
+  const pageParam = searchParams.get("page");
+
+  useEffect(() => {
+    if (!pageParam) {
+      return;
+    }
+    const requested = parsePageParam(pageParam);
+    if (requested <= pageCount) {
+      return;
+    }
+    replaceParams({ page: pageCount <= 1 ? null : String(pageCount) });
+  }, [pageCount, pageParam, replaceParams]);
 
   return (
     <>
       <div className="type-caption mb-3 flex flex-wrap items-center justify-between gap-2">
         <p>
-          显示 {filtered.length} / {allBooks.length} 本
+          {filtered.length > 0
+            ? `显示 ${pageRangeLabel(page, BOOKSHELF_PAGE_SIZE, filtered.length)} / ${filtered.length} 本`
+            : `显示 0 / ${allBooks.length} 本`}
+          {filtered.length !== allBooks.length ? `（书架共 ${allBooks.length} 本）` : null}
+          {pageCount > 1 ? ` · 第 ${page} / ${pageCount} 页` : null}
           {isPending ? " · 更新中…" : null}
         </p>
       </div>
@@ -83,6 +117,7 @@ export function BookshelfExplorer({ allBooks, initialQuery }: BookshelfExplorerP
           onChange={(event) =>
             replaceParams({
               status: event.target.value === "all" ? null : event.target.value,
+              page: null,
             })
           }
         >
@@ -94,7 +129,7 @@ export function BookshelfExplorer({ allBooks, initialQuery }: BookshelfExplorerP
         </Select>
         <Select
           value={query.sort ?? "lastRead"}
-          onChange={(event) => replaceParams({ sort: event.target.value })}
+          onChange={(event) => replaceParams({ sort: event.target.value, page: null })}
         >
           {BOOKSHELF_SORT_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>
@@ -107,11 +142,14 @@ export function BookshelfExplorer({ allBooks, initialQuery }: BookshelfExplorerP
       {filtered.length === 0 ? (
         <p className="type-empty">没有匹配的书籍，试试调整关键词或筛选条件。</p>
       ) : (
-        <div className="grid gap-5 xl:grid-cols-2">
-          {filtered.map((book) => (
-            <BookCard key={book.id} book={book} />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-5 xl:grid-cols-2">
+            {pageBooks.map((book) => (
+              <BookCard key={book.id} book={book} />
+            ))}
+          </div>
+          <ListPagination currentPage={page} pageCount={pageCount} onPageChange={goToPage} />
+        </>
       )}
     </>
   );

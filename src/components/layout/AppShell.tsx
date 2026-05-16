@@ -39,7 +39,7 @@ export function AppShell({
       <DataStatusBanner info={dataSource} />
       <main>{children}</main>
       <footer className="border-t-[3px] border-[var(--ink)] py-8">
-        <div className="type-caption container-shell flex flex-col gap-2 sm:text-base md:flex-row md:items-center md:justify-between">
+        <div className="type-caption container-shell flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <p>微信读书个人阅读分析工具</p>
           <p>连接 Skill API · 书架 · 统计 · 划线 · 推荐</p>
         </div>

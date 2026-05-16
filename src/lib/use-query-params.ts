@@ -3,16 +3,23 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useTransition } from "react";
 
+function buildPathWithSearch(pathname: string, params: URLSearchParams): string {
+  const query = params.toString();
+  return query ? `${pathname}?${query}` : pathname;
+}
+
 export function useQueryParams() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+  const searchParamsRef = useRef(searchParams);
+  searchParamsRef.current = searchParams;
 
   const replaceParams = useCallback(
     (updates: Record<string, string | null | undefined>, options?: { debounce?: boolean }) => {
       const apply = () => {
-        const params = new URLSearchParams(searchParams.toString());
+        const params = new URLSearchParams(searchParamsRef.current.toString());
         for (const [key, value] of Object.entries(updates)) {
           if (value === null || value === undefined || value === "") {
             params.delete(key);
@@ -20,9 +27,13 @@ export function useQueryParams() {
             params.set(key, value);
           }
         }
-        const query = params.toString();
+        const next = buildPathWithSearch(pathname, params);
+        const current = buildPathWithSearch(pathname, searchParamsRef.current);
+        if (next === current) {
+          return;
+        }
         startTransition(() => {
-          router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+          router.replace(next, { scroll: false });
         });
       };
 
@@ -31,7 +42,7 @@ export function useQueryParams() {
       }
       apply();
     },
-    [pathname, router, searchParams],
+    [pathname, router],
   );
 
   return { searchParams, replaceParams, isPending };

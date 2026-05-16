@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { HighlightList } from "@/components/layout/HighlightList";
+import { BookHighlightsPanel } from "@/components/features/books/BookHighlightsPanel";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { Section } from "@/components/ui/Section";
@@ -64,10 +64,13 @@ export default async function BookDetailPage({
         </Card>
       </div>
       <div className="mt-8">
-        <p className="type-caption mb-4">
-          共 {bookHighlights.length} 条（{book.notes} 条想法、{book.highlights} 条划线）
-        </p>
-        <HighlightList items={bookHighlights} variant="book" />
+        <BookHighlightsPanel
+          bookTitle={book.title}
+          bookAuthor={book.author}
+          items={bookHighlights}
+          noteCount={book.notes}
+          highlightCount={book.highlights}
+        />
       </div>
     </Section>
   );

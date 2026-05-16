@@ -17,7 +17,7 @@ export function BookCard({ book }: { book: Book }) {
       </div>
       <p className="type-caption">{book.summary}</p>
       <div className="mt-5 space-y-3">
-        <div className="type-caption flex items-center justify-between font-heading">
+        <div className="type-caption flex items-center justify-between">
           <span>{statusLabel(book.status)}</span>
           <span>{book.progress}%</span>
         </div>

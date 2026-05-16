@@ -63,7 +63,7 @@ export function HighlightList({ items, variant = "default" }: HighlightListProps
               <span aria-hidden>」</span>
             </p>
             {item.note ? <p className="type-caption mt-4 line-clamp-2">想法：{item.note}</p> : null}
-            <p className="type-caption mt-4 font-heading">
+            <p className="type-caption mt-4">
               {item.chapter} · {item.createdAt}
             </p>
             {isBookContext ? (

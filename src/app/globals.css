@@ -61,10 +61,12 @@
   --radius-sm: 0.4rem;
   --container: 1120px;
 
-  /* Latin first; CJK: 标 / 中 primary, 粗 optional. */
+  /* Latin first; CJK: 标 (400) / 中 (500) / 粗 (700) via @font-face on WeReadAura YaSong. */
   --font-serif: var(--font-source-serif), "Source Serif 4", "WeReadAura YaSong", "方正标雅宋_GBK",
     "方正中雅宋_GBK", "方正粗雅宋_GBK", serif;
   --font-quote: "WeReadAura JuZhen", "方正聚珍新仿简繁", var(--font-serif);
+  --biao-font-weight: 400;
+  --zhong-font-weight: 500;
 }
 
 .font-quote {
