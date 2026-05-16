@@ -1,3 +1,14 @@
+"use client";
+
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { readingTrendChartConfig } from "@/lib/chart-theme";
+import { formatDurationLabel } from "@/lib/formatters";
 import type { TrendPoint } from "@/lib/types";
 
 export function TrendChart({ data }: { data: TrendPoint[] }) {
@@ -5,24 +16,49 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
     return <p className="type-empty">暂无趋势数据，请先同步微信读书统计。</p>;
   }
 
-  const max = Math.max(...data.map((item) => item.minutes), 1);
+  const chartData = data.map((item) => ({
+    label: item.label,
+    minutes: item.minutes,
+  }));
 
   return (
-    <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${data.length}, minmax(0, 1fr))` }}>
-      {data.map((item) => (
-        <div key={item.label} className="flex flex-col items-center gap-3">
-          <div className="flex h-48 w-full items-end rounded-[0.75rem] border-[3px] border-[var(--ink)] bg-white p-2 shadow-[4px_4px_0_var(--ink)]">
-            <div
-              className="w-full rounded-[0.4rem] border-[2px] border-[var(--ink)] bg-[var(--ink)]"
-              style={{ height: `${Math.max(16, (item.minutes / max) * 100)}%` }}
+    <ChartContainer
+      config={readingTrendChartConfig}
+      className="[--chart-bar-fill:var(--color-minutes)] [&_.recharts-cartesian-grid_line]:stroke-[color-mix(in_srgb,var(--ink)_14%,transparent)]"
+    >
+      <BarChart
+        accessibilityLayer
+        data={chartData}
+        margin={{ top: 12, right: 12, left: 4, bottom: 4 }}
+      >
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="label"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={10}
+          interval="preserveStartEnd"
+          minTickGap={20}
+          tick={{ fill: "var(--ink)", fontSize: 11 }}
+        />
+        <YAxis
+          tickLine={false}
+          axisLine={false}
+          width={44}
+          tick={{ fill: "var(--ink)", fontSize: 11 }}
+          tickFormatter={(value) => `${value}`}
+        />
+        <ChartTooltip
+          cursor={{ fill: "color-mix(in srgb, var(--yellow) 22%, transparent)" }}
+          content={
+            <ChartTooltipContent
+              labelFormatter={(label) => String(label)}
+              formatter={(value) => [formatDurationLabel(Number(value) * 60), "阅读时长"]}
             />
-          </div>
-          <div className="type-caption text-center">
-            <p>{item.label}</p>
-            <p>{item.minutes} 分</p>
-          </div>
-        </div>
-      ))}
-    </div>
+          }
+        />
+        <Bar dataKey="minutes" fill="var(--color-minutes)" radius={6} stroke="var(--ink)" strokeWidth={2} />
+      </BarChart>
+    </ChartContainer>
   );
 }

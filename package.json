@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "setup:neobrutalism": "node scripts/setup-neobrutalism.mjs",
     "postinstall": "node scripts/setup-neobrutalism.mjs"
   },
@@ -25,6 +27,7 @@
     "next": "^16.2.6",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
+    "recharts": "^2.15.3",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
@@ -36,6 +39,7 @@
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.6",
     "tailwindcss": "^4.3.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^3.2.4"
   }
 }

@@ -72,6 +72,8 @@ export interface ExternalReadDataDetail {
   dayAverageReadTime?: number;
   compare?: number;
   readTimes?: Record<string, number>;
+  /** Daily buckets (seconds); common in annually mode for calendar views. */
+  dailyReadTimes?: Record<string, number>;
   preferCategory?: Array<{
     categoryTitle: string;
     val?: number;

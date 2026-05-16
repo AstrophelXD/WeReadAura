@@ -1,6 +1,12 @@
 import { applyBookshelfQuery, type BookshelfQuery } from "@/lib/bookshelf-query";
 import { applyNotesQuery, type NotesQuery } from "@/lib/notes-query";
 import { markReadingDataVolatile } from "@/lib/server-cache";
+import {
+  parseStatsPeriod,
+  statsPeriodLabel,
+  statsPeriodToWeReadMode,
+  type StatsPeriod,
+} from "@/lib/stats-query";
 import { books as mockBooks, dashboardData, findBook, findHighlightsForBook } from "@/lib/mock-data";
 import type { Book, DashboardData, HighlightItem, RecommendationItem, StoreSearchHit } from "@/lib/types";
 import { getWeReadApiKey } from "@/server/auth/credentials";
@@ -11,8 +17,14 @@ import {
   snapshotToDashboard,
 } from "@/server/cache/sync-cache";
 import { fetchLiveBookDetail } from "@/server/services/fetch-live-book-detail";
+import { buildTrendForPeriod } from "@/server/services/stats-analytics";
 import { syncFromWeRead } from "@/server/services/weread-sync";
-import { transformRecommendation, transformSearchResult } from "@/server/services/weread-transform";
+import {
+  buildCategoryDistribution,
+  buildMetricsFromReadData,
+  transformRecommendation,
+  transformSearchResult,
+} from "@/server/services/weread-transform";
 
 export type DataMode = "live" | "mock";
 
@@ -111,14 +123,53 @@ export async function getBookshelfPageData(query: BookshelfQuery = {}) {
   return { all, items, total: items.length, totalAll: all.length };
 }
 
-export async function getStatsPayload() {
+export async function getStatsPayload(periodInput?: StatsPeriod) {
   markReadingDataVolatile();
+  const period = periodInput ?? "30d";
+  const apiKey = await getWeReadApiKey();
+  const gateway = getWeReadGateway(apiKey);
+
+  if (gateway && apiKey) {
+    try {
+      const mode = statsPeriodToWeReadMode(period);
+      const context = createGatewayContext(apiKey);
+      const detail = await gateway.getReadingStats(context, mode);
+      const overall =
+        period === "30d" ? await gateway.getReadingStats(context, "overall") : undefined;
+
+      let categoryDistribution = buildCategoryDistribution(detail);
+      if (categoryDistribution.length === 0 && mode !== "monthly") {
+        const monthlyDetail = await gateway.getReadingStats(context, "monthly");
+        categoryDistribution = buildCategoryDistribution(monthlyDetail);
+      }
+
+      return {
+        metrics: buildMetricsFromReadData(detail, overall),
+        readingTrend: buildTrendForPeriod(detail, period),
+        categoryDistribution,
+        period,
+        periodLabel: statsPeriodLabel(period),
+      };
+    } catch {
+      // fall back to cached snapshot / mock below
+    }
+  }
+
   const dashboard = await getDashboardData();
   return {
     metrics: dashboard.metrics,
     readingTrend: dashboard.readingTrend,
     categoryDistribution: dashboard.categoryDistribution,
+    period,
+    periodLabel: statsPeriodLabel(period),
   };
+}
+
+export function parseStatsPeriodFromSearchParams(
+  raw?: Record<string, string | string[] | undefined>,
+): StatsPeriod {
+  const value = typeof raw?.period === "string" ? raw.period : undefined;
+  return parseStatsPeriod(value);
 }
 
 export async function getAllNotesItems(): Promise<HighlightItem[]> {

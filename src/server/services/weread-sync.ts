@@ -7,19 +7,19 @@ import {
   fetchBookProgressMap,
   pickBooksNeedingProgressFetch,
 } from "@/server/services/weread-progress";
+import { buildTrendFromReadData } from "@/server/services/stats-analytics";
+import { fetchAllMyReviewsForBook } from "@/server/services/weread-reviews";
 import {
   buildCategoryDistribution,
   buildDashboardHero,
   buildMetricsFromReadData,
-  buildTrendFromReadData,
   transformBookmarkHighlight,
   transformRecommendation,
-  transformReviewHighlight,
   transformShelfAlbum,
   transformShelfBook,
 } from "@/server/services/weread-transform";
 
-const HIGHLIGHT_BOOK_LIMIT = 3;
+const HIGHLIGHT_BOOK_LIMIT = 12;
 
 function formatSyncTimestamp(date: Date): string {
   return date.toLocaleString("zh-CN", {
@@ -49,9 +49,9 @@ async function fetchRecentHighlights(
     ranked.map(async (item) => {
       const bookTitle = item.book?.title ?? "WeRead Book";
       try {
-        const [bookmarkList, reviews] = await Promise.all([
+        const [bookmarkList, reviewHighlights] = await Promise.all([
           gateway.getBookmarkList(context, item.bookId),
-          gateway.getMyReviews(context, item.bookId),
+          fetchAllMyReviewsForBook(gateway, context, item.bookId, bookTitle),
         ]);
 
         const chapterMap = new Map(
@@ -60,9 +60,6 @@ async function fetchRecentHighlights(
 
         const bookmarkHighlights = (bookmarkList.updated ?? []).map((bookmark) =>
           transformBookmarkHighlight(bookmark, bookTitle, chapterMap),
-        );
-        const reviewHighlights = (reviews.reviews ?? []).map((review) =>
-          transformReviewHighlight(review, item.bookId, bookTitle),
         );
 
         return [...bookmarkHighlights, ...reviewHighlights];
@@ -118,7 +115,7 @@ export async function syncFromWeRead(
     highlights,
     recommendations: (recommendations.books ?? []).map(transformRecommendation),
     metrics: buildMetricsFromReadData(monthlyStats, overallStats),
-    readingTrend: buildTrendFromReadData(monthlyStats),
+    readingTrend: buildTrendFromReadData(monthlyStats, { maxPoints: 7, labelDates: true }),
     categoryDistribution: buildCategoryDistribution(monthlyStats),
     heroTitle: hero.heroTitle,
     heroBody: hero.heroBody,

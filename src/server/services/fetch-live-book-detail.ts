@@ -10,11 +10,8 @@ import {
   resolveStartedAt,
   type NotebookBookMeta,
 } from "@/server/services/weread-progress";
-import {
-  transformHighlightsFromBookmarkList,
-  transformReviewHighlight,
-  transformShelfBook,
-} from "@/server/services/weread-transform";
+import { fetchAllMyReviewsForBook } from "@/server/services/weread-reviews";
+import { transformHighlightsFromBookmarkList, transformShelfBook } from "@/server/services/weread-transform";
 
 function bookToShelfItem(book: Book): ExternalShelfBook {
   return {
@@ -28,33 +25,6 @@ function bookToShelfItem(book: Book): ExternalShelfBook {
   };
 }
 
-async function fetchAllMyReviews(
-  gateway: WeReadGateway,
-  context: GatewayContext,
-  bookId: string,
-  bookTitle: string,
-): Promise<HighlightItem[]> {
-  const items: HighlightItem[] = [];
-  let synckey = 0;
-
-  for (let page = 0; page < 20; page += 1) {
-    const response = await gateway.getMyReviews(context, bookId, synckey, 20);
-    for (const entry of response.reviews ?? []) {
-      items.push(transformReviewHighlight(entry, bookId, bookTitle));
-    }
-    if (response.hasMore !== 1) {
-      break;
-    }
-    const nextKey = response.synckey ?? 0;
-    if (nextKey === synckey) {
-      break;
-    }
-    synckey = nextKey;
-  }
-
-  return items;
-}
-
 export async function fetchLiveBookDetail(
   gateway: WeReadGateway,
   context: GatewayContext,
@@ -65,7 +35,7 @@ export async function fetchLiveBookDetail(
     gateway.getBookInfo(context, bookId),
     gateway.getBookProgress(context, bookId),
     gateway.getBookmarkList(context, bookId),
-    fetchAllMyReviews(gateway, context, bookId, cachedBook?.title ?? ""),
+    fetchAllMyReviewsForBook(gateway, context, bookId, cachedBook?.title ?? ""),
   ]);
 
   const bookTitle = info.title || cachedBook?.title || "微信读书书籍";
@@ -123,8 +93,8 @@ export async function fetchLiveBookDetail(
   book.lastReadAt =
     resolveLastReadAt(progress.book?.updateTime, shelfItem.readUpdateTime) || book.lastReadAt;
   book.startedAt = resolveStartedAt(progress.book, earliestHighlightTime) || book.startedAt;
-  book.highlights = Math.max(notebookMeta.highlights, bookmarkHighlights.length);
-  book.notes = Math.max(notebookMeta.notes, reviewHighlights.length);
+  book.highlights = bookmarkHighlights.length;
+  book.notes = reviewHighlights.length;
   book.status = resolveReadingStatus({
     finishReading: shelfItem.finishReading,
     progress: progressPercent,

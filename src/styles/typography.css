@@ -121,28 +121,48 @@
     font-size: 1.25rem;
   }
 
+  /* 卡片内字段名（指标名、表单项标签） */
+  .type-field-label {
+    font-weight: var(--heading-font-weight);
+    font-size: 0.9375rem;
+    line-height: 1.25;
+    color: color-mix(in srgb, var(--ink) 80%, transparent);
+  }
+
+  /* 兼容旧用法：小标题、表单项 */
   .type-label {
     font-weight: var(--heading-font-weight);
-    font-size: 0.875rem;
-    line-height: 1;
+    font-size: 0.9375rem;
+    line-height: 1.25;
+  }
+
+  /* 指标卡片主数值（可换行，如「241 小时 54 分钟」） */
+  .type-metric-card {
+    font-weight: var(--heading-font-weight);
+    line-height: 1.35;
+    font-size: 1.25rem;
+    text-wrap: balance;
   }
 
   .type-metric {
     font-weight: var(--heading-font-weight);
-    line-height: 1.5;
-    font-size: 2.25rem;
+    line-height: 1.35;
+    font-size: 1.5rem;
   }
 
+  /* Hero / 单卡主 KPI */
   .type-metric-lg {
     font-weight: var(--heading-font-weight);
-    line-height: 1.5;
-    font-size: 3rem;
+    line-height: 1.35;
+    font-size: 1.75rem;
+    text-wrap: balance;
   }
 
+  /* 紧凑数字（在读本数、笔记条数等） */
   .type-metric-sm {
     font-weight: var(--heading-font-weight);
-    line-height: 1.5;
-    font-size: 1.5rem;
+    line-height: 1.35;
+    font-size: 1.375rem;
   }
 
   .type-caption {
@@ -217,12 +237,25 @@
       font-size: 1.125rem;
     }
 
+    .type-metric-card {
+      font-size: 1.375rem;
+    }
+
     .type-metric {
-      font-size: 3rem;
+      font-size: 1.625rem;
     }
 
     .type-metric-lg {
-      font-size: 3.75rem;
+      font-size: 2rem;
+    }
+
+    .type-metric-sm {
+      font-size: 1.5rem;
+    }
+
+    .type-field-label,
+    .type-label {
+      font-size: 1rem;
     }
 
     .type-nav-brand {
@@ -253,7 +286,7 @@
     }
 
     .type-metric-lg {
-      font-size: 3.75rem;
+      font-size: 2.25rem;
     }
   }
 }

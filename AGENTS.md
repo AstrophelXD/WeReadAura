@@ -160,6 +160,7 @@
 
 - 产品需求以 [docs/weread-reading-analytics-prd.md](D:\WeReadAura\docs\weread-reading-analytics-prd.md) 为主
 - 前端视觉规范以 [docs/frontend-visual-style-guide.md](D:\WeReadAura\docs\frontend-visual-style-guide.md) 为主
+- 字段排版选型以 [docs/field-typography-guide.md](D:\WeReadAura\docs\field-typography-guide.md) 为准（各类字段应使用的 `type-*` class）
 - 技术方案以 [docs/technical-architecture.md](D:\WeReadAura\docs\technical-architecture.md) 为主
 - 本文件负责约束“怎么实现”，不替代“做什么”
 - 若两者冲突，先回到需求确认，再更新规则或需求，不允许口头约定替代文档

@@ -6,7 +6,6 @@ import type {
   HighlightItem,
   Metric,
   RecommendationItem,
-  TrendPoint,
 } from "@/lib/types";
 import {
   formatDurationLabel,
@@ -157,21 +156,7 @@ export function buildMetricsFromReadData(monthly: ExternalReadDataDetail, overal
   ];
 }
 
-export function buildTrendFromReadData(detail: ExternalReadDataDetail): TrendPoint[] {
-  const buckets = detail.readTimes ?? {};
-  const entries = Object.entries(buckets)
-    .map(([timestamp, seconds]) => ({
-      timestamp: Number(timestamp),
-      minutes: formatDurationMinutes(seconds),
-    }))
-    .sort((left, right) => left.timestamp - right.timestamp);
-
-  const recent = entries.slice(-7);
-  return recent.map((entry, index) => ({
-    label: `${index + 1}日`,
-    minutes: entry.minutes,
-  }));
-}
+export { buildTrendForPeriod, buildTrendFromReadData } from "@/server/services/stats-analytics";
 
 export function buildCategoryDistribution(detail: ExternalReadDataDetail): DistributionPoint[] {
   const categories = detail.preferCategory ?? [];

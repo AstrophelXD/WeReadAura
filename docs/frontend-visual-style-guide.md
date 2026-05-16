@@ -159,26 +159,30 @@
 
 ### 5.2 字级与行距（对齐 neobrutalism-components）
 
-排版 token 集中在 `src/styles/typography.css`，页面与组件应使用语义 class，避免散落 `text-*` / `leading-*`：
+排版 token 集中在 `src/styles/typography.css`，页面与组件应使用语义 class，避免散落 `text-*` / `leading-*`。
 
-| 语义 class | 用途 | 规格要点（与 [neobrutalism 首页](https://github.com/ekmas/neobrutalism-components) 一致） |
+**按字段类型如何选 class**（指标名、主值、图表标题等）见专用文档：[field-typography-guide.md](./field-typography-guide.md)。
+
+| 语义 class | 用途 | 规格要点 |
 | --- | --- | --- |
-| `type-hero` | Hero H1 | `font-heading`，`leading-normal`，响应式 `text-2xl` → `2xl:text-6xl` |
-| `type-section-title` | Section H2 | `font-heading`，`leading-normal`，`text-[22px]` → `2xl:text-5xl` |
-| `type-section-copy` | Section 说明 | `font-base`，`leading-snug`，`text-xl` → `2xl:text-3xl` |
-| `type-eyebrow` | 区块眉标（配合 `.neo-eyebrow` 边框） | `font-base`，`text-sm` |
-| `type-card-title` / `type-card-title-lg` | 卡片标题 | `font-heading`，`leading-none` |
-| `type-card-subtitle` | 作者、副标题 | `font-base`，`text-sm` → `sm:text-base` |
-| `type-body` / `type-body-lg` | 正文 | `font-base`，`text-base`，`leading-normal` |
-| `type-body-snug` | 较长引导文案 | `font-base`，`leading-snug` |
-| `type-label` | 卡片内小标题、指标名 | `font-heading`，`text-sm`，`leading-none` |
-| `type-metric` / `type-metric-lg` / `type-metric-sm` | 大数字 | `font-heading`，`leading-normal` |
-| `type-caption` / `type-caption-muted` | 辅助说明 | `font-base`，`text-sm` |
+| `type-hero` / `hero-title` | Hero H1 | 页面最顶部主标题 |
+| `type-section-title` / `section-title` | Section H2 | 页面区块标题 |
+| `type-section-copy` / `section-copy` | Section 说明 | 页面区块说明段 |
+| `type-eyebrow` / `neo-eyebrow` | 区块眉标 | 胶囊标签 |
+| `type-card-title-lg` | 卡片 / 图表区块标题 | 勿与 section 同级 |
+| `type-card-title` | 字段值、列表标题 | 与 `type-field-label` 成对 |
+| `type-card-subtitle` | 作者、副标题 | `font-base` |
+| `type-field-label` | 字段名、指标名 | 新代码优先于 `type-label` |
+| `type-metric-card` | 指标卡主值 | 可换行长数值 |
+| `type-metric-lg` | 单卡主 KPI | 每卡至多一个 |
+| `type-metric-sm` | 紧凑计数 | 次要数字格 |
+| `type-body` / `type-body-lg` | 正文 | 摘录、说明 |
+| `type-caption` / `type-caption-muted` | 辅助说明 | 单位、环比 |
 | `type-nav-brand` / `type-nav-link` | 导航 | 见 typography.css |
-| `type-link` | 文内链接 | `font-base`，下划线 |
-| `type-empty` | 空态、提示 | `font-base`，`text-base` |
+| `type-link` | 文内链接 | 下划线 |
+| `type-empty` | 空态 | 无数据提示 |
 
-全局别名（`globals.css`）：`.hero-title`、`.section-title`、`.section-copy`、`.neo-eyebrow` 分别 `@apply` 上述类型。
+全局别名（`globals.css`）：`.hero-title`、`.section-title`、`.section-copy`、`.neo-eyebrow` 分别对应上述类型。
 
 组件默认字号：
 
@@ -190,7 +194,7 @@
 
 - 标题使用 `font-heading`（字重 700），正文使用 `font-base`（字重 500）
 - 标题行高优先 `leading-normal` 或 `leading-none`，正文 `leading-normal` / `leading-snug`
-- 不使用大段 `uppercase` + 宽字距标签；小标题用 `type-label`（`font-heading text-sm leading-none`）
+- 不使用大段 `uppercase` + 宽字距标签；字段名用 `type-field-label`（见 [field-typography-guide.md](./field-typography-guide.md)）
 - 大段说明尽量拆短，适合快速扫读
 
 ## 6. 组件级规范

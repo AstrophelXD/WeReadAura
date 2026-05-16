@@ -1,3 +1,4 @@
+import { ChartCardHeading } from "@/components/charts/ChartCardHeading";
 import { DistributionChart } from "@/components/charts/DistributionChart";
 import { TrendChart } from "@/components/charts/TrendChart";
 import { BookCard } from "@/components/layout/BookCard";
@@ -29,16 +30,16 @@ export default async function HomePage() {
           </div>
           <Card className="neo-paper p-5 shadow-[var(--shadow-lg)]">
             <div className="rounded-[var(--radius)] border-[3px] border-[var(--ink)] bg-white p-6">
-              <p className="type-label">上次同步</p>
-              <p className="type-metric-lg mt-4">{dashboardData.syncStatus.lastSyncedAt}</p>
+              <p className="type-field-label">上次同步</p>
+              <p className="type-metric-lg mt-3">{dashboardData.syncStatus.lastSyncedAt}</p>
               <p className="type-card-subtitle mt-3">{dashboardData.syncStatus.source}</p>
               <div className="mt-6 grid gap-3 md:grid-cols-2">
                 <div className="rounded-[var(--radius-sm)] border-[2px] border-[var(--ink)] bg-[var(--muted)] p-4">
-                  <p className="type-label">在读</p>
+                  <p className="type-field-label">在读</p>
                   <p className="type-metric-sm mt-2">{dashboardData.activeBooks.length}</p>
                 </div>
                 <div className="rounded-[var(--radius-sm)] border-[2px] border-[var(--ink)] bg-[var(--muted)] p-4">
-                  <p className="type-label">近期划线</p>
+                  <p className="type-field-label">近期划线</p>
                   <p className="type-metric-sm mt-2">{dashboardData.recentHighlights.length}</p>
                 </div>
               </div>
@@ -66,15 +67,16 @@ export default async function HomePage() {
       >
         <div className="grid gap-5 lg:grid-cols-2">
           <Card>
-            <p className="type-label">阅读趋势</p>
-            <p className="type-caption mt-2">按日分桶展示本月阅读时长。</p>
+            <ChartCardHeading title="阅读趋势" description="按日分桶展示本月阅读时长。" />
             <div className="mt-6">
               <TrendChart data={dashboardData.readingTrend} />
             </div>
           </Card>
           <Card>
-            <p className="type-label">分类占比</p>
-            <p className="type-caption mt-2">来自微信读书偏好分类的相对权重。</p>
+            <ChartCardHeading
+              title="分类占比"
+              description="来自微信读书偏好分类的相对权重。"
+            />
             <div className="mt-6">
               <DistributionChart data={dashboardData.categoryDistribution} />
             </div>
