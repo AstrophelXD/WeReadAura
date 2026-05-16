@@ -1,0 +1,25 @@
+@keyframes weread-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes weread-marquee2 {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-marquee {
+  animation: weread-marquee 32s linear infinite;
+}
+
+.animate-marquee2 {
+  animation: weread-marquee2 32s linear infinite;
+}

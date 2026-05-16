@@ -5,6 +5,7 @@ import { ChartCardHeading } from "@/components/charts/ChartCardHeading";
 import { DistributionChart } from "@/components/charts/DistributionChart";
 import { TrendChart } from "@/components/charts/TrendChart";
 import { HomeFeatureGrid } from "@/components/features/home/HomeFeatureGrid";
+import { HomeFeatureMarquee } from "@/components/features/home/HomeFeatureMarquee";
 import { BookCard } from "@/components/layout/BookCard";
 import { HighlightList } from "@/components/layout/HighlightList";
 import { MetricCard } from "@/components/layout/MetricCard";
@@ -117,6 +118,8 @@ export default async function HomePage() {
           </Card>
         </div>
       </section>
+
+      <HomeFeatureMarquee />
 
       <Section
         title="能做什么"

@@ -1,175 +1,209 @@
-# WeReadAura
+# WeReadAura 📚✨
 
-WeReadAura is a minimal MVP for a personal WeRead reading analytics tool.
+> **你的微信读书个人阅读驾驶舱** —— 把书架、时长、划线与推荐，收成一张能复盘、能扫读的 plain neo-brutalism 仪表盘。
 
-It turns bookshelf, reading stats, highlights, notes, and recommendations into a plain neo-brutalist dashboard inspired by Gumroad's current homepage language: bold structure, black borders, hard shadows, short copy, and strong CTAs.
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](#版权与鸣谢)
+[![Vibe Coding](https://img.shields.io/badge/构建方式-Vibe%20Coding-ff6b9d?style=flat-square)](https://github.com/search?q=vibe+coding&type=repositories)
 
-## Current Status
+---
 
-This repository is in an early but runnable MVP stage.
+## 这是什么？
 
-What is already implemented:
+**WeReadAura** 是一款面向**单个微信读书用户**的阅读分析工具：不替代官方客户端，也不做社交或写回，只做**只读聚合、可视化与复盘**。
 
-- Next.js App Router app
-- [neobrutalism-components](https://github.com/ekmas/neobrutalism-components) UI (local clone, not committed) with WeReadAura wrappers
-- Overview dashboard
-- Bookshelf page
-- Reading stats page
-- Highlights and notes page
-- Discover page
-- Book detail page
-- Settings page
-- Mock API routes for the MVP data shape
+你可以用它回答：
 
-What is not implemented yet:
+- 📖 我最近读了什么、读得怎么样？
+- ✍️ 我留下了哪些划线与笔记？
+- 📈 阅读节奏与兴趣结构有什么变化？
+- 🔍 推荐和我的真实偏好有多贴近？
 
-- Persistent database
-- User authentication beyond the planned architecture
-- Durable sync persistence (in-memory cache only for now)
-- Export/report generation
+数据能力基于官方 [微信读书 Skills](https://weread.qq.com/r/weread-skills) 网关；未配置密钥时，项目会用 **Mock 数据** 保持页面可开发、可演示。
 
-## Tech Stack
+---
 
-- `Next.js 16`
-- `React 19`
-- `TypeScript`
-- `Tailwind CSS v4`
-- App Router + Route Handlers
+## ✨ 为什么是 Vibe Coding 项目？
 
-The technical direction is documented in [docs/technical-architecture.md](D:\WeReadAura\docs\technical-architecture.md).
+本项目从需求文档到可运行 MVP，走的是典型的 **Vibe Coding** 路径：
 
-## WeRead Skill Integration
+| 阶段 | 做法 |
+| --- | --- |
+| 🧭 先定边界 | PRD、技术方案、视觉规范写在 `docs/`，再写代码 |
+| 🤖 人机协作 | 用 AI 辅助迭代页面、适配层与文档，人负责口径与审美拍板 |
+| 🎨 感觉优先 | Plain neo-brutalism：粗边框、硬阴影、大标题——**先能读清，再谈炫技** |
+| 🔁 小步可回滚 | Mock 先行 → 接 WeRead API → 再接持久化，每一步都能跑起来 |
 
-WeReadAura connects to the official [WeRead Skill](https://weread.qq.com/r/weread-skills) Agent API Gateway.
+> **Vibe Coding** 在这里不是「随便写写」，而是：**文档对齐 vibe、实现跟手感走、数据口径必须严肃。**  
+> 欢迎 fork、魔改、接自己的 Skills；也欢迎带着你的阅读复盘需求来提 issue。
 
-1. Log in at [weread.qq.com/r/weread-skills](https://weread.qq.com/r/weread-skills) and copy your API key (`wrk-...`).
-2. Either set `WEREAD_API_KEY` in `.env.local` (see `.env.example`) or save the key on **Settings**.
-3. Open **Settings** and click **Sync now** to pull shelf, stats, highlights, and recommendations.
+---
 
-Without a key, the app keeps using mock data for layout and development.
+## 当前进度
 
-## Run Locally
+### ✅ 已具备
 
-Requirements:
+- Next.js App Router 全栈骨架
+- 总览、书架、统计、划线笔记、发现、书籍详情、设置等页面
+- WeRead Skill 同步适配（内存缓存，可回退 Mock）
+- 基于 [neobrutalism-components](https://github.com/ekmas/neobrutalism-components) 的 UI 包装层
+- 内部 Route Handlers：`/api/dashboard`、`/api/bookshelf`、`/api/stats` 等
 
-- `Node.js 24+`
-- `npm 11+`
+### 🚧 规划中
 
-Install dependencies (also clones `neobrutalism-components-local/` via `postinstall`):
+- PostgreSQL 持久化与同步快照
+- 核心聚合逻辑的自动化测试
+- 导出 / 周报月报等复盘能力
+
+---
+
+## 技术栈
+
+| 层级 | 选型 |
+| --- | --- |
+| 框架 | Next.js 16 · App Router |
+| UI | React 19 · TypeScript |
+| 样式 | Tailwind CSS v4 · CSS Variables |
+| 图表 | Recharts |
+| 组件基座 | Radix UI · neobrutalism-components（本地克隆） |
+| 测试 | Vitest（已配置，用例持续补充） |
+
+架构细节见 [docs/technical-architecture.md](docs/technical-architecture.md)。
+
+---
+
+## 快速开始
+
+### 环境要求
+
+- **Node.js** `24+`
+- **npm** `11+`
+- 能访问 GitHub（`postinstall` 会浅克隆 UI 组件库）
+
+### 安装与启动
 
 ```bash
-npm install
+git clone <你的仓库地址>
+cd WeReadAura
+npm install          # 同时拉取 neobrutalism-components-local/
 cp .env.example .env.local
+npm run dev
 ```
 
-If the UI library clone is missing, run:
+浏览器打开 [http://localhost:3000](http://localhost:3000)。
+
+若 UI 库目录缺失，可手动执行：
 
 ```bash
 npm run setup:neobrutalism
 ```
 
-Start the dev server:
+### 接入微信读书数据
+
+1. 登录 [微信读书 Skills](https://weread.qq.com/r/weread-skills)，复制 API Key（`wrk-...`）。
+2. 写入 `.env.local` 的 `WEREAD_API_KEY`，或在应用内 **设置** 页保存。
+3. 点击 **立即同步**，拉取书架、统计、划线与推荐。
+
+未配置密钥时，全站使用 `src/lib/mock-data.ts` 中的示例数据。
+
+### 常用命令
 
 ```bash
-npm run dev
+npm run lint      # ESLint
+npm run build     # 生产构建
+npm run start     # 生产启动
+npm run test      # Vitest 单次运行
 ```
 
-Open:
+---
 
-- [http://localhost:3000](http://localhost:3000)
-
-Useful commands:
-
-```bash
-npm run lint
-npm run build
-npm run start
-```
-
-## Project Structure
+## 项目结构
 
 ```text
 WeReadAura/
-  docs/                              Product, design, and architecture docs
-  neobrutalism-components-local/   Local clone of ekmas/neobrutalism-components (gitignored)
-  scripts/                           setup-neobrutalism.mjs
-  src/
-    app/                             App Router pages and API routes
-    components/                      Wrappers + layout + feature components
-    lib/                             Types, formatters, cn(), mock data
-    server/                          WeRead adapter, sync, reading-data services
-    styles/                          neobrutalism theme mapped to WeReadAura tokens
-  AGENTS.md                          Project engineering rules
-  README.md                          Project overview and onboarding
+├── docs/                              # 产品、视觉、架构文档
+├── neobrutalism-components-local/     # UI 库本地克隆（gitignore，不入库）
+├── scripts/setup-neobrutalism.mjs     # 安装时克隆 neobrutalism-components
+├── src/
+│   ├── app/                           # 页面与 API Routes
+│   ├── components/                    # UI 包装、布局、业务组件
+│   ├── lib/                           # 类型、Mock、工具函数
+│   ├── server/                        # WeRead 适配、同步、数据服务
+│   └── styles/                        # 主题 token、排版
+├── AGENTS.md                          # 工程协作规则（给人和 AI 看）
+└── README.md                          # 你正在看的文件
 ```
 
-Important paths:
+---
 
-- [src/app/page.tsx](D:\WeReadAura\src\app\page.tsx): dashboard home
-- [src/app/bookshelf/page.tsx](D:\WeReadAura\src\app\bookshelf\page.tsx): bookshelf view
-- [src/app/stats/page.tsx](D:\WeReadAura\src\app\stats\page.tsx): reading stats
-- [src/app/notes/page.tsx](D:\WeReadAura\src\app\notes\page.tsx): highlights and notes
-- [src/app/discover/page.tsx](D:\WeReadAura\src\app\discover\page.tsx): search and recommendations
-- [src/app/books/[bookId]/page.tsx](D:\WeReadAura\src\app\books\[bookId]\page.tsx): single-book profile
-- [src/app/settings/page.tsx](D:\WeReadAura\src\app\settings\page.tsx): sync/settings surface
-- [src/lib/mock-data.ts](D:\WeReadAura\src\lib\mock-data.ts): MVP mock dataset
-- [src/app/globals.css](D:\WeReadAura\src\app\globals.css): WeReadAura layout tokens and typography
-- [src/styles/neobrutalism-theme.css](D:\WeReadAura\src\styles\neobrutalism-theme.css): neobrutalism Tailwind theme mapped to project colors
-- [src/components/ui/](D:\WeReadAura\src\components\ui): thin wrappers over `@neo/components/ui/*`
+## 文档索引
 
-## Docs Index
+| 文档 | 说明 |
+| --- | --- |
+| [weread-reading-analytics-prd.md](docs/weread-reading-analytics-prd.md) | 产品需求与范围 |
+| [technical-architecture.md](docs/technical-architecture.md) | 技术方案与分层 |
+| [frontend-visual-style-guide.md](docs/frontend-visual-style-guide.md) | Plain neo-brutalism 视觉规范 |
+| [field-typography-guide.md](docs/field-typography-guide.md) | 字段排版与 `type-*` 用法 |
+| [weread-api-integration.md](docs/weread-api-integration.md) | WeRead 接入说明 |
+| [AGENTS.md](AGENTS.md) | 编码、数据口径与安全约定 |
 
-- Product requirements: [docs/weread-reading-analytics-prd.md](D:\WeReadAura\docs\weread-reading-analytics-prd.md)
-- Frontend visual style guide: [docs/frontend-visual-style-guide.md](D:\WeReadAura\docs\frontend-visual-style-guide.md)
-- Technical architecture: [docs/technical-architecture.md](D:\WeReadAura\docs\technical-architecture.md)
-- Engineering rules: [AGENTS.md](D:\WeReadAura\AGENTS.md)
+---
 
-## MVP Scope
+## 设计说明
 
-The app is mock-first until you connect WeRead:
+界面方向：**朴素、直接、像印刷品** —— 受 Gumroad 首页式 plain neo-brutalism 启发，但色板、字体与业务组件（`MetricCard`、`BookCard` 等）均为 WeReadAura 自有 token。
 
-- Pages and API routes are real
-- With an API key + sync, live WeRead data replaces mocks in memory
-- Without a key, mock data keeps the UI usable offline
+- 纸张感浅底 · 黑色描边 · 无 blur 硬阴影  
+- 字体栈以 `layout.tsx` / `globals.css` 为准（非组件库默认字体）  
+- 禁止 glassmorphism、模板化 SaaS 渐变与「为炫而炫」的 landing 堆砌  
 
-## Design Direction
+---
 
-The UI uses [neobrutalism-components](https://github.com/ekmas/neobrutalism-components) for interactive primitives (`Button`, `Card`, `Badge`, `Input`) via a local gitignored clone and project wrappers in `src/components/ui/`.
+## 隐私与安全
 
-WeReadAura keeps its own:
+- 阅读数据视为**敏感个人信息**；请勿将 API Key 提交到公开仓库。  
+- 日志中避免输出完整笔记正文或令牌。  
+- 本项目**非腾讯/微信读书官方产品**，与微信读书品牌无隶属关系。
 
-- paper-like palette and accent tokens (`--paper`, `--ink`, etc.)
-- typography stack (Source Serif 4 + 方正雅宋; not the library default fonts)
-- layout shells (`Section`, `AppShell`, chart cards)
+---
 
-Reference rules live in [docs/frontend-visual-style-guide.md](D:\WeReadAura\docs\frontend-visual-style-guide.md).
+## 版权与鸣谢
 
-## API Surface
+### 本项目
 
-The MVP currently exposes internal route handlers under `src/app/api`.
+- 仓库代码默认采用 **MIT License**（见 `package.json`；正式分发建议补全根目录 `LICENSE` 文件）。  
+- **WeReadAura** 名称与业务逻辑归本仓库维护者；使用微信读书数据须遵守腾讯相关服务条款。
 
-Available routes:
+### 第三方与灵感来源
 
-- `GET /api/dashboard`
-- `GET /api/bookshelf`
-- `GET /api/stats`
-- `GET /api/notes`
-- `GET /api/books/[bookId]`
-- `GET /api/discover/search`
-- `GET /api/discover/recommendations`
-- `POST /api/sync`
-- `GET /api/settings`
-- `PATCH /api/settings`
+| 对象 | 说明 | 许可 / 关系 |
+| --- | --- | --- |
+| [neobrutalism-components](https://github.com/ekmas/neobrutalism-components) | **ekmas** 出品的 neo-brutalism 基础组件；本项目通过 `neobrutalism-components-local/` 浅克隆，经 `src/components/ui/` 二次包装使用 | [MIT](https://github.com/ekmas/neobrutalism-components/blob/main/LICENSE) |
+| [Radix UI](https://www.radix-ui.com/) | Dialog、Slot 等无障碍原语 | MIT |
+| [Recharts](https://recharts.org/) | 图表渲染 | MIT |
+| [Lucide](https://lucide.dev/) | 图标 | ISC |
+| [Tailwind CSS](https://tailwindcss.com/) | 样式工具链 | MIT |
+| [Next.js](https://nextjs.org/) / [React](https://react.dev/) | 应用框架 | MIT |
+| **微信读书 / WeRead** | Skills API 与阅读数据来源 | 版权归腾讯所有；本项目为独立第三方工具 |
+| **Gumroad** | 首页式 plain、功能优先的版式气质参考 | 设计灵感，无代码拷贝关系 |
 
-Routes read from `src/server/services/reading-data.ts`, which serves synced WeRead data or mock fallbacks.
+安装 `npm install` 时执行的 `scripts/setup-neobrutalism.mjs` 会从 GitHub 拉取 **ekmas/neobrutalism-components**；感谢作者开源维护。
 
-## Next Steps
+如对某一依赖的署名或许可有疑问，欢迎提 issue 指正。
 
-1. Add PostgreSQL persistence and sync snapshots.
-2. Add tests for transform and analytics logic.
-3. Wire interactive search/filter UI to the existing API query params.
+---
 
-## Notes
+## 参与与反馈
 
-- The repository may contain local build output like `.next/` from recent verification runs.
-- Generated output and dependencies are ignored by `.gitignore`.
+- 先读 [AGENTS.md](AGENTS.md) 与 `docs/`，再动刀，保持数据口径一致。  
+- Bug、想法、复盘场景欢迎开 Issue / PR。  
+- **Vibe 可以松，统计不能糊。**
+
+---
+
+<p align="center">
+  <sub>Made with 📖 and good vibes · 非官方 · 仅供个人阅读分析</sub>
+</p>

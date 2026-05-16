@@ -67,7 +67,7 @@ export function HighlightDetailDialog({ item, open, onOpenChange }: HighlightDet
 
         <div
           id="highlight-detail-body"
-          className="min-h-0 flex-1 overflow-y-auto bg-[var(--paper)]"
+          className="scrollbar min-h-0 flex-1 overflow-y-auto bg-[var(--paper)]"
         >
           <div className="mx-auto flex min-h-full w-full max-w-3xl flex-col justify-center px-[clamp(1rem,4vw,2rem)] py-[clamp(1.5rem,5vw,3rem)]">
             <blockquote className="type-quote-display font-quote border-l-4 border-[var(--ink)] pl-6">

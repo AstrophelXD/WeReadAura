@@ -1,0 +1,36 @@
+/* Neo-brutalism page scrollbar — from neobrutalism-components-local/src/styling/globals.css */
+
+body,
+.scrollbar {
+  --sb-track-color: var(--white);
+  --sb-thumb-color: var(--ink);
+}
+
+body::-webkit-scrollbar {
+  width: 20px;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 16px;
+}
+
+body::-webkit-scrollbar-track,
+.scrollbar::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+}
+
+body::-webkit-scrollbar-track {
+  border-left: 4px solid var(--ink);
+}
+
+body::-webkit-scrollbar-thumb,
+.scrollbar::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  body,
+  .scrollbar {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+  }
+}

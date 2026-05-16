@@ -3,6 +3,8 @@
 @import "../styles/neobrutalism-theme.css";
 @import "../styles/typography.css";
 @import "../styles/neo-interactive.css";
+@import "../styles/marquee.css";
+@import "../styles/scrollbar.css";
 
 /* FangZheng YaSong: 标 / 中 for body, 粗 optional for emphasis. */
 @font-face {
