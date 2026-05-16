@@ -47,11 +47,12 @@ export class SkillWeReadGateway implements WeReadGateway {
     });
   }
 
-  getMyReviews(context: GatewayContext, bookId: string) {
+  getMyReviews(context: GatewayContext, bookId: string, synckey = 0, count = 20) {
     return withKey<ExternalReviewListResponse>(context, {
       api_name: "/review/list/mine",
       bookid: bookId,
-      count: 20,
+      synckey,
+      count,
     });
   }
 

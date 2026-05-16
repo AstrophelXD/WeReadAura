@@ -1,11 +1,17 @@
 import type { SyncSnapshot } from "@/server/cache/sync-cache";
 import type { GatewayContext, WeReadGateway } from "@/server/adapters/weread/gateway";
 import {
+  buildNotebookMetaMap,
+  buildReadLongestMap,
+  fetchAllNotebookBooks,
+  fetchBookProgressMap,
+  pickBooksNeedingProgressFetch,
+} from "@/server/services/weread-progress";
+import {
   buildCategoryDistribution,
   buildDashboardHero,
   buildMetricsFromReadData,
   buildTrendFromReadData,
-  notebookCounts,
   transformBookmarkHighlight,
   transformRecommendation,
   transformReviewHighlight,
@@ -13,7 +19,6 @@ import {
   transformShelfBook,
 } from "@/server/services/weread-transform";
 
-const PROGRESS_SAMPLE_LIMIT = 12;
 const HIGHLIGHT_BOOK_LIMIT = 3;
 
 function formatSyncTimestamp(date: Date): string {
@@ -25,23 +30,6 @@ function formatSyncTimestamp(date: Date): string {
     minute: "2-digit",
     hour12: false,
   });
-}
-
-async function fetchProgressMap(gateway: WeReadGateway, context: GatewayContext, bookIds: string[]) {
-  const progressMap = new Map<string, Awaited<ReturnType<WeReadGateway["getBookProgress"]>>>();
-
-  await Promise.all(
-    bookIds.map(async (bookId) => {
-      try {
-        const progress = await gateway.getBookProgress(context, bookId);
-        progressMap.set(bookId, progress);
-      } catch {
-        progressMap.set(bookId, { bookId });
-      }
-    }),
-  );
-
-  return progressMap;
 }
 
 async function fetchRecentHighlights(
@@ -91,34 +79,34 @@ export async function syncFromWeRead(
   gateway: WeReadGateway,
   context: GatewayContext,
 ): Promise<SyncSnapshot> {
-  const [shelf, monthlyStats, overallStats, notebooks, recommendations] = await Promise.all([
+  const [shelf, monthlyStats, overallStats, notebookBooks, recommendations] = await Promise.all([
     gateway.getBookshelf(context),
     gateway.getReadingStats(context, "monthly"),
     gateway.getReadingStats(context, "overall"),
-    gateway.getNotebooks(context, 50),
+    fetchAllNotebookBooks(gateway, context),
     gateway.getRecommendations(context, 12),
   ]);
 
-  const noteCountByBook = new Map(
-    (notebooks.books ?? []).map((item) => [item.bookId, notebookCounts(item)]),
-  );
-
+  const notebookMetaByBook = buildNotebookMetaMap(notebookBooks);
   const shelfBooks = shelf.books ?? [];
-  const progressIds = shelfBooks.slice(0, PROGRESS_SAMPLE_LIMIT).map((book) => book.bookId);
-  const progressMap = await fetchProgressMap(gateway, context, progressIds);
+
+  const progressIds = pickBooksNeedingProgressFetch(shelfBooks, notebookMetaByBook);
+  const progressMap = await fetchBookProgressMap(gateway, context, progressIds);
+  const readLongestByBook = buildReadLongestMap(overallStats.readLongest);
 
   const books = [
     ...shelfBooks.map((item) =>
       transformShelfBook(
         item,
         progressMap.get(item.bookId),
-        noteCountByBook.get(item.bookId),
+        notebookMetaByBook.get(item.bookId),
+        readLongestByBook.get(item.bookId),
       ),
     ),
     ...(shelf.albums ?? []).map(transformShelfAlbum),
   ];
 
-  const highlights = await fetchRecentHighlights(gateway, context, notebooks.books ?? []);
+  const highlights = await fetchRecentHighlights(gateway, context, notebookBooks);
 
   const syncedAt = formatSyncTimestamp(new Date());
   const hero = buildDashboardHero(books.length);

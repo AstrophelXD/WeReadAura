@@ -23,7 +23,12 @@ export interface WeReadGateway {
   ): Promise<ExternalReadDataDetail>;
   getNotebooks(context: GatewayContext, count?: number, lastSort?: number): Promise<ExternalNotebooksResponse>;
   getBookmarkList(context: GatewayContext, bookId: string): Promise<ExternalBookmarkListResponse>;
-  getMyReviews(context: GatewayContext, bookId: string): Promise<ExternalReviewListResponse>;
+  getMyReviews(
+    context: GatewayContext,
+    bookId: string,
+    synckey?: number,
+    count?: number,
+  ): Promise<ExternalReviewListResponse>;
   getBookInfo(context: GatewayContext, bookId: string): Promise<ExternalBookInfo>;
   getBookProgress(context: GatewayContext, bookId: string): Promise<ExternalBookProgress>;
   searchBooks(context: GatewayContext, keyword: string, count?: number): Promise<ExternalSearchResponse>;

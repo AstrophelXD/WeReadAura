@@ -61,6 +61,12 @@ export default async function BookDetailPage({
         </Card>
       </div>
       <div className="mt-8">
+        <p className="mb-4 text-sm font-semibold">
+          共 {bookHighlights.length} 条划线与想法
+          {bookHighlights.length < book.highlights + book.notes
+            ? `（笔记本统计：${book.highlights} 条划线、${book.notes} 条想法）`
+            : null}
+        </p>
         <HighlightList items={bookHighlights} />
       </div>
     </Section>

@@ -1,6 +1,8 @@
+import { applyBookshelfQuery, type BookshelfQuery } from "@/lib/bookshelf-query";
+import { applyNotesQuery, type NotesQuery } from "@/lib/notes-query";
 import { markReadingDataVolatile } from "@/lib/server-cache";
 import { books as mockBooks, dashboardData, findBook, findHighlightsForBook } from "@/lib/mock-data";
-import type { Book, DashboardData, HighlightItem, RecommendationItem } from "@/lib/types";
+import type { Book, DashboardData, HighlightItem, RecommendationItem, StoreSearchHit } from "@/lib/types";
 import { getWeReadApiKey } from "@/server/auth/credentials";
 import { createGatewayContext, getWeReadGateway, isValidWeReadApiKey } from "@/server/adapters/weread/get-gateway";
 import {
@@ -8,14 +10,9 @@ import {
   setSyncSnapshot,
   snapshotToDashboard,
 } from "@/server/cache/sync-cache";
+import { fetchLiveBookDetail } from "@/server/services/fetch-live-book-detail";
 import { syncFromWeRead } from "@/server/services/weread-sync";
-import {
-  transformHighlightsFromBookmarkList,
-  transformRecommendation,
-  transformReviewHighlight,
-  transformSearchResult,
-  transformShelfBook,
-} from "@/server/services/weread-transform";
+import { transformRecommendation, transformSearchResult } from "@/server/services/weread-transform";
 
 export type DataMode = "live" | "mock";
 
@@ -88,22 +85,30 @@ export async function getDashboardData(): Promise<DashboardData> {
   return dashboardData;
 }
 
-export async function getBookshelfItems(query?: string): Promise<{ items: Book[]; total: number }> {
-  markReadingDataVolatile();
+function getAllBookshelfBooks(): Book[] {
   const books = getLiveBooks() ?? mockBooks;
-  const unique = Array.from(new Map(books.map((book) => [book.id, book])).values());
-  const normalized = query?.trim().toLowerCase();
+  return Array.from(new Map(books.map((book) => [book.id, book])).values());
+}
 
-  const items = normalized
-    ? unique.filter(
-        (book) =>
-          book.title.toLowerCase().includes(normalized) ||
-          book.author.toLowerCase().includes(normalized) ||
-          book.category.toLowerCase().includes(normalized),
-      )
-    : unique;
+function getShelfBookIdSet(): Set<string> {
+  const ids = getSyncSnapshot()?.books.map((book) => book.id) ?? mockBooks.map((book) => book.id);
+  return new Set(ids);
+}
 
-  return { items, total: items.length };
+export async function getBookshelfItems(
+  query: BookshelfQuery = {},
+): Promise<{ items: Book[]; total: number; totalAll: number }> {
+  markReadingDataVolatile();
+  const all = getAllBookshelfBooks();
+  const items = applyBookshelfQuery(all, query);
+  return { items, total: items.length, totalAll: all.length };
+}
+
+export async function getBookshelfPageData(query: BookshelfQuery = {}) {
+  markReadingDataVolatile();
+  const all = getAllBookshelfBooks();
+  const items = applyBookshelfQuery(all, query);
+  return { all, items, total: items.length, totalAll: all.length };
 }
 
 export async function getStatsPayload() {
@@ -116,22 +121,26 @@ export async function getStatsPayload() {
   };
 }
 
-export async function getNotesItems(query?: string): Promise<{ items: HighlightItem[]; total: number }> {
+export async function getAllNotesItems(): Promise<HighlightItem[]> {
   markReadingDataVolatile();
   const snapshot = getSyncSnapshot();
-  const items = snapshot?.highlights ?? dashboardData.recentHighlights;
-  const normalized = query?.trim().toLowerCase();
+  return snapshot?.highlights ?? dashboardData.recentHighlights;
+}
 
-  const filtered = normalized
-    ? items.filter(
-        (item) =>
-          item.bookTitle.toLowerCase().includes(normalized) ||
-          item.quote.toLowerCase().includes(normalized) ||
-          item.note?.toLowerCase().includes(normalized),
-      )
-    : items;
+export async function getNotesItems(
+  query: NotesQuery = {},
+): Promise<{ items: HighlightItem[]; total: number; totalAll: number }> {
+  markReadingDataVolatile();
+  const all = await getAllNotesItems();
+  const items = applyNotesQuery(all, query);
+  return { items, total: items.length, totalAll: all.length };
+}
 
-  return { items: filtered, total: filtered.length };
+export async function getNotesPageData(query: NotesQuery = {}) {
+  markReadingDataVolatile();
+  const all = await getAllNotesItems();
+  const items = applyNotesQuery(all, query);
+  return { all, items, total: items.length, totalAll: all.length };
 }
 
 export async function getRecommendations(): Promise<RecommendationItem[]> {
@@ -146,42 +155,23 @@ export async function getBookDetail(bookId: string) {
   const cachedBook = snapshot?.books.find((book) => book.id === bookId);
   const mockBook = findBook(bookId);
 
-  if (!cachedBook && !mockBook) {
-    const apiKey = await getWeReadApiKey();
-    const gateway = getWeReadGateway(apiKey);
-    if (gateway && apiKey && !bookId.startsWith("album-")) {
-      try {
-        const context = createGatewayContext(apiKey);
-        const [info, progress, bookmarkList, reviews] = await Promise.all([
-          gateway.getBookInfo(context, bookId),
-          gateway.getBookProgress(context, bookId),
-          gateway.getBookmarkList(context, bookId),
-          gateway.getMyReviews(context, bookId),
-        ]);
+  const apiKey = await getWeReadApiKey();
+  const gateway = getWeReadGateway(apiKey);
 
-        const book = transformShelfBook(
-          {
-            bookId: info.bookId,
-            title: info.title,
-            author: info.author,
-            category: info.category,
-          },
-          progress,
-        );
-        book.summary = info.intro?.trim().slice(0, 200) || book.summary;
-
-        const highlights = [
-          ...transformHighlightsFromBookmarkList(bookmarkList),
-          ...(reviews.reviews ?? []).map((review) =>
-            transformReviewHighlight(review, bookId, info.title),
-          ),
-        ];
-
-        return { book, highlights };
-      } catch {
-        return null;
-      }
+  if (gateway && apiKey && !bookId.startsWith("album-")) {
+    try {
+      return await fetchLiveBookDetail(
+        gateway,
+        createGatewayContext(apiKey),
+        bookId,
+        cachedBook ?? undefined,
+      );
+    } catch {
+      // fall back to cached/mock below
     }
+  }
+
+  if (!cachedBook && !mockBook) {
     return null;
   }
 
@@ -193,8 +183,16 @@ export async function getBookDetail(bookId: string) {
   return { book, highlights };
 }
 
-export async function searchStoreBooks(query?: string): Promise<{ items: Book[]; total: number }> {
+function withShelfFlag(book: Book, shelfIds: Set<string>): StoreSearchHit {
+  return { book, onShelf: shelfIds.has(book.id) };
+}
+
+export async function searchStoreBooks(
+  query?: string,
+): Promise<{ items: StoreSearchHit[]; total: number }> {
+  markReadingDataVolatile();
   const normalized = query?.trim();
+  const shelfIds = getShelfBookIdSet();
   const apiKey = await getWeReadApiKey();
   const gateway = getWeReadGateway(apiKey);
 
@@ -204,33 +202,26 @@ export async function searchStoreBooks(query?: string): Promise<{ items: Book[];
       const books = (results.results ?? []).flatMap((group) =>
         (group.books ?? []).map(transformSearchResult),
       );
-      return { items: books, total: books.length };
+      const items = books.map((book) => withShelfFlag(book, shelfIds));
+      return { items, total: items.length };
     } catch {
-      return getBookshelfItems(normalized);
+      const fallback = await getBookshelfItems({ q: normalized });
+      return {
+        items: fallback.items.map((book) => withShelfFlag(book, shelfIds)),
+        total: fallback.total,
+      };
     }
   }
 
   if (normalized) {
-    return getBookshelfItems(normalized);
+    const fallback = await getBookshelfItems({ q: normalized });
+    return {
+      items: fallback.items.map((book) => withShelfFlag(book, shelfIds)),
+      total: fallback.total,
+    };
   }
 
-  const mockItems = dashboardData.recommendations.map((item) => ({
-    id: item.id,
-    title: item.title,
-    author: item.author,
-    category: item.tag,
-    coverTone: item.coverTone,
-    status: "queued" as const,
-    progress: 0,
-    minutesRead: 0,
-    lastReadAt: "",
-    startedAt: "",
-    highlights: 0,
-    notes: 0,
-    summary: item.reason,
-  }));
-
-  return { items: mockItems, total: mockItems.length };
+  return { items: [], total: 0 };
 }
 
 export async function searchRecommendationsFromGateway(): Promise<RecommendationItem[]> {

@@ -15,6 +15,14 @@ import {
   formatUnixDate,
   pickCoverTone,
 } from "@/lib/formatters";
+import {
+  resolveBookProgress,
+  resolveLastReadAt,
+  resolveReadingSeconds,
+  resolveReadingStatus,
+  resolveStartedAt,
+} from "@/server/services/weread-progress";
+import type { NotebookBookMeta } from "@/server/services/weread-progress";
 import type {
   ExternalBookProgress,
   ExternalBookmark,
@@ -27,20 +35,6 @@ import type {
   ExternalShelfAlbum,
   ExternalShelfBook,
 } from "@/server/adapters/weread/types";
-
-function resolveReadingStatus(
-  finishReading?: number,
-  progress?: number,
-  isStartReading?: number,
-): ReadingStatus {
-  if (finishReading === 1 || progress === 100) {
-    return "finished";
-  }
-  if ((progress && progress > 0) || isStartReading === 1) {
-    return "reading";
-  }
-  return "queued";
-}
 
 function summarizeBook(intro?: string, category?: string): string {
   if (intro?.trim()) {
@@ -55,10 +49,26 @@ function summarizeBook(intro?: string, category?: string): string {
 export function transformShelfBook(
   item: ExternalShelfBook,
   progress?: ExternalBookProgress,
-  noteCounts?: { highlights: number; notes: number },
+  notebookMeta?: NotebookBookMeta,
+  readTimeFallbackSeconds?: number,
 ): Book {
-  const bookProgress = progress?.book?.progress ?? (item.finishReading === 1 ? 100 : 0);
-  const status = resolveReadingStatus(item.finishReading, bookProgress, progress?.book?.isStartReading);
+  const bookProgress = resolveBookProgress({
+    finishReading: item.finishReading,
+    apiProgress: progress?.book?.progress,
+    notebookProgress: notebookMeta?.readingProgress,
+    notebookMarkedFinished: notebookMeta?.markedStatus,
+  });
+  const lastReadAt = resolveLastReadAt(progress?.book?.updateTime, item.readUpdateTime);
+  const highlightCount = notebookMeta?.highlights ?? 0;
+  const noteCount = notebookMeta?.notes ?? 0;
+  const status = resolveReadingStatus({
+    finishReading: item.finishReading,
+    progress: bookProgress,
+    isStartReading: progress?.book?.isStartReading,
+    lastReadAt,
+    highlightCount,
+    noteCount,
+  });
 
   return {
     id: item.bookId,
@@ -68,15 +78,17 @@ export function transformShelfBook(
     coverTone: pickCoverTone(item.bookId),
     status,
     progress: bookProgress,
-    minutesRead: formatDurationMinutes(progress?.book?.recordReadingTime),
-    lastReadAt: formatUnixDate(item.readUpdateTime ?? progress?.book?.updateTime),
-    startedAt: formatUnixDate(item.updateTime),
+    minutesRead: formatDurationMinutes(
+      resolveReadingSeconds(progress?.book, readTimeFallbackSeconds),
+    ),
+    lastReadAt,
+    startedAt: resolveStartedAt(progress?.book),
     finishedAt:
       status === "finished"
         ? formatUnixDate(progress?.book?.finishTime ?? item.readUpdateTime)
         : undefined,
-    highlights: noteCounts?.highlights ?? 0,
-    notes: noteCounts?.notes ?? 0,
+    highlights: highlightCount,
+    notes: noteCount,
     summary: summarizeBook(undefined, item.category),
   };
 }

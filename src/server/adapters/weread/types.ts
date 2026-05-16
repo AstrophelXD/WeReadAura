@@ -43,7 +43,12 @@ export interface ExternalBookProgress {
     chapterUid?: number;
     progress?: number;
     updateTime?: number;
+    /** Cumulative reading time in seconds (preferred when present). */
     recordReadingTime?: number;
+    /** Device-reported reading time in seconds; use when recordReadingTime is 0. */
+    readingTime?: number;
+    /** First time the user opened the book for reading (Unix seconds). */
+    startReadingTime?: number;
     finishTime?: number;
     isStartReading?: number;
   };

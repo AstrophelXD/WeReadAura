@@ -44,6 +44,11 @@ export interface Book {
   summary: string;
 }
 
+export interface StoreSearchHit {
+  book: Book;
+  onShelf: boolean;
+}
+
 export interface RecommendationItem {
   id: string;
   title: string;
