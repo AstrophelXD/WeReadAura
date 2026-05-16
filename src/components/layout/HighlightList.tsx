@@ -8,7 +8,14 @@ import { Card } from "@/components/ui/Card";
 import { highlightKindLabel } from "@/lib/highlight-content";
 import type { HighlightItem } from "@/lib/types";
 
-export function HighlightList({ items }: { items: HighlightItem[] }) {
+type HighlightListProps = {
+  items: HighlightItem[];
+  /** 书籍详情页：省略书名，类型徽章与「点击查看全文」同一行 */
+  variant?: "default" | "book";
+};
+
+export function HighlightList({ items, variant = "default" }: HighlightListProps) {
+  const isBookContext = variant === "book";
   const [activeItem, setActiveItem] = useState<HighlightItem | null>(null);
 
   const openItem = useCallback((item: HighlightItem) => {
@@ -38,13 +45,19 @@ export function HighlightList({ items }: { items: HighlightItem[] }) {
             pressOnHover
             className="text-left"
             onClick={() => openItem(item)}
-            aria-label={`查看${highlightKindLabel(item)}：${item.bookTitle}`}
+            aria-label={
+              isBookContext
+                ? `查看${highlightKindLabel(item)}：${item.chapter}`
+                : `查看${highlightKindLabel(item)}：${item.bookTitle}`
+            }
           >
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="type-label">{item.bookTitle}</p>
-              <Badge tone="white">{highlightKindLabel(item)}</Badge>
-            </div>
-            <p className="type-quote-preview font-quote mt-4 line-clamp-4">
+            {!isBookContext ? (
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="type-label">{item.bookTitle}</p>
+                <Badge tone="white">{highlightKindLabel(item)}</Badge>
+              </div>
+            ) : null}
+            <p className={`type-quote-preview font-quote line-clamp-4 ${isBookContext ? "" : "mt-4"}`}>
               <span aria-hidden>「</span>
               {item.quote}
               <span aria-hidden>」</span>
@@ -53,7 +66,14 @@ export function HighlightList({ items }: { items: HighlightItem[] }) {
             <p className="type-caption mt-4 font-heading">
               {item.chapter} · {item.createdAt}
             </p>
-            <p className="type-caption-muted mt-3">点击查看全文</p>
+            {isBookContext ? (
+              <div className="mt-3 flex items-center justify-between gap-3">
+                <p className="type-caption-muted">点击查看全文</p>
+                <Badge tone="white">{highlightKindLabel(item)}</Badge>
+              </div>
+            ) : (
+              <p className="type-caption-muted mt-3">点击查看全文</p>
+            )}
           </Card>
         ))}
       </div>

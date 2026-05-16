@@ -67,19 +67,21 @@ export function HighlightDetailDialog({ item, open, onOpenChange }: HighlightDet
 
         <div
           id="highlight-detail-body"
-          className="min-h-0 flex-1 overflow-y-auto bg-[var(--paper)] px-[clamp(1rem,4vw,2rem)] py-[clamp(1.5rem,5vw,3rem)]"
+          className="min-h-0 flex-1 overflow-y-auto bg-[var(--paper)]"
         >
-          <blockquote className="type-quote-display font-quote mx-auto max-w-3xl border-l-4 border-[var(--ink)] pl-6">
-            <span aria-hidden>「</span>
-            {item.quote}
-            <span aria-hidden>」</span>
-          </blockquote>
-          {item.note ? (
-            <div className="type-body-lg mx-auto mt-10 max-w-3xl">
-              <p className="type-field-label">想法</p>
-              <p className="mt-3 leading-relaxed">{item.note}</p>
-            </div>
-          ) : null}
+          <div className="mx-auto flex min-h-full w-full max-w-3xl flex-col justify-center px-[clamp(1rem,4vw,2rem)] py-[clamp(1.5rem,5vw,3rem)]">
+            <blockquote className="type-quote-display font-quote border-l-4 border-[var(--ink)] pl-6">
+              <span aria-hidden>「</span>
+              {item.quote}
+              <span aria-hidden>」</span>
+            </blockquote>
+            {item.note ? (
+              <div className="type-body-lg mt-10">
+                <p className="type-field-label">想法</p>
+                <p className="mt-3 leading-relaxed">{item.note}</p>
+              </div>
+            ) : null}
+          </div>
         </div>
       </DialogContentFullscreen>
     </Dialog>

@@ -67,7 +67,7 @@ export default async function BookDetailPage({
         <p className="type-caption mb-4">
           共 {bookHighlights.length} 条（{book.notes} 条想法、{book.highlights} 条划线）
         </p>
-        <HighlightList items={bookHighlights} />
+        <HighlightList items={bookHighlights} variant="book" />
       </div>
     </Section>
   );
