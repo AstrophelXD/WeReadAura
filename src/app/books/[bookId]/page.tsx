@@ -22,11 +22,7 @@ export default async function BookDetailPage({
   const { book, highlights: bookHighlights } = detail;
 
   return (
-    <Section
-      title={book.title}
-      eyebrow="Book profile"
-      description={book.summary}
-    >
+    <Section title={book.title} eyebrow="书籍详情" description={book.summary}>
       <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
         <Card>
           <div className="flex flex-wrap items-center gap-3">
@@ -35,28 +31,28 @@ export default async function BookDetailPage({
           </div>
           <p className="mt-5 text-lg font-semibold">{book.author}</p>
           <p className="mt-6 text-6xl font-bold tracking-[-0.04em]">{book.progress}%</p>
-          <p className="mt-2 text-sm font-semibold uppercase tracking-[0.04em] tracking-[0.08em]">Current progress</p>
+          <p className="mt-2 text-sm font-semibold uppercase tracking-[0.04em]">当前进度</p>
           <div className="mt-6 h-5 rounded-[999px] border-[2px] border-[var(--ink)] bg-[var(--muted)]">
             <div className="h-full rounded-[999px] bg-[var(--ink)]" style={{ width: `${book.progress}%` }} />
           </div>
         </Card>
         <Card>
-          <p className="text-sm font-semibold uppercase tracking-[0.04em] tracking-[0.08em]">Reading trail</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.04em]">阅读轨迹</p>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.04em]">Started</p>
-              <p className="mt-2 text-xl font-bold">{book.startedAt}</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.04em]">开始阅读</p>
+              <p className="mt-2 text-xl font-bold">{book.startedAt || "—"}</p>
             </div>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.04em]">Last read</p>
-              <p className="mt-2 text-xl font-bold">{book.lastReadAt}</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.04em]">最近阅读</p>
+              <p className="mt-2 text-xl font-bold">{book.lastReadAt || "—"}</p>
             </div>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.04em]">Minutes read</p>
-              <p className="mt-2 text-xl font-bold">{book.minutesRead}</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.04em]">阅读时长</p>
+              <p className="mt-2 text-xl font-bold">{book.minutesRead} 分钟</p>
             </div>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.04em]">Notes / highlights</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.04em]">想法 / 划线</p>
               <p className="mt-2 text-xl font-bold">
                 {book.notes} / {book.highlights}
               </p>

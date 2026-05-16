@@ -2,6 +2,10 @@ import type { DistributionPoint } from "@/lib/types";
 import { formatPercent } from "@/lib/utils";
 
 export function DistributionChart({ data }: { data: DistributionPoint[] }) {
+  if (data.length === 0) {
+    return <p className="font-semibold">暂无分类数据，请先同步微信读书统计。</p>;
+  }
+
   return (
     <div className="space-y-4">
       {data.map((item) => (

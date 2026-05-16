@@ -36,6 +36,7 @@ Desktop.ini
 .turbo/
 tmp/
 temp/
+.data/
 
 # local weread skill download artifacts
 weread-skills.zip

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/Button";
@@ -12,12 +13,17 @@ interface SettingsPanelProps {
   initialHasApiKey: boolean;
 }
 
+function modeLabel(mode: string): string {
+  return mode === "live" ? "已同步" : "演示 / 待同步";
+}
+
 export function SettingsPanel({
   initialMode,
   initialSource,
   initialLastSyncedAt,
   initialHasApiKey,
 }: SettingsPanelProps) {
+  const router = useRouter();
   const [mode, setMode] = useState(initialMode);
   const [source, setSource] = useState(initialSource);
   const [lastSyncedAt, setLastSyncedAt] = useState(initialLastSyncedAt);
@@ -37,17 +43,21 @@ export function SettingsPanel({
       });
       const payload = (await response.json()) as { status: string; message?: string; maskedKey?: string };
       if (!response.ok) {
-        setMessage(payload.message ?? "Failed to save API key.");
+        setMessage(payload.message ?? "保存 API Key 失败。");
         return;
       }
       setHasApiKey(true);
       setMode("mock");
-      setSource("WeRead Skill Gateway (not synced yet)");
-      setLastSyncedAt("Never");
+      setSource("微信读书 Skill（尚未同步）");
+      setLastSyncedAt("从未同步");
       setApiKey("");
-      setMessage(payload.maskedKey ? `Saved ${payload.maskedKey}. Run sync to load live data.` : "API key saved.");
+      setMessage(
+        payload.maskedKey
+          ? `已保存 ${payload.maskedKey}，请点击「立即同步」加载真实数据。`
+          : "API Key 已保存。",
+      );
     } catch {
-      setMessage("Network error while saving API key.");
+      setMessage("保存时网络出错，请稍后重试。");
     } finally {
       setBusy(false);
     }
@@ -64,11 +74,12 @@ export function SettingsPanel({
       });
       setHasApiKey(false);
       setMode("mock");
-      setSource("Mock WeRead Gateway");
-      setLastSyncedAt("Not connected");
-      setMessage("API key removed. Mock data is active again.");
+      setSource("演示数据");
+      setLastSyncedAt("未连接");
+      setMessage("已清除 API Key，页面恢复为演示数据。");
+      router.refresh();
     } catch {
-      setMessage("Network error while clearing API key.");
+      setMessage("清除时网络出错，请稍后重试。");
     } finally {
       setBusy(false);
     }
@@ -86,19 +97,21 @@ export function SettingsPanel({
         bookCount?: number;
       };
       if (!response.ok) {
-        setMessage(payload.message ?? "Sync failed.");
+        setMessage(payload.message ?? "同步失败，请检查 API Key 是否有效。");
         return;
       }
       setMode("live");
-      setSource("WeRead Skill Gateway");
-      setLastSyncedAt(payload.syncedAt ?? "Just now");
+      setSource("微信读书 Skill");
+      setLastSyncedAt(payload.syncedAt ?? "刚刚");
       setMessage(
         payload.bookCount !== undefined
-          ? `Synced ${payload.bookCount} shelf entries from WeRead.`
-          : "Sync completed.",
+          ? `同步完成：已拉取 ${payload.bookCount} 个书架条目，正在跳转总览…`
+          : "同步完成，正在跳转总览…",
       );
+      router.refresh();
+      router.push("/");
     } catch {
-      setMessage("Network error while syncing.");
+      setMessage("同步时网络出错，请稍后重试。");
     } finally {
       setBusy(false);
     }
@@ -107,46 +120,46 @@ export function SettingsPanel({
   return (
     <div className="grid gap-5 lg:grid-cols-3">
       <Card>
-        <p className="text-sm font-semibold uppercase tracking-[0.06em]">Gateway</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.06em]">数据源</p>
         <p className="mt-3 text-2xl font-bold">{source}</p>
         <p className="mt-3 font-medium leading-6">
-          Mode: <strong>{mode}</strong>. Connect your account with a WeRead API key from the official Skill page.
+          当前状态：<strong>{modeLabel(mode)}</strong>。请使用微信读书官方 Skill 页面获取 API Key。
         </p>
         <p className="mt-3 text-sm font-medium">
           <a className="underline" href="https://weread.qq.com/r/weread-skills" target="_blank" rel="noreferrer">
-            Get API Key on WeRead
+            前往微信读书获取 API Key
           </a>
         </p>
       </Card>
 
       <Card>
-        <p className="text-sm font-semibold uppercase tracking-[0.06em]">Last sync</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.06em]">上次同步</p>
         <p className="mt-3 text-2xl font-bold">{lastSyncedAt}</p>
         <p className="mt-3 font-medium leading-6">
           {hasApiKey
-            ? "Run sync after saving your key to pull shelf, stats, highlights, and recommendations."
-            : "Save an API key first, then sync to replace mock data."}
+            ? "保存密钥后点击同步，将拉取书架、统计、划线与推荐。"
+            : "请先保存 API Key，或在 .env.local 中配置 WEREAD_API_KEY。"}
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <Button type="button" onClick={runSync} disabled={busy || !hasApiKey}>
-            Sync now
+            立即同步
           </Button>
           {hasApiKey ? (
             <Button type="button" secondary onClick={clearApiKey} disabled={busy}>
-              Clear key
+              清除密钥
             </Button>
           ) : null}
         </div>
       </Card>
 
       <Card className="neo-paper">
-        <p className="text-sm font-semibold uppercase tracking-[0.06em]">API key</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.06em]">API Key</p>
         <p className="mt-3 font-medium leading-6">
-          Keys stay in an HTTP-only cookie on this device. You can also set <code>WEREAD_API_KEY</code> in{" "}
-          <code>.env.local</code>.
+          密钥保存在本机 HTTP-only Cookie，不会写入代码仓库。也可在 <code>.env.local</code> 中设置{" "}
+          <code>WEREAD_API_KEY</code>。
         </p>
         <label className="mt-4 block">
-          <span className="sr-only">WeRead API key</span>
+          <span className="sr-only">微信读书 API Key</span>
           <input
             className="neo-input mt-2 w-full"
             type="password"
@@ -158,10 +171,10 @@ export function SettingsPanel({
         </label>
         <div className="mt-5 flex flex-wrap gap-3">
           <Button type="button" onClick={saveApiKey} disabled={busy || apiKey.trim().length === 0}>
-            Save key
+            保存密钥
           </Button>
           <Button href="/" secondary>
-            Back to dashboard
+            返回总览
           </Button>
         </div>
         {message ? <p className="mt-4 font-semibold leading-6">{message}</p> : null}

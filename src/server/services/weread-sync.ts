@@ -125,7 +125,7 @@ export async function syncFromWeRead(
 
   return {
     syncedAt,
-    source: "WeRead Skill Gateway",
+    source: "微信读书 Skill",
     books,
     highlights,
     recommendations: (recommendations.books ?? []).map(transformRecommendation),

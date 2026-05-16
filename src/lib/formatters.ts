@@ -26,26 +26,26 @@ export function formatDurationMinutes(seconds?: number): number {
 
 export function formatDurationLabel(seconds?: number): string {
   if (!seconds || seconds <= 0) {
-    return "0 min";
+    return "0 分钟";
   }
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.round((seconds % 3600) / 60);
   if (hours === 0) {
-    return `${minutes} min`;
+    return `${minutes} 分钟`;
   }
   if (minutes === 0) {
-    return `${hours} hr`;
+    return `${hours} 小时`;
   }
-  return `${hours} hr ${minutes} min`;
+  return `${hours} 小时 ${minutes} 分钟`;
 }
 
 export function formatPercentChange(value?: number): string {
   if (value === undefined || Number.isNaN(value)) {
-    return "No comparison";
+    return "暂无环比";
   }
   const percent = Math.round(value * 100);
   if (percent === 0) {
-    return "Flat vs last period";
+    return "与上期持平";
   }
-  return percent > 0 ? `Up ${percent}% vs last period` : `Down ${Math.abs(percent)}% vs last period`;
+  return percent > 0 ? `较上期 +${percent}%` : `较上期 ${percent}%`;
 }

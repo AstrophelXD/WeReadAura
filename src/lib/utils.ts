@@ -4,14 +4,14 @@ export function formatPercent(value: number): string {
 
 export function statusLabel(status: "reading" | "finished" | "queued"): string {
   if (status === "reading") {
-    return "In progress";
+    return "在读";
   }
 
   if (status === "finished") {
-    return "Finished";
+    return "已读完";
   }
 
-  return "Queued";
+  return "想读";
 }
 
 export function toneClass(

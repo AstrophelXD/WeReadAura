@@ -28,14 +28,14 @@ export function BookCard({ book }: { book: Book }) {
           />
         </div>
         <div className="grid grid-cols-2 gap-3 text-sm font-semibold">
-          <p>{book.minutesRead} min read</p>
-          <p>{book.highlights} highlights</p>
-          <p>{book.notes} notes</p>
-          <p>Last: {book.lastReadAt}</p>
+          <p>已读 {book.minutesRead} 分钟</p>
+          <p>{book.highlights} 条划线</p>
+          <p>{book.notes} 条想法</p>
+          <p>最近：{book.lastReadAt || "—"}</p>
         </div>
       </div>
       <Link className="mt-6 inline-flex font-semibold underline underline-offset-4" href={`/books/${book.id}`}>
-        Open book profile
+        查看书籍详情
       </Link>
     </Card>
   );

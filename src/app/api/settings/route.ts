@@ -40,12 +40,12 @@ export async function PATCH(request: NextRequest) {
 
   const apiKey = body.apiKey?.trim();
   if (!apiKey) {
-    return NextResponse.json({ status: "error", message: "API key is required." }, { status: 400 });
+    return NextResponse.json({ status: "error", message: "请填写 API Key。" }, { status: 400 });
   }
 
   if (!apiKey.startsWith("wrk-")) {
     return NextResponse.json(
-      { status: "error", message: "WeRead API keys start with wrk-." },
+      { status: "error", message: "微信读书 API Key 以 wrk- 开头。" },
       { status: 400 },
     );
   }

@@ -14,7 +14,7 @@ export function RecommendationCard({ item }: { item: RecommendationItem }) {
       </div>
       <p className="mt-5 font-medium leading-6">{item.reason}</p>
       <button className="neo-btn mt-6" type="button">
-        Add to queue
+        加入想读
       </button>
     </Card>
   );

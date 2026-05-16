@@ -1,3 +1,4 @@
+import { markReadingDataVolatile } from "@/lib/server-cache";
 import { books as mockBooks, dashboardData, findBook, findHighlightsForBook } from "@/lib/mock-data";
 import type { Book, DashboardData, HighlightItem, RecommendationItem } from "@/lib/types";
 import { getWeReadApiKey } from "@/server/auth/credentials";
@@ -38,8 +39,8 @@ function liveSourceInfo(snapshot = getSyncSnapshot()): DataSourceInfo {
   if (!snapshot) {
     return {
       mode: "mock",
-      source: "WeRead Skill Gateway (not synced yet)",
-      lastSyncedAt: "Never",
+      source: "微信读书 Skill（尚未同步）",
+      lastSyncedAt: "从未同步",
       hasApiKey: true,
     };
   }
@@ -53,6 +54,7 @@ function liveSourceInfo(snapshot = getSyncSnapshot()): DataSourceInfo {
 }
 
 export async function getDataSourceInfo(): Promise<DataSourceInfo> {
+  markReadingDataVolatile();
   const apiKey = await getWeReadApiKey();
   if (!isValidWeReadApiKey(apiKey)) {
     return mockSourceInfo();
@@ -65,7 +67,7 @@ export async function runSync(): Promise<{ snapshot: Awaited<ReturnType<typeof s
   const gateway = getWeReadGateway(apiKey);
 
   if (!gateway || !apiKey) {
-    throw new Error("WeRead API key is missing. Add WEREAD_API_KEY or save one in Settings.");
+    throw new Error("未配置微信读书 API Key。请在 .env.local 设置 WEREAD_API_KEY，或在设置页保存。");
   }
 
   const snapshot = await syncFromWeRead(gateway, createGatewayContext(apiKey));
@@ -78,6 +80,7 @@ function getLiveBooks(): Book[] | null {
 }
 
 export async function getDashboardData(): Promise<DashboardData> {
+  markReadingDataVolatile();
   const snapshot = getSyncSnapshot();
   if (snapshot) {
     return snapshotToDashboard(snapshot);
@@ -86,6 +89,7 @@ export async function getDashboardData(): Promise<DashboardData> {
 }
 
 export async function getBookshelfItems(query?: string): Promise<{ items: Book[]; total: number }> {
+  markReadingDataVolatile();
   const books = getLiveBooks() ?? mockBooks;
   const unique = Array.from(new Map(books.map((book) => [book.id, book])).values());
   const normalized = query?.trim().toLowerCase();
@@ -103,6 +107,7 @@ export async function getBookshelfItems(query?: string): Promise<{ items: Book[]
 }
 
 export async function getStatsPayload() {
+  markReadingDataVolatile();
   const dashboard = await getDashboardData();
   return {
     metrics: dashboard.metrics,
@@ -112,6 +117,7 @@ export async function getStatsPayload() {
 }
 
 export async function getNotesItems(query?: string): Promise<{ items: HighlightItem[]; total: number }> {
+  markReadingDataVolatile();
   const snapshot = getSyncSnapshot();
   const items = snapshot?.highlights ?? dashboardData.recentHighlights;
   const normalized = query?.trim().toLowerCase();
@@ -129,11 +135,13 @@ export async function getNotesItems(query?: string): Promise<{ items: HighlightI
 }
 
 export async function getRecommendations(): Promise<RecommendationItem[]> {
+  markReadingDataVolatile();
   const snapshot = getSyncSnapshot();
   return snapshot?.recommendations ?? dashboardData.recommendations;
 }
 
 export async function getBookDetail(bookId: string) {
+  markReadingDataVolatile();
   const snapshot = getSyncSnapshot();
   const cachedBook = snapshot?.books.find((book) => book.id === bookId);
   const mockBook = findBook(bookId);

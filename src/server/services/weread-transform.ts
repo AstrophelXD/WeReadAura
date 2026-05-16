@@ -47,9 +47,9 @@ function summarizeBook(intro?: string, category?: string): string {
     return intro.trim().slice(0, 140);
   }
   if (category?.trim()) {
-    return `Shelf category: ${category.trim()}.`;
+    return `书架分类：${category.trim()}。`;
   }
-  return "Synced from your WeRead shelf.";
+  return "来自你的微信读书书架。";
 }
 
 export function transformShelfBook(
@@ -64,7 +64,7 @@ export function transformShelfBook(
     id: item.bookId,
     title: item.title,
     author: item.author,
-    category: item.category?.trim() || "Uncategorized",
+    category: item.category?.trim() || "未分类",
     coverTone: pickCoverTone(item.bookId),
     status,
     progress: bookProgress,
@@ -88,8 +88,8 @@ export function transformShelfAlbum(item: ExternalShelfAlbum): Book {
   return {
     id: `album-${album.albumId}`,
     title: album.name,
-    author: album.authorName?.trim() || "WeRead Album",
-    category: "Audiobook",
+    author: album.authorName?.trim() || "微信读书",
+    category: "有声书",
     coverTone: pickCoverTone(album.albumId),
     status,
     progress: album.finish === 1 ? 100 : 0,
@@ -99,7 +99,7 @@ export function transformShelfAlbum(item: ExternalShelfAlbum): Book {
     finishedAt: album.finish === 1 ? formatUnixDate(album.updateTime) : undefined,
     highlights: 0,
     notes: 0,
-    summary: album.intro?.trim().slice(0, 140) || "Audiobook album from your WeRead shelf.",
+    summary: album.intro?.trim().slice(0, 140) || "来自微信读书书架的有声专辑。",
   };
 }
 
@@ -117,29 +117,29 @@ export function buildMetricsFromReadData(monthly: ExternalReadDataDetail, overal
 
   return [
     {
-      label: "Reading time",
+      label: "阅读时长",
       value: formatDurationLabel(monthly.totalReadTime),
-      hint: "This month",
+      hint: "本月",
       tone: "yellow",
     },
     {
-      label: "Active days",
+      label: "阅读天数",
       value: String(monthly.readDays ?? 0),
       hint: formatPercentChange(monthly.compare),
       tone: "white",
     },
     {
-      label: "Finished books",
+      label: "读完书籍",
       value:
         monthly.readStat?.find((item) => item.stat === "读完")?.counts?.replace(/本$/, "") ??
         "0",
-      hint: "This month",
+      hint: "本月",
       tone: "white",
     },
     {
-      label: "Notes",
+      label: "笔记",
       value: totalNotes?.replace(/条$/, "") ?? "0",
-      hint: "Across your library",
+      hint: "全库累计",
       tone: "white",
     },
   ];
@@ -156,7 +156,7 @@ export function buildTrendFromReadData(detail: ExternalReadDataDetail): TrendPoi
 
   const recent = entries.slice(-7);
   return recent.map((entry, index) => ({
-    label: `D${index + 1}`,
+    label: `${index + 1}日`,
     minutes: entry.minutes,
   }));
 }
@@ -182,8 +182,8 @@ export function transformBookmarkHighlight(
 ): HighlightItem {
   const chapter =
     bookmark.chapterUid !== undefined
-      ? chapterMap.get(bookmark.chapterUid) ?? `Chapter ${bookmark.chapterUid}`
-      : "Highlight";
+      ? chapterMap.get(bookmark.chapterUid) ?? `第 ${bookmark.chapterUid} 章`
+      : "划线";
 
   return {
     id: bookmark.bookmarkId,
@@ -206,14 +206,14 @@ export function transformReviewHighlight(
     bookTitle,
     quote: item.review.content,
     createdAt: formatUnixDate(item.review.createTime),
-    chapter: item.review.chapterName?.trim() || "Thought",
+    chapter: item.review.chapterName?.trim() || "想法",
   };
 }
 
 export function transformHighlightsFromBookmarkList(
   payload: ExternalBookmarkListResponse,
 ): HighlightItem[] {
-  const bookTitle = payload.book?.title ?? "WeRead Book";
+  const bookTitle = payload.book?.title ?? "微信读书书籍";
   const chapterMap = new Map(
     (payload.chapters ?? []).map((chapter) => [chapter.chapterUid, chapter.title]),
   );
@@ -228,8 +228,8 @@ export function transformRecommendation(item: ExternalRecommendBook, index: numb
     id: item.bookId || `rec-${index}`,
     title: item.title,
     author: item.author,
-    reason: item.reason?.trim() || "Recommended based on your recent reading.",
-    tag: item.newRatingDetail?.title || item.category?.trim() || "Pick",
+    reason: item.reason?.trim() || "根据你最近的阅读偏好推荐。",
+    tag: item.newRatingDetail?.title || item.category?.trim() || "推荐",
     coverTone: pickCoverTone(item.bookId || String(index)),
   };
 }
@@ -243,7 +243,7 @@ export function transformSearchResult(item: ExternalSearchBook): Book {
     id: info.bookId,
     title: info.title,
     author: info.author,
-    category: info.category?.trim() || "Store",
+    category: info.category?.trim() || "书城",
     coverTone: pickCoverTone(info.bookId),
     status: "queued",
     progress: 0,
@@ -254,13 +254,13 @@ export function transformSearchResult(item: ExternalSearchBook): Book {
     notes: 0,
     summary:
       info.intro?.trim().slice(0, 140) ||
-      `Store rating ${ratingLabel} from ${info.newRatingCount ?? 0} readers.`,
+      `书城评分 ${ratingLabel}，${info.newRatingCount ?? 0} 人参与评分。`,
   };
 }
 
 export function buildDashboardHero(bookCount: number): Pick<DashboardData, "heroTitle" | "heroBody"> {
   return {
-    heroTitle: "Your WeRead reading life, in one dashboard.",
-    heroBody: `Synced ${bookCount} shelf entries from WeRead — bookshelf, stats, highlights, and recommendations in one plain view.`,
+    heroTitle: "你的微信读书阅读全貌，一屏看清。",
+    heroBody: `已从微信读书同步 ${bookCount} 个书架条目——书架、统计、划线与推荐集中展示。`,
   };
 }

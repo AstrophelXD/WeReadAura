@@ -1,11 +1,15 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 import { getDataSourceInfo, runSync } from "@/server/services/reading-data";
 import { WeReadApiError } from "@/server/adapters/weread/errors";
 
+export const dynamic = "force-dynamic";
+
 export async function POST() {
   try {
     const result = await runSync();
+    revalidatePath("/", "layout");
     return NextResponse.json({
       status: "ok",
       mode: result.mode,

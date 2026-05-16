@@ -7,9 +7,9 @@ export default async function SettingsPage() {
 
   return (
     <Section
-      title="Settings and sync"
-      eyebrow="Settings"
-      description="Connect your WeRead account via the official Skill API, then sync shelf, stats, highlights, and recommendations."
+      title="设置与同步"
+      eyebrow="设置"
+      description="连接微信读书官方 Skill API，一键同步书架、统计、划线与推荐。"
     >
       <SettingsPanel
         initialMode={info.mode}

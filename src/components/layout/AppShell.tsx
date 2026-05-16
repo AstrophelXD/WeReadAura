@@ -1,16 +1,25 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { DataStatusBanner } from "@/components/layout/DataStatusBanner";
+import type { DataSourceInfo } from "@/server/services/reading-data";
+
 const navItems = [
-  { href: "/", label: "Overview" },
-  { href: "/bookshelf", label: "Bookshelf" },
-  { href: "/stats", label: "Stats" },
-  { href: "/notes", label: "Notes" },
-  { href: "/discover", label: "Discover" },
-  { href: "/settings", label: "Settings" },
+  { href: "/", label: "总览" },
+  { href: "/bookshelf", label: "书架" },
+  { href: "/stats", label: "统计" },
+  { href: "/notes", label: "笔记" },
+  { href: "/discover", label: "发现" },
+  { href: "/settings", label: "设置" },
 ];
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({
+  children,
+  dataSource,
+}: {
+  children: ReactNode;
+  dataSource: DataSourceInfo;
+}) {
   return (
     <>
       <header className="neo-nav">
@@ -27,11 +36,12 @@ export function AppShell({ children }: { children: ReactNode }) {
           </nav>
         </div>
       </header>
+      <DataStatusBanner info={dataSource} />
       <main>{children}</main>
       <footer className="border-t-[3px] border-[var(--ink)] py-8">
         <div className="container-shell flex flex-col gap-2 text-sm font-semibold md:flex-row md:items-center md:justify-between">
-          <p>Minimal MVP for personal WeRead analytics.</p>
-          <p>Document-style reading dashboard, mock data first.</p>
+          <p>微信读书个人阅读分析工具</p>
+          <p>连接 Skill API · 书架 · 统计 · 划线 · 推荐</p>
         </div>
       </footer>
     </>
