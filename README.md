@@ -1,6 +1,7 @@
 # WeReadAura 📚✨
 
-> **你的微信读书个人阅读驾驶舱** —— 把书架、时长、划线与推荐，收成一张能复盘、能扫读的 plain neo-brutalism 仪表盘。
+> **你的微信读书个人阅读驾驶舱** —— 把书架、时长、划线与推荐，收成一张能复盘、能扫读的 plain neo-brutalism 仪表盘。  
+> 📌 **仅供个人学习使用，禁止商用**（含字体与对外部署，详见 [字体声明](#字体声明-)）。
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white)](https://react.dev/)
@@ -8,6 +9,8 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](#版权与鸣谢)
 [![Vibe Coding](https://img.shields.io/badge/构建方式-Vibe%20Coding-ff6b9d?style=flat-square)](https://github.com/search?q=vibe+coding&type=repositories)
+[![个人学习](https://img.shields.io/badge/用途-个人学习-blue?style=flat-square)](#字体声明-)
+[![非商用](https://img.shields.io/badge/商用-禁止-red?style=flat-square)](#字体声明-)
 
 ---
 
@@ -162,6 +165,38 @@ WeReadAura/
 
 ---
 
+## 字体声明 🔤
+
+> ⚠️ **本项目及其中引用的字体配置，仅供个人学习、研究与非商业用途使用，不得用于任何商业场景**（包括但不限于对外提供服务、收费产品、企业宣传站、商用 SaaS 等）。商用前请自行取得相应字体与产品的正式授权。
+
+### 使用范围
+
+| 范围 | 说明 |
+| --- | --- |
+| ✅ 允许 | 个人本地运行、阅读分析练习、开源学习交流、在注明限制的前提下 fork 研究 |
+| ❌ 禁止 | 商业部署、对外收费、替他人提供托管服务、未授权的品牌/印刷/广告物料 |
+
+### 字体清单
+
+本仓库**不包含**字体文件；中文通过 `src/app/globals.css` 中的 `local()` 调用你本机已安装的字体，未安装时会回退到系统 serif。
+
+| 字体 | 用途 | 加载方式 | 权利说明 |
+| --- | --- | --- | --- |
+| **Source Serif 4** | 拉丁字母、数字 | `next/font/google` 在线拉取 | 遵循 [SIL Open Font License 1.1](https://scripts.sil.org/OFL)；本项目整体仍限**个人学习**，不等同于你可单独将该字体用于商用排版 |
+| **方正标雅宋_GBK** | 中文正文（细） | 本机 `local()` | 版权归**北大方正**（方正字库）所有 |
+| **方正中雅宋_GBK** | 中文正文（中） | 本机 `local()` | 同上 |
+| **方正粗雅宋_GBK** | 标题、强调 | 本机 `local()` | 同上 |
+| **方正聚珍新仿简繁** | 划线 / 引文（`.font-quote`） | 本机 `local()` | 同上 |
+
+上述**方正系列**字体为设计排版选用，**非本仓库分发**；你须自行合法安装。除方正官方授权外，**不得将上述字体用于商业项目**；若需商用，请前往 [方正字库](https://www.foundertype.com/) 或正规渠道购买/授权，并替换 `globals.css` 中的 `local()` 栈为已获授权字体。
+
+### 给 Fork 者的提示
+
+- 部署到公网或交付客户前，请移除或替换方正 `local()` 引用，改用你有权使用的开源/商用字体。  
+- 仓库 MIT 许可**仅适用于本项目的源代码**，**不涵盖**第三方字体、微信读书数据与方正字库的权利。
+
+---
+
 ## 隐私与安全
 
 - 阅读数据视为**敏感个人信息**；请勿将 API Key 提交到公开仓库。  
@@ -189,6 +224,8 @@ WeReadAura/
 | [Next.js](https://nextjs.org/) / [React](https://react.dev/) | 应用框架 | MIT |
 | **微信读书 / WeRead** | Skills API 与阅读数据来源 | 版权归腾讯所有；本项目为独立第三方工具 |
 | **Gumroad** | 首页式 plain、功能优先的版式气质参考 | 设计灵感，无代码拷贝关系 |
+| **北大方正 / 方正字库** | 标雅宋、中雅宋、粗雅宋、聚珍新仿等（本机 `local()` 引用） | 字体版权归方正所有；本项目内**仅供个人学习**，**禁止商用** — 详见上文 [字体声明](#字体声明-) |
+| **Google Fonts · Source Serif 4** | 拉丁排版 | [SIL OFL 1.1](https://scripts.sil.org/OFL) |
 
 安装 `npm install` 时执行的 `scripts/setup-neobrutalism.mjs` 会从 GitHub 拉取 **ekmas/neobrutalism-components**；感谢作者开源维护。
 
@@ -205,5 +242,5 @@ WeReadAura/
 ---
 
 <p align="center">
-  <sub>Made with 📖 and good vibes · 非官方 · 仅供个人阅读分析</sub>
+  <sub>Made with 📖 and good vibes · 非官方 · 仅供个人学习 · 禁止商用</sub>
 </p>
