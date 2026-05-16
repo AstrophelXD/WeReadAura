@@ -3,6 +3,7 @@
 import { ExternalLink } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { BookRecommendValue } from "@/components/features/books/BookRecommendValue";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/Dialog";
@@ -86,18 +87,32 @@ export function BookDiscoverDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-[min(90vh,720px)] max-w-2xl flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
         <div className="shrink-0 border-b-2 border-[var(--ink)] bg-[var(--white)] px-6 py-5 pr-14">
-          <DialogTitle className="type-card-title-lg text-left">{title}</DialogTitle>
-          {author ? (
-            <DialogDescription className="type-card-subtitle mt-1 text-left">{author}</DialogDescription>
-          ) : null}
-          {preview ? (
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Badge tone={preview.onShelf ? "green" : "white"}>
-                {preview.onShelf ? "已在书架" : "未加入书架"}
-              </Badge>
-              {preview.book.category ? <Badge tone="white">{preview.book.category}</Badge> : null}
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <DialogTitle className="type-card-title-lg text-left">{title}</DialogTitle>
+              {author ? (
+                <DialogDescription className="type-card-subtitle mt-1 text-left">{author}</DialogDescription>
+              ) : null}
+              {preview ? (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Badge tone={preview.onShelf ? "green" : "white"}>
+                    {preview.onShelf ? "已在书架" : "未加入书架"}
+                  </Badge>
+                  {preview.book.category ? <Badge tone="white">{preview.book.category}</Badge> : null}
+                </div>
+              ) : null}
             </div>
-          ) : null}
+            {preview && !loading ? (
+              <BookRecommendValue
+                align="end"
+                book={{
+                  recommendRating: preview.detail.rating,
+                  recommendLabel: preview.detail.ratingLabel,
+                  recommendRatingCount: preview.detail.ratingCount,
+                }}
+              />
+            ) : null}
+          </div>
         </div>
 
         <div className="scrollbar min-h-0 flex-1 overflow-y-auto px-6 py-5">
@@ -106,12 +121,8 @@ export function BookDiscoverDialog({
 
           {preview && !loading ? (
             <div className="space-y-6">
-              {preview.detail.rating !== undefined ? (
-                <p className="type-caption">
-                  书城评分 {preview.detail.rating}
-                  {preview.detail.ratingCount ? ` · ${preview.detail.ratingCount} 人评分` : ""}
-                  {preview.detail.publisher ? ` · ${preview.detail.publisher}` : ""}
-                </p>
+              {preview.detail.publisher ? (
+                <p className="type-caption">出版社：{preview.detail.publisher}</p>
               ) : null}
 
               <div>

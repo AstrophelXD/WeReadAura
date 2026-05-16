@@ -42,6 +42,11 @@ export interface Book {
   highlights: number;
   notes: number;
   summary: string;
+  /** 微信读书推荐值（百分制，如 92.5） */
+  recommendRating?: number;
+  /** 推荐标签，如「神作」「力荐」 */
+  recommendLabel?: string;
+  recommendRatingCount?: number;
 }
 
 export interface StoreSearchHit {
@@ -63,6 +68,7 @@ export interface BookDiscoverDetail {
   intro: string;
   publisher?: string;
   rating?: number;
+  ratingLabel?: string;
   ratingCount?: number;
   wordCount?: number;
 }

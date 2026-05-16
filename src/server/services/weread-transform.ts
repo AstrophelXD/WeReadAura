@@ -1,4 +1,5 @@
 import { shouldShowPopularHighlights } from "@/lib/discover-preview-rules";
+import { formatWeReadRecommendPercent, parseWeReadRecommend } from "@/lib/weread-recommend";
 import type { ReadingStatus } from "@/lib/types";
 import type {
   Book,
@@ -239,8 +240,13 @@ export function transformRecommendation(item: ExternalRecommendBook, index: numb
 
 export function transformSearchResult(item: ExternalSearchBook): Book {
   const info = item.bookInfo;
+  const recommend = parseWeReadRecommend({
+    newRating: info.newRating ?? item.newRating,
+    newRatingCount: info.newRatingCount,
+    newRatingDetail: info.newRatingDetail ?? item.newRatingDetail,
+  });
   const ratingLabel =
-    info.newRating !== undefined ? `${Math.round(info.newRating / 10) / 10}` : "n/a";
+    recommend.recommendRating !== undefined ? `${recommend.recommendRating}` : "—";
 
   return {
     id: info.bookId,
@@ -257,7 +263,8 @@ export function transformSearchResult(item: ExternalSearchBook): Book {
     notes: 0,
     summary:
       info.intro?.trim().slice(0, 140) ||
-      `书城评分 ${ratingLabel}，${info.newRatingCount ?? 0} 人参与评分。`,
+      `推荐值 ${ratingLabel}%，${info.newRatingCount ?? 0} 人评分。`,
+    ...recommend,
   };
 }
 
@@ -268,19 +275,19 @@ export function buildDashboardHero(bookCount: number): Pick<DashboardData, "hero
   };
 }
 
+/** @deprecated Use formatWeReadRecommendPercent from @/lib/weread-recommend */
 export function formatStoreRating(newRating?: number): number | undefined {
-  if (newRating === undefined) {
-    return undefined;
-  }
-  return Math.round(newRating) / 10;
+  return formatWeReadRecommendPercent(newRating);
 }
 
 export function transformBookDiscoverDetail(info: ExternalBookInfo): BookDiscoverDetail {
+  const recommend = parseWeReadRecommend(info);
   return {
     intro: info.intro?.trim() || "暂无简介。",
     publisher: info.publisher?.trim() || undefined,
-    rating: formatStoreRating(info.newRating),
-    ratingCount: info.newRatingCount,
+    rating: recommend.recommendRating,
+    ratingLabel: recommend.recommendLabel,
+    ratingCount: recommend.recommendRatingCount,
     wordCount: info.wordCount,
   };
 }
@@ -304,8 +311,8 @@ export function transformPopularHighlights(payload: ExternalBestBookmarksRespons
 }
 
 export function bookFromStoreInfo(info: ExternalBookInfo): Book {
-  const rating = formatStoreRating(info.newRating);
-  const ratingLabel = rating !== undefined ? `${rating}` : "—";
+  const recommend = parseWeReadRecommend(info);
+  const ratingLabel = recommend.recommendRating !== undefined ? `${recommend.recommendRating}` : "—";
 
   return {
     id: info.bookId,
@@ -322,7 +329,8 @@ export function bookFromStoreInfo(info: ExternalBookInfo): Book {
     notes: 0,
     summary:
       info.intro?.trim().slice(0, 140) ||
-      `书城评分 ${ratingLabel}，${info.newRatingCount ?? 0} 人参与评分。`,
+      `推荐值 ${ratingLabel}%，${info.newRatingCount ?? 0} 人评分。`,
+    ...recommend,
   };
 }
 
@@ -333,10 +341,12 @@ export function buildDiscoverPreview(
   popularHighlights: PopularHighlight[],
 ): BookDiscoverPreview {
   const book = shelfBook ?? bookFromStoreInfo(info);
+  const recommend = parseWeReadRecommend(info);
 
   return {
     book: {
       ...book,
+      ...recommend,
       title: info.title || book.title,
       author: info.author || book.author,
       category: info.category?.trim() || book.category,

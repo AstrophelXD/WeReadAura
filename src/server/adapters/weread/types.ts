@@ -67,6 +67,7 @@ export interface ExternalBookInfo {
   wordCount?: number;
   newRating?: number;
   newRatingCount?: number;
+  newRatingDetail?: { title?: string };
 }
 
 export interface ExternalBestBookmarkItem {
@@ -168,10 +169,12 @@ export interface ExternalSearchBook {
     intro?: string;
     newRating?: number;
     newRatingCount?: number;
+    newRatingDetail?: { title?: string };
     soldout?: number;
   };
   readingCount?: number;
   newRating?: number;
+  newRatingDetail?: { title?: string };
 }
 
 export interface ExternalSearchResponse {

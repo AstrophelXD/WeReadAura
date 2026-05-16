@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { BookHighlightsPanel } from "@/components/features/books/BookHighlightsPanel";
+import { BookRecommendValue } from "@/components/features/books/BookRecommendValue";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { Section } from "@/components/ui/Section";
@@ -32,11 +33,16 @@ export default async function BookDetailPage({
     >
       <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
         <Card>
-          <div className="flex flex-wrap items-center gap-3">
-            <Badge tone={book.coverTone}>{book.category}</Badge>
-            <Badge tone="white">{statusLabel(book.status)}</Badge>
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-3">
+                <Badge tone={book.coverTone}>{book.category}</Badge>
+                <Badge tone="white">{statusLabel(book.status)}</Badge>
+              </div>
+              <p className="type-card-subtitle mt-5">{book.author}</p>
+            </div>
+            <BookRecommendValue book={book} align="end" />
           </div>
-          <p className="type-card-subtitle mt-5">{book.author}</p>
           <p className="type-metric-lg mt-6">{book.progress}%</p>
           <p className="type-field-label mt-2">当前进度</p>
           <div className="mt-6 h-5 rounded-[999px] border-[2px] border-[var(--ink)] bg-[var(--muted)]">

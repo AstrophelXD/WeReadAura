@@ -1,4 +1,5 @@
 import { shouldFetchPopularForBookPage } from "@/lib/discover-preview-rules";
+import { parseWeReadRecommend } from "@/lib/weread-recommend";
 import type { Book, HighlightItem, PopularHighlight } from "@/lib/types";
 import { formatDurationMinutes, formatUnixDate } from "@/lib/formatters";
 import type { GatewayContext, WeReadGateway } from "@/server/adapters/weread/gateway";
@@ -81,6 +82,7 @@ export async function fetchLiveBookDetail(
 
   const book = transformShelfBook(shelfItem, progress, notebookMeta);
   book.summary = info.intro?.trim() || book.summary;
+  Object.assign(book, parseWeReadRecommend(info));
 
   const progressPercent = resolveBookProgress({
     finishReading: shelfItem.finishReading,
