@@ -15,6 +15,9 @@
   --main-foreground: var(--paper);
 
   --main: var(--ink);
+  /* 主 CTA：与全局组件表面色一致（卡片 / 输入框同为 secondary-background） */
+  --cta: var(--secondary-background);
+  --cta-foreground: var(--foreground);
   --border: var(--ink);
   --ring: var(--ink);
   --overlay: rgb(26 24 20 / 0.8);
@@ -38,6 +41,8 @@
   --color-border: var(--border);
   --color-overlay: var(--overlay);
   --color-ring: var(--ring);
+  --color-cta: var(--cta);
+  --color-cta-foreground: var(--cta-foreground);
 
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);

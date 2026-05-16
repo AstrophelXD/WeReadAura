@@ -1,24 +1,27 @@
 import type { ReactNode } from "react";
 
 import { cn } from "@/lib/cn";
-import { Card as NeoCard } from "@neo/components/ui/card";
-
-export {
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@neo/components/ui/card";
 
 type CardProps = {
   children: ReactNode;
   className?: string;
+  /** Subtle lift on hover (dashboard panels) */
+  liftOnHover?: boolean;
+  /** Press-in on hover (clickable cards) */
+  pressOnHover?: boolean;
 };
 
-export function Card({ children, className = "" }: CardProps) {
+export function Card({ children, className, liftOnHover, pressOnHover }: CardProps) {
   return (
-    <NeoCard className={cn("gap-0 p-[clamp(1rem,2vw,1.5rem)] shadow-shadow", className)}>{children}</NeoCard>
+    <div
+      className={cn(
+        "neo-card flex flex-col gap-0 p-[clamp(1rem,2vw,1.5rem)]",
+        liftOnHover && "neo-card--lift",
+        pressOnHover && "neo-card--press",
+        className,
+      )}
+    >
+      {children}
+    </div>
   );
 }

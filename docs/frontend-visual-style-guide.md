@@ -93,6 +93,7 @@
 
 - hover：轻微位移，阴影缩短
 - active：进一步下压，阴影消失
+- 主 CTA 按钮底色使用 `--cta`（= `--secondary-background`，与输入框/卡片表面一致），实现见 `src/styles/neo-interactive.css`
 
 禁止使用：
 

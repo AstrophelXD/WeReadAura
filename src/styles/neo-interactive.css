@@ -1,0 +1,160 @@
+/* Neo-brutalism interactive surfaces — always bundled (not reliant on Tailwind scanning neo/) */
+
+@layer components {
+  /* --- Press motion (shared) --- */
+  .neo-press {
+    border: 2px solid var(--ink);
+    box-shadow: var(--box-shadow-x) var(--box-shadow-y) 0 var(--ink);
+    transition:
+      transform 140ms ease-out,
+      box-shadow 140ms ease-out;
+  }
+
+  .neo-press:hover:not(:disabled) {
+    transform: translate(var(--box-shadow-x), var(--box-shadow-y));
+    box-shadow: none;
+  }
+
+  .neo-press:active:not(:disabled) {
+    transform: translate(
+      calc(var(--box-shadow-x) + 1px),
+      calc(var(--box-shadow-y) + 1px)
+    );
+    box-shadow: none;
+  }
+
+  /* --- Button --- */
+  .neo-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-sm);
+    font-weight: var(--base-font-weight);
+  }
+
+  .neo-button:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+  }
+
+  .neo-button:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .neo-button--primary {
+    background: var(--cta);
+    color: var(--cta-foreground);
+  }
+
+  .neo-button--neutral {
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  /* --- Form controls --- */
+  .neo-control {
+    display: flex;
+    width: 100%;
+    min-height: 52px;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--ink);
+    background: var(--secondary-background);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: var(--base-font-weight);
+    color: var(--ink);
+    box-shadow: var(--box-shadow-x) var(--box-shadow-y) 0 var(--ink);
+    transition:
+      transform 140ms ease-out,
+      box-shadow 140ms ease-out,
+      border-color 140ms ease-out;
+  }
+
+  .neo-control::placeholder {
+    color: color-mix(in srgb, var(--ink) 50%, transparent);
+  }
+
+  .neo-control:focus-visible {
+    transform: translate(var(--box-shadow-x), var(--box-shadow-y));
+    box-shadow: none;
+    outline: 3px solid var(--ink);
+    outline-offset: 2px;
+  }
+
+  .neo-control:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* --- Badge --- */
+  .neo-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 2px solid var(--ink);
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: var(--base-font-weight);
+    line-height: 1.25;
+    box-shadow: 2px 2px 0 var(--ink);
+    transition:
+      transform 120ms ease-out,
+      box-shadow 120ms ease-out;
+  }
+
+  .neo-badge--interactive {
+    cursor: default;
+  }
+
+  .neo-badge--interactive:hover {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+  }
+
+  /* --- Card shell --- */
+  .neo-card {
+    border: 2px solid var(--ink);
+    border-radius: var(--radius);
+    background: var(--white);
+    box-shadow: var(--box-shadow-x) var(--box-shadow-y) 0 var(--ink);
+    transition:
+      transform 140ms ease-out,
+      box-shadow 140ms ease-out;
+  }
+
+  .neo-card--lift:hover {
+    transform: translate(calc(var(--box-shadow-x) * -0.5), calc(var(--box-shadow-y) * -0.5));
+    box-shadow: calc(var(--box-shadow-x) * 1.5) calc(var(--box-shadow-y) * 1.5) 0 var(--ink);
+  }
+
+  .neo-card--press:hover {
+    transform: translate(var(--box-shadow-x), var(--box-shadow-y));
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neo-press,
+  .neo-control,
+  .neo-badge,
+  .neo-card {
+    transition: none;
+  }
+
+  .neo-press:hover:not(:disabled),
+  .neo-press:active:not(:disabled),
+  .neo-control:focus-visible,
+  .neo-badge--interactive:hover,
+  .neo-card--lift:hover,
+  .neo-card--press:hover {
+    transform: none;
+    box-shadow: var(--box-shadow-x) var(--box-shadow-y) 0 var(--ink);
+  }
+
+  .neo-badge--interactive:hover {
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+}

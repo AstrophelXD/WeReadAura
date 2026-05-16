@@ -28,7 +28,7 @@ export default async function HomePage() {
               </Button>
             </div>
           </div>
-          <Card className="neo-paper p-5 shadow-[var(--shadow-lg)]">
+          <Card className="neo-paper p-5" liftOnHover>
             <div className="rounded-[var(--radius)] border-[3px] border-[var(--ink)] bg-white p-6">
               <p className="type-field-label">上次同步</p>
               <p className="type-metric-lg mt-3">{dashboardData.syncStatus.lastSyncedAt}</p>

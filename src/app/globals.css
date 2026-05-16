@@ -1,6 +1,8 @@
 @import "tailwindcss";
+@source "../../neobrutalism-components-local/src/**/*.{ts,tsx}";
 @import "../styles/neobrutalism-theme.css";
 @import "../styles/typography.css";
+@import "../styles/neo-interactive.css";
 
 /* FangZheng YaSong: 标 / 中 for body, 粗 optional for emphasis. */
 @font-face {

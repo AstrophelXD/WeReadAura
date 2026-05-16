@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { cn } from "@/lib/cn";
-import { Button as NeoButton } from "@neo/components/ui/button";
 
 type ButtonBaseProps = {
   children: ReactNode;
@@ -24,30 +23,32 @@ type ActionButtonProps = ButtonBaseProps &
 
 type ButtonProps = LinkButtonProps | ActionButtonProps;
 
-export function Button(props: ButtonProps) {
-  const variant = props.secondary ? "neutral" : "default";
-  const className = cn("min-h-12 px-5 text-sm font-base max-sm:w-full md:text-base", props.className);
+const buttonClassName = (secondary: boolean | undefined, className?: string) =>
+  cn(
+    "neo-button neo-press min-h-12 px-5 text-sm md:text-base max-sm:w-full",
+    secondary ? "neo-button--neutral" : "neo-button--primary",
+    className,
+  );
 
+export function Button(props: ButtonProps) {
   if ("href" in props && props.href) {
     return (
-      <NeoButton asChild variant={variant} className={className}>
-        <Link href={props.href}>{props.children}</Link>
-      </NeoButton>
+      <Link href={props.href} className={buttonClassName(props.secondary, props.className)}>
+        {props.children}
+      </Link>
     );
   }
 
-  const { children, type = "button", onClick, disabled } = props;
+  const { children, type = "button", onClick, disabled, secondary, className } = props;
 
   return (
-    <NeoButton
+    <button
       type={type}
-      variant={variant}
-      className={className}
+      className={buttonClassName(secondary, className)}
       onClick={onClick}
       disabled={disabled}
     >
       {children}
-    </NeoButton>
+    </button>
   );
 }
-

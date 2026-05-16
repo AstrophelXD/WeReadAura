@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 
 import { cn } from "@/lib/cn";
-import { Badge as NeoBadge } from "@neo/components/ui/badge";
 
 type BadgeTone = "yellow" | "green" | "blue" | "pink" | "white";
 
@@ -9,27 +8,28 @@ type BadgeProps = {
   children: ReactNode;
   tone?: BadgeTone;
   className?: string;
+  interactive?: boolean;
 };
 
 const toneClasses: Record<BadgeTone, string> = {
-  yellow: "bg-[color-mix(in_srgb,var(--yellow)_28%,var(--white))]",
-  green: "bg-[color-mix(in_srgb,var(--green)_24%,var(--white))]",
-  blue: "bg-[color-mix(in_srgb,var(--blue)_24%,var(--white))]",
-  pink: "bg-[color-mix(in_srgb,var(--pink)_24%,var(--white))]",
-  white: "bg-secondary-background",
+  yellow: "bg-[color-mix(in_srgb,var(--yellow)_40%,var(--white))]",
+  green: "bg-[color-mix(in_srgb,var(--green)_32%,var(--white))]",
+  blue: "bg-[color-mix(in_srgb,var(--blue)_32%,var(--white))]",
+  pink: "bg-[color-mix(in_srgb,var(--pink)_32%,var(--white))]",
+  white: "bg-[var(--white)]",
 };
 
-export function Badge({ children, tone = "white", className }: BadgeProps) {
+export function Badge({ children, tone = "white", className, interactive = false }: BadgeProps) {
   return (
-    <NeoBadge
-      variant="neutral"
+    <span
       className={cn(
-        "rounded-full px-3 py-1 text-xs font-base shadow-shadow",
+        "neo-badge text-[var(--ink)]",
         toneClasses[tone],
+        interactive && "neo-badge--interactive",
         className,
       )}
     >
       {children}
-    </NeoBadge>
+    </span>
   );
 }
