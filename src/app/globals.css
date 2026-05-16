@@ -1,5 +1,30 @@
 @import "tailwindcss";
 
+/* FangZheng YaSong: 标 / 中 for body, 粗 optional for emphasis. */
+@font-face {
+  font-family: "WeReadAura YaSong";
+  src: local("方正标雅宋_GBK");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "WeReadAura YaSong";
+  src: local("方正中雅宋_GBK");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "WeReadAura YaSong";
+  src: local("方正粗雅宋_GBK");
+  font-style: normal;
+  font-weight: 600 700;
+  font-display: swap;
+}
+
 :root {
   --ink: #1a1814;
   --paper: #f4efe6;
@@ -23,8 +48,9 @@
   --radius-sm: 0.4rem;
   --container: 1120px;
 
-  --font-serif: var(--font-source-serif), var(--font-noto-serif-sc), "Songti SC", "Noto Serif SC",
-    Georgia, "Times New Roman", serif;
+  /* Latin first; CJK: 标 / 中 primary, 粗 optional. */
+  --font-serif: var(--font-source-serif), "Source Serif 4", "WeReadAura YaSong", "方正标雅宋_GBK",
+    "方正中雅宋_GBK", "方正粗雅宋_GBK", serif;
 }
 
 * {
