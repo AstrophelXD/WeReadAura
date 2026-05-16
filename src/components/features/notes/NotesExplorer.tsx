@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { HighlightList } from "@/components/layout/HighlightList";
+import { Button } from "@/components/ui/Button";
+import { Input, Select } from "@/components/ui/Input";
 import {
   applyNotesQuery,
   buildNoteBookOptions,
@@ -56,18 +58,16 @@ export function NotesExplorer({ allItems, initialQuery }: NotesExplorerProps) {
         }}
       >
         <div className="flex gap-2 md:col-span-1">
-          <input
-            className="neo-input"
+          <Input
             placeholder="搜索划线、想法或章节"
             value={searchDraft}
             onChange={(event) => setSearchDraft(event.target.value)}
           />
-          <button className="neo-btn shrink-0" type="submit">
+          <Button className="w-auto shrink-0" type="submit">
             搜索
-          </button>
+          </Button>
         </div>
-        <select
-          className="neo-input"
+        <Select
           value={query.bookId ?? ""}
           onChange={(event) => replaceParams({ bookId: event.target.value || null })}
         >
@@ -77,9 +77,8 @@ export function NotesExplorer({ allItems, initialQuery }: NotesExplorerProps) {
               {book.title}
             </option>
           ))}
-        </select>
-        <select
-          className="neo-input"
+        </Select>
+        <Select
           value={query.range ?? "all"}
           onChange={(event) => {
             const value = event.target.value as NotesRangeFilter;
@@ -91,7 +90,7 @@ export function NotesExplorer({ allItems, initialQuery }: NotesExplorerProps) {
               {option.label}
             </option>
           ))}
-        </select>
+        </Select>
       </form>
 
       <HighlightList items={filtered} />

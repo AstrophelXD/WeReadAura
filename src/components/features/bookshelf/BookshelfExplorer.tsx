@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { BookCard } from "@/components/layout/BookCard";
+import { Button } from "@/components/ui/Button";
+import { Input, Select } from "@/components/ui/Input";
 import {
   applyBookshelfQuery,
   BOOKSHELF_SORT_OPTIONS,
@@ -67,18 +69,16 @@ export function BookshelfExplorer({ allBooks, initialQuery }: BookshelfExplorerP
         }}
       >
         <div className="flex gap-2">
-          <input
-            className="neo-input"
+          <Input
             placeholder="搜索书名、作者或分类"
             value={searchDraft}
             onChange={(event) => setSearchDraft(event.target.value)}
           />
-          <button className="neo-btn shrink-0" type="submit">
+          <Button className="w-auto shrink-0" type="submit">
             搜索
-          </button>
+          </Button>
         </div>
-        <select
-          className="neo-input"
+        <Select
           value={query.status ?? "all"}
           onChange={(event) =>
             replaceParams({
@@ -91,9 +91,8 @@ export function BookshelfExplorer({ allBooks, initialQuery }: BookshelfExplorerP
               {option.label}
             </option>
           ))}
-        </select>
-        <select
-          className="neo-input"
+        </Select>
+        <Select
           value={query.sort ?? "lastRead"}
           onChange={(event) => replaceParams({ sort: event.target.value })}
         >
@@ -102,7 +101,7 @@ export function BookshelfExplorer({ allBooks, initialQuery }: BookshelfExplorerP
               {option.label}
             </option>
           ))}
-        </select>
+        </Select>
       </form>
 
       {filtered.length === 0 ? (

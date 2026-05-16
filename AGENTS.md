@@ -71,7 +71,8 @@
 - 列表、图表、筛选器都需要考虑空态、加载态、失败态
 - 首版优先保证桌面端体验，同时兼顾移动端基本可用
 - 图表必须有文字指标兜底，不能只依赖视觉图形表达
-- 统一采用 plain neo-brutalism 视觉方向，具体规范见 [docs/frontend-visual-style-guide.md](D:\WeReadAura\docs\frontend-visual-style-guide.md)
+- 统一采用 plain neo-brutalism 视觉方向；基础交互组件来自本地克隆的 [neobrutalism-components](https://github.com/ekmas/neobrutalism-components)（`neobrutalism-components-local/`，不入库），经 `src/components/ui/` 包装后对外使用，规范见 [docs/frontend-visual-style-guide.md](D:\WeReadAura\docs\frontend-visual-style-guide.md)
+- 字体栈以项目 `layout.tsx` / `globals.css` 为准，不因引入组件库而更换
 - 页面结构必须清晰可扫读，不通过微弱分隔线和细腻留白硬撑层级
 - 默认使用纸张感浅底色、黑色边框和无 blur 的硬阴影
 - 禁止使用 glassmorphism、柔和 SaaS 渐变、大面积 blur 和模板化创业公司首页风格
@@ -93,7 +94,8 @@
 - `BookCard`
 - `RecommendationCard`
 - `ChartCard`
-- 基础组件优先复用，不为单页效果随意派生平行组件
+- 基础 `Button` / `Card` / `Badge` / `Input` 优先走 `src/components/ui/` 包装层，不为单页效果随意派生平行组件
+- 新增 neobrutalism 组件时从 `@neo/components/ui/*` 引用，勿把 `neobrutalism-components-local/` 提交进 git
 
 ## 8.2 交互与可访问性规则
 

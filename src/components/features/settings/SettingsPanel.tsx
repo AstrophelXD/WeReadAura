@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
 
 interface SettingsPanelProps {
   initialMode: string;
@@ -160,8 +161,8 @@ export function SettingsPanel({
         </p>
         <label className="mt-4 block">
           <span className="sr-only">微信读书 API Key</span>
-          <input
-            className="neo-input mt-2 w-full"
+          <Input
+            className="mt-2 w-full"
             type="password"
             autoComplete="off"
             placeholder="wrk-xxxxxxxx"

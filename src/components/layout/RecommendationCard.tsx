@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import type { RecommendationItem } from "@/lib/types";
 
@@ -13,9 +14,9 @@ export function RecommendationCard({ item }: { item: RecommendationItem }) {
         <Badge tone={item.coverTone}>{item.tag}</Badge>
       </div>
       <p className="mt-5 font-medium leading-6">{item.reason}</p>
-      <button className="neo-btn mt-6" type="button">
+      <Button className="mt-6 w-full sm:w-auto" type="button">
         加入想读
-      </button>
+      </Button>
     </Card>
   );
 }

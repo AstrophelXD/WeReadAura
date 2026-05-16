@@ -1,3 +1,5 @@
+export { cn } from "@/lib/cn";
+
 export function formatPercent(value: number): string {
   return `${value}%`;
 }

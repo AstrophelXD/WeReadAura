@@ -68,12 +68,19 @@ flowchart LR
 - 当前业务更像“个人数据产品”，不是高并发开放平台
 - 统计分析复杂度还不足以要求单独 Python 服务
 
-### 不采用大型现成 UI 组件库作为主骨架
+### UI 组件来源
 
-当前不采用 `shadcn/ui` 风格作为主视觉基座，原因如下：
+交互基础组件采用 [neobrutalism-components](https://github.com/ekmas/neobrutalism-components)（MIT），通过 **本地 git 浅克隆** 引入：
 
-- 项目视觉要求明确，不希望落回通用 SaaS 仪表盘质感
-- neo-brutalism 更适合从 token 和基础组件自己搭一层
+- 路径：`neobrutalism-components-local/`（`.gitignore`，不提交）
+- 别名：`@neo/*` → 克隆仓库 `src/*`
+- 包装层：`src/components/ui/*` 保留 WeReadAura API（如 `Button` 的 `href` / `secondary`、`Badge` 的 `tone`）
+- 主题：`src/styles/neobrutalism-theme.css` 将库的 Tailwind token 映射到项目色板
+- 字体：仍由 `src/app/layout.tsx` + `globals.css` 控制，不使用库文档站字体
+
+依赖：`class-variance-authority`、`clsx`、`tailwind-merge`、`@radix-ui/react-slot`（与库一致的最小集）。
+
+不采用完整 shadcn CLI 工作流；仅按需从本地克隆引用 `button` / `card` / `badge` / `input` 等文件。
 
 ### 不采用全局客户端状态库作为默认方案
 

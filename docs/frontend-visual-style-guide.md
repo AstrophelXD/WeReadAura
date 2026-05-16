@@ -150,12 +150,12 @@
 
 ### 5.1 字体方向
 
-建议使用：
+**不受 [neobrutalism-components](https://github.com/ekmas/neobrutalism-components) 影响。** 项目继续使用 `layout.tsx` 与 `globals.css` 中已配置的字体栈：
 
-- `"Space Grotesk", Inter, system-ui, sans-serif`
-- 或 `Inter, ui-sans-serif, system-ui, sans-serif`
+- 拉丁：`Source Serif 4`（`next/font`）
+- 中文：`方正标雅宋_GBK` / `方正中雅宋_GBK` / `方正粗雅宋_GBK`（`WeReadAura YaSong`）
 
-如果正文中文显示效果需要优化，可在中文环境下搭配更稳的中文 sans-serif，但整体仍以粗体无衬线风格为主。
+组件库内的 `font-base` / `font-heading` 仅表示字重，不替换上述 font-family。
 
 ### 5.2 字级建议
 
@@ -353,19 +353,28 @@ Hero 文案风格应直接，例如：
 - 容器宽度
 - 字号体系
 
-### 11.2 组件库建议
+### 11.2 组件库与 neobrutalism 集成
 
-建议首批抽象以下基础组件，避免每个页面随机发挥：
+交互型基础组件来自 [neobrutalism-components](https://github.com/ekmas/neobrutalism-components)，以本地克隆方式引入（目录 `neobrutalism-components-local/`，已加入 `.gitignore`，不入库）。
 
-- `Button`
-- `Card`
-- `Input`
-- `Badge`
+| 对外 API（`src/components/ui/`） | 本地来源（`@neo/components/ui/`） |
+| --- | --- |
+| `Button` | `button`（`variant`: default / neutral） |
+| `Card` | `card` |
+| `Badge` | `badge` + WeReadAura `tone` 色 |
+| `Input` / `Select` | `input` + 原生 `select` 统一样式 |
+
+首次 `npm install` 会执行 `scripts/setup-neobrutalism.mjs` 浅克隆仓库；也可手动运行 `npm run setup:neobrutalism`。
+
+主题变量在 `src/styles/neobrutalism-theme.css` 中映射到 WeReadAura 的 `--paper` / `--ink` 等 token，不采用库默认紫蓝主色。
+
+仍由项目自行维护、不直接来自库的区块组件：
+
 - `Section`
 - `MetricCard`
 - `BookCard`
 - `RecommendationCard`
-- `ChartCard`
+- `ChartCard`（图表容器 + 自定义 SVG 图表）
 
 ### 11.3 如果使用 Tailwind
 

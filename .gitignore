@@ -42,6 +42,9 @@ temp/
 weread-skills.zip
 weread-skills-extracted/
 
+# local neobrutalism-components clone (see scripts/setup-neobrutalism.mjs)
+neobrutalism-components-local/
+
 # misc
 *.log
 weread-skills.zip

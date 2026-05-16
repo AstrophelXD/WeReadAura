@@ -4,7 +4,9 @@ import { useState } from "react";
 
 import { RecommendationCard } from "@/components/layout/RecommendationCard";
 import { StoreSearchHitCard } from "@/components/features/discover/StoreSearchHitCard";
+import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
 import type { RecommendationItem, StoreSearchHit } from "@/lib/types";
 
 interface DiscoverExplorerProps {
@@ -56,15 +58,15 @@ export function DiscoverExplorer({ recommendations, hasLiveData }: DiscoverExplo
         <Card>
           <p className="text-sm font-semibold uppercase tracking-[0.06em]">搜索书城</p>
           <form className="mt-4 flex flex-wrap gap-3" onSubmit={runSearch}>
-            <input
-              className="neo-input min-w-[12rem] flex-1"
+            <Input
+              className="min-w-[12rem] flex-1"
               placeholder="输入书名或作者，如：三体"
               value={keyword}
               onChange={(event) => setKeyword(event.target.value)}
             />
-            <button className="neo-btn" type="submit" disabled={loading}>
+            <Button className="w-auto" type="submit" disabled={loading}>
               {loading ? "搜索中…" : "搜索"}
-            </button>
+            </Button>
           </form>
 
           <div className="mt-5 space-y-4">

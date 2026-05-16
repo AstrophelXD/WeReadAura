@@ -11,7 +11,7 @@ This repository is in an early but runnable MVP stage.
 What is already implemented:
 
 - Next.js App Router app
-- Plain neo-brutalism design tokens and base components
+- [neobrutalism-components](https://github.com/ekmas/neobrutalism-components) UI (local clone, not committed) with WeReadAura wrappers
 - Overview dashboard
 - Bookshelf page
 - Reading stats page
@@ -55,11 +55,17 @@ Requirements:
 - `Node.js 24+`
 - `npm 11+`
 
-Install dependencies:
+Install dependencies (also clones `neobrutalism-components-local/` via `postinstall`):
 
 ```bash
 npm install
 cp .env.example .env.local
+```
+
+If the UI library clone is missing, run:
+
+```bash
+npm run setup:neobrutalism
 ```
 
 Start the dev server:
@@ -84,14 +90,17 @@ npm run start
 
 ```text
 WeReadAura/
-  docs/                  Product, design, and architecture docs
+  docs/                              Product, design, and architecture docs
+  neobrutalism-components-local/   Local clone of ekmas/neobrutalism-components (gitignored)
+  scripts/                           setup-neobrutalism.mjs
   src/
-    app/                 App Router pages and API routes
-    components/          Shared UI, layout, and chart components
-    lib/                 Types, formatters, and mock fallback data
-    server/              WeRead adapter, sync, and reading-data services
-  AGENTS.md              Project engineering rules
-  README.md              Project overview and onboarding
+    app/                             App Router pages and API routes
+    components/                      Wrappers + layout + feature components
+    lib/                             Types, formatters, cn(), mock data
+    server/                          WeRead adapter, sync, reading-data services
+    styles/                          neobrutalism theme mapped to WeReadAura tokens
+  AGENTS.md                          Project engineering rules
+  README.md                          Project overview and onboarding
 ```
 
 Important paths:
@@ -104,7 +113,9 @@ Important paths:
 - [src/app/books/[bookId]/page.tsx](D:\WeReadAura\src\app\books\[bookId]\page.tsx): single-book profile
 - [src/app/settings/page.tsx](D:\WeReadAura\src\app\settings\page.tsx): sync/settings surface
 - [src/lib/mock-data.ts](D:\WeReadAura\src\lib\mock-data.ts): MVP mock dataset
-- [src/app/globals.css](D:\WeReadAura\src\app\globals.css): global visual tokens and brutalist styles
+- [src/app/globals.css](D:\WeReadAura\src\app\globals.css): WeReadAura layout tokens and typography
+- [src/styles/neobrutalism-theme.css](D:\WeReadAura\src\styles\neobrutalism-theme.css): neobrutalism Tailwind theme mapped to project colors
+- [src/components/ui/](D:\WeReadAura\src\components\ui): thin wrappers over `@neo/components/ui/*`
 
 ## Docs Index
 
@@ -123,14 +134,13 @@ The app is mock-first until you connect WeRead:
 
 ## Design Direction
 
-The UI follows a plain neo-brutalism system:
+The UI uses [neobrutalism-components](https://github.com/ekmas/neobrutalism-components) for interactive primitives (`Button`, `Card`, `Badge`, `Input`) via a local gitignored clone and project wrappers in `src/components/ui/`.
 
-- paper-like background
-- thick black borders
-- hard offset shadows
-- large direct typography
-- minimal gradients
-- strong section boundaries
+WeReadAura keeps its own:
+
+- paper-like palette and accent tokens (`--paper`, `--ink`, etc.)
+- typography stack (Source Serif 4 + 方正雅宋; not the library default fonts)
+- layout shells (`Section`, `AppShell`, chart cards)
 
 Reference rules live in [docs/frontend-visual-style-guide.md](D:\WeReadAura\docs\frontend-visual-style-guide.md).
 
