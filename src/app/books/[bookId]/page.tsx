@@ -4,8 +4,8 @@ import { HighlightList } from "@/components/layout/HighlightList";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { Section } from "@/components/ui/Section";
-import { findBook, findHighlightsForBook } from "@/lib/mock-data";
 import { statusLabel } from "@/lib/utils";
+import { getBookDetail } from "@/server/services/reading-data";
 
 export default async function BookDetailPage({
   params,
@@ -13,13 +13,13 @@ export default async function BookDetailPage({
   params: Promise<{ bookId: string }>;
 }) {
   const { bookId } = await params;
-  const book = findBook(bookId);
+  const detail = await getBookDetail(bookId);
 
-  if (!book) {
+  if (!detail) {
     notFound();
   }
 
-  const bookHighlights = findHighlightsForBook(bookId);
+  const { book, highlights: bookHighlights } = detail;
 
   return (
     <Section

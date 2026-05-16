@@ -37,5 +37,12 @@ Desktop.ini
 tmp/
 temp/
 
+# local weread skill download artifacts
+weread-skills.zip
+weread-skills-extracted/
+
 # misc
 *.log
+weread-skills.zip
+weread-skills-extracted/
+

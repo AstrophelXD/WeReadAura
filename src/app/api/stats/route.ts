@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { categoryDistribution, dashboardData, readingTrend } from "@/lib/mock-data";
+import { getStatsPayload } from "@/server/services/reading-data";
 
-export function GET() {
-  return NextResponse.json({
-    metrics: dashboardData.metrics,
-    readingTrend,
-    categoryDistribution,
-  });
+export async function GET() {
+  const payload = await getStatsPayload();
+  return NextResponse.json(payload);
 }

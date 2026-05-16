@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { dashboardData } from "@/lib/mock-data";
+import { getDashboardData } from "@/server/services/reading-data";
 
-export function GET() {
-  return NextResponse.json(dashboardData);
+export async function GET() {
+  const data = await getDashboardData();
+  return NextResponse.json(data);
 }

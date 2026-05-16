@@ -1,20 +1,22 @@
 import { HighlightList } from "@/components/layout/HighlightList";
 import { Section } from "@/components/ui/Section";
-import { highlights } from "@/lib/mock-data";
+import { getNotesItems } from "@/server/services/reading-data";
 
-export default function NotesPage() {
+export default async function NotesPage() {
+  const { items } = await getNotesItems();
+
   return (
     <Section
       title="Highlights and notes"
       eyebrow="Notes"
-      description="A compact note center that keeps book source, quote, note body, and timestamp together."
+      description="Highlights and thoughts synced from WeRead notebooks and per-book exports."
     >
       <div className="mb-5 grid gap-4 md:grid-cols-3">
-        <input className="neo-input" placeholder="Search notes" readOnly value="systems / leader / tradition" />
+        <input className="neo-input" placeholder="Search notes" readOnly value="Use /api/notes?q= keyword" />
         <input className="neo-input" placeholder="Book filter" readOnly value="All books" />
         <input className="neo-input" placeholder="Date range" readOnly value="Last 30 days" />
       </div>
-      <HighlightList items={highlights} />
+      <HighlightList items={items} />
     </Section>
   );
 }

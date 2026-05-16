@@ -23,10 +23,9 @@ What is already implemented:
 
 What is not implemented yet:
 
-- Real WeRead gateway integration
 - Persistent database
 - User authentication beyond the planned architecture
-- Real sync jobs
+- Durable sync persistence (in-memory cache only for now)
 - Export/report generation
 
 ## Tech Stack
@@ -39,6 +38,16 @@ What is not implemented yet:
 
 The technical direction is documented in [docs/technical-architecture.md](D:\WeReadAura\docs\technical-architecture.md).
 
+## WeRead Skill Integration
+
+WeReadAura connects to the official [WeRead Skill](https://weread.qq.com/r/weread-skills) Agent API Gateway.
+
+1. Log in at [weread.qq.com/r/weread-skills](https://weread.qq.com/r/weread-skills) and copy your API key (`wrk-...`).
+2. Either set `WEREAD_API_KEY` in `.env.local` (see `.env.example`) or save the key on **Settings**.
+3. Open **Settings** and click **Sync now** to pull shelf, stats, highlights, and recommendations.
+
+Without a key, the app keeps using mock data for layout and development.
+
 ## Run Locally
 
 Requirements:
@@ -50,6 +59,7 @@ Install dependencies:
 
 ```bash
 npm install
+cp .env.example .env.local
 ```
 
 Start the dev server:
@@ -78,7 +88,8 @@ WeReadAura/
   src/
     app/                 App Router pages and API routes
     components/          Shared UI, layout, and chart components
-    lib/                 Mock data, types, and utilities
+    lib/                 Types, formatters, and mock fallback data
+    server/              WeRead adapter, sync, and reading-data services
   AGENTS.md              Project engineering rules
   README.md              Project overview and onboarding
 ```
@@ -104,17 +115,11 @@ Important paths:
 
 ## MVP Scope
 
-The current MVP is intentionally mock-first.
+The app is mock-first until you connect WeRead:
 
-That means:
-
-- Pages are real
-- Routing is real
-- Component structure is real
-- API surface is real
-- Data is still mocked
-
-This keeps the UI and internal DTO shape stable while the real WeRead adapter is still pending.
+- Pages and API routes are real
+- With an API key + sync, live WeRead data replaces mocks in memory
+- Without a key, mock data keeps the UI usable offline
 
 ## Design Direction
 
@@ -146,17 +151,13 @@ Available routes:
 - `GET /api/settings`
 - `PATCH /api/settings`
 
-These currently return mock data and are shaped to make later gateway replacement easier.
+Routes read from `src/server/services/reading-data.ts`, which serves synced WeRead data or mock fallbacks.
 
 ## Next Steps
 
-Recommended next implementation steps:
-
-1. Introduce the `WeReadGateway` adapter layer from the architecture doc.
-2. Replace `src/lib/mock-data.ts` with standardized service responses.
-3. Add database schema and repositories.
-4. Add sync status persistence.
-5. Add tests for analytics logic and route handlers.
+1. Add PostgreSQL persistence and sync snapshots.
+2. Add tests for transform and analytics logic.
+3. Wire interactive search/filter UI to the existing API query params.
 
 ## Notes
 

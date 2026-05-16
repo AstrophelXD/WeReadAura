@@ -1,18 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { highlights } from "@/lib/mock-data";
+import { getNotesItems } from "@/server/services/reading-data";
 
-export function GET(request: NextRequest) {
-  const query = request.nextUrl.searchParams.get("q")?.toLowerCase();
-
-  const items = query
-    ? highlights.filter(
-        (item) =>
-          item.bookTitle.toLowerCase().includes(query) ||
-          item.quote.toLowerCase().includes(query) ||
-          item.note?.toLowerCase().includes(query),
-      )
-    : highlights;
-
-  return NextResponse.json({ items, total: items.length });
+export async function GET(request: NextRequest) {
+  const query = request.nextUrl.searchParams.get("q") ?? undefined;
+  const payload = await getNotesItems(query);
+  return NextResponse.json(payload);
 }

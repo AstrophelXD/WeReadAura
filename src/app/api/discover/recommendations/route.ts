@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { recommendations } from "@/lib/mock-data";
+import { searchRecommendationsFromGateway } from "@/server/services/reading-data";
 
-export function GET() {
-  return NextResponse.json({ items: recommendations });
+export async function GET() {
+  const items = await searchRecommendationsFromGateway();
+  return NextResponse.json({ items });
 }

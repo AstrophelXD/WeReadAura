@@ -1,16 +1,41 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-type ButtonProps = {
-  href: string;
+type ButtonBaseProps = {
   children: ReactNode;
   secondary?: boolean;
 };
 
-export function Button({ href, children, secondary = false }: ButtonProps) {
+type LinkButtonProps = ButtonBaseProps & {
+  href: string;
+  type?: never;
+  onClick?: never;
+  disabled?: never;
+};
+
+type ActionButtonProps = ButtonBaseProps &
+  Pick<ButtonHTMLAttributes<HTMLButtonElement>, "type" | "onClick" | "disabled"> & {
+    href?: never;
+  };
+
+type ButtonProps = LinkButtonProps | ActionButtonProps;
+
+export function Button(props: ButtonProps) {
+  const className = `neo-btn ${props.secondary ? "neo-btn-secondary" : ""}`;
+
+  if ("href" in props && props.href) {
+    return (
+      <Link className={className} href={props.href}>
+        {props.children}
+      </Link>
+    );
+  }
+
+  const { children, type = "button", onClick, disabled } = props;
+
   return (
-    <Link className={`neo-btn ${secondary ? "neo-btn-secondary" : ""}`} href={href}>
+    <button className={className} type={type} onClick={onClick} disabled={disabled}>
       {children}
-    </Link>
+    </button>
   );
 }

@@ -7,9 +7,10 @@ import { RecommendationCard } from "@/components/layout/RecommendationCard";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Section } from "@/components/ui/Section";
-import { dashboardData } from "@/lib/mock-data";
+import { getDashboardData } from "@/server/services/reading-data";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const dashboardData = await getDashboardData();
   return (
     <>
       <section className="section-shell">
@@ -105,7 +106,7 @@ export default function HomePage() {
       <Section
         title="What to read next"
         eyebrow="Recommendations"
-        description="These are mock recommendation cards for the MVP, shaped to support future WeRead gateway data."
+        description="Personalized picks from WeRead when synced, otherwise sample cards for layout preview."
       >
         <div className="grid gap-5 lg:grid-cols-3">
           {dashboardData.recommendations.map((item) => (

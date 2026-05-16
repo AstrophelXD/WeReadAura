@@ -1,21 +1,30 @@
 import { RecommendationCard } from "@/components/layout/RecommendationCard";
 import { Card } from "@/components/ui/Card";
 import { Section } from "@/components/ui/Section";
-import { books, recommendations } from "@/lib/mock-data";
+import { getBookshelfItems, getRecommendations } from "@/server/services/reading-data";
 
-export default function DiscoverPage() {
+export default async function DiscoverPage() {
+  const [searchPreview, recommendations] = await Promise.all([
+    getBookshelfItems(),
+    getRecommendations(),
+  ]);
+
   return (
     <Section
       title="Search and discover"
       eyebrow="Discover"
-      description="This MVP keeps discovery simple: a visible search surface plus a recommendation block driven by recent reading patterns."
+      description="Store search uses WeRead Skill when connected; recommendations come from your synced profile."
     >
       <div className="mb-8 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
         <Card>
           <p className="text-sm font-semibold uppercase tracking-[0.06em]">Search books</p>
-          <input className="neo-input mt-4" readOnly value="Search results are mocked in this first version" />
+          <input
+            className="neo-input mt-4"
+            readOnly
+            value="Call GET /api/discover/search?q=keyword with your API key saved"
+          />
           <div className="mt-5 grid gap-4">
-            {books.slice(0, 3).map((book) => (
+            {searchPreview.items.slice(0, 3).map((book) => (
               <div
                 key={book.id}
                 className="rounded-[var(--radius-sm)] border-[2px] border-[var(--ink)] bg-white p-4"
@@ -28,15 +37,13 @@ export default function DiscoverPage() {
           </div>
         </Card>
         <Card className="neo-paper">
-          <p className="text-sm font-semibold uppercase tracking-[0.06em]">Why these suggestions</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.06em]">How discovery works</p>
           <p className="mt-4 text-lg font-semibold leading-7">
-            Your recent mix leans toward systems, institutions, and practical product thinking.
-          </p>
-          <p className="mt-4 font-medium leading-6">
-            The recommendation surface is shaped to later consume real WeRead recommendations while keeping a readable explanation layer.
+            Save your API key on Settings, sync once, then search the WeRead store or browse personalized picks.
           </p>
         </Card>
       </div>
+
       <div className="grid gap-5 lg:grid-cols-3">
         {recommendations.map((item) => (
           <RecommendationCard key={item.id} item={item} />
