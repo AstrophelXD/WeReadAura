@@ -1,4 +1,5 @@
-import type { Book, HighlightItem } from "@/lib/types";
+import { shouldFetchPopularForBookPage } from "@/lib/discover-preview-rules";
+import type { Book, HighlightItem, PopularHighlight } from "@/lib/types";
 import { formatDurationMinutes, formatUnixDate } from "@/lib/formatters";
 import type { GatewayContext, WeReadGateway } from "@/server/adapters/weread/gateway";
 import type { ExternalShelfBook } from "@/server/adapters/weread/types";
@@ -10,6 +11,7 @@ import {
   resolveStartedAt,
   type NotebookBookMeta,
 } from "@/server/services/weread-progress";
+import { fetchPopularHighlightsForBook } from "@/server/services/fetch-popular-highlights";
 import { fetchAllMyReviewsForBook } from "@/server/services/weread-reviews";
 import { transformHighlightsFromBookmarkList, transformShelfBook } from "@/server/services/weread-transform";
 
@@ -30,7 +32,7 @@ export async function fetchLiveBookDetail(
   context: GatewayContext,
   bookId: string,
   cachedBook?: Book,
-): Promise<{ book: Book; highlights: HighlightItem[] }> {
+): Promise<{ book: Book; highlights: HighlightItem[]; popularHighlights: PopularHighlight[] }> {
   const [info, progress, bookmarkList, reviewHighlights] = await Promise.all([
     gateway.getBookInfo(context, bookId),
     gateway.getBookProgress(context, bookId),
@@ -108,5 +110,14 @@ export async function fetchLiveBookDetail(
     book.finishedAt = formatUnixDate(progress.book?.finishTime) || book.lastReadAt;
   }
 
-  return { book, highlights: uniqueHighlights };
+  let popularHighlights: PopularHighlight[] = [];
+  if (shouldFetchPopularForBookPage(book, uniqueHighlights.length)) {
+    try {
+      popularHighlights = await fetchPopularHighlightsForBook(gateway, context, bookId);
+    } catch {
+      popularHighlights = [];
+    }
+  }
+
+  return { book, highlights: uniqueHighlights, popularHighlights };
 }

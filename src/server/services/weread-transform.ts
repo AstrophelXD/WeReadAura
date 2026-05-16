@@ -1,3 +1,4 @@
+import { shouldShowPopularHighlights } from "@/lib/discover-preview-rules";
 import type { ReadingStatus } from "@/lib/types";
 import type {
   Book,
@@ -343,7 +344,7 @@ export function buildDiscoverPreview(
     },
     onShelf,
     detail: transformBookDiscoverDetail(info),
-    popularHighlights: onShelf ? [] : popularHighlights,
+    popularHighlights: shouldShowPopularHighlights(shelfBook) ? popularHighlights : [],
     shelfProgress: onShelf
       ? {
           status: book.status,

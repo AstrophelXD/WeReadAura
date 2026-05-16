@@ -8,7 +8,8 @@ import {
   type StatsPeriod,
 } from "@/lib/stats-query";
 import { books as mockBooks, dashboardData, findBook, findHighlightsForBook } from "@/lib/mock-data";
-import type { Book, DashboardData, HighlightItem, RecommendationItem, StoreSearchHit } from "@/lib/types";
+import { shouldFetchPopularForBookPage } from "@/lib/discover-preview-rules";
+import type { Book, DashboardData, HighlightItem, PopularHighlight, RecommendationItem, StoreSearchHit } from "@/lib/types";
 import { getWeReadApiKey } from "@/server/auth/credentials";
 import { createGatewayContext, getWeReadGateway, isValidWeReadApiKey } from "@/server/adapters/weread/get-gateway";
 import {
@@ -17,6 +18,7 @@ import {
   snapshotToDashboard,
 } from "@/server/cache/sync-cache";
 import { fetchLiveBookDetail } from "@/server/services/fetch-live-book-detail";
+import { fetchPopularHighlightsForBook } from "@/server/services/fetch-popular-highlights";
 import { buildTrendForPeriod } from "@/server/services/stats-analytics";
 import { syncFromWeRead } from "@/server/services/weread-sync";
 import {
@@ -235,7 +237,20 @@ export async function getBookDetail(bookId: string) {
     snapshot?.highlights.filter((item) => item.bookId === bookId) ??
     findHighlightsForBook(bookId);
 
-  return { book, highlights };
+  let popularHighlights: PopularHighlight[] = [];
+  if (shouldFetchPopularForBookPage(book, highlights.length) && gateway && apiKey) {
+    try {
+      popularHighlights = await fetchPopularHighlightsForBook(
+        gateway,
+        createGatewayContext(apiKey),
+        bookId,
+      );
+    } catch {
+      popularHighlights = [];
+    }
+  }
+
+  return { book, highlights, popularHighlights };
 }
 
 function withShelfFlag(book: Book, shelfIds: Set<string>): StoreSearchHit {

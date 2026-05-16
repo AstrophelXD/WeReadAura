@@ -3,18 +3,21 @@
 import { Download } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 
+import { PopularHighlightsList } from "@/components/features/books/PopularHighlightsList";
 import { HighlightList } from "@/components/layout/HighlightList";
+import { Card } from "@/components/ui/Card";
 import { ListPagination } from "@/components/layout/ListPagination";
 import { Button } from "@/components/ui/Button";
 import { downloadTextFile, sanitizeFilenameSegment } from "@/lib/download-text";
 import { buildBookHighlightsMarkdown } from "@/lib/highlight-markdown";
 import { BOOK_HIGHLIGHTS_PAGE_SIZE, paginateSlice } from "@/lib/pagination";
-import type { HighlightItem } from "@/lib/types";
+import type { HighlightItem, PopularHighlight } from "@/lib/types";
 
 type BookHighlightsPanelProps = {
   bookTitle: string;
   bookAuthor: string;
   items: HighlightItem[];
+  popularHighlights?: PopularHighlight[];
   noteCount: number;
   highlightCount: number;
 };
@@ -23,6 +26,7 @@ export function BookHighlightsPanel({
   bookTitle,
   bookAuthor,
   items,
+  popularHighlights = [],
   noteCount,
   highlightCount,
 }: BookHighlightsPanelProps) {
@@ -56,8 +60,18 @@ export function BookHighlightsPanel({
           导出 Markdown
         </Button>
       </div>
-      <HighlightList items={slice} variant="book" />
-      <ListPagination currentPage={safePage} pageCount={pageCount} onPageChange={setPage} />
+      {items.length > 0 ? (
+        <>
+          <HighlightList items={slice} variant="book" />
+          <ListPagination currentPage={safePage} pageCount={pageCount} onPageChange={setPage} />
+        </>
+      ) : popularHighlights.length > 0 ? (
+        <PopularHighlightsList items={popularHighlights} />
+      ) : (
+        <Card>
+          <p className="type-empty">暂无划线或笔记。同步微信读书数据后，这里会展示最近内容。</p>
+        </Card>
+      )}
     </>
   );
 }

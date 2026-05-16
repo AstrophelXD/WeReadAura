@@ -6,6 +6,7 @@ import {
   buildDiscoverPreview,
   transformPopularHighlights,
 } from "@/server/services/weread-transform";
+import { shouldShowPopularHighlights } from "@/lib/discover-preview-rules";
 import { findBookshelfBook } from "@/server/services/reading-data";
 
 const MOCK_POPULAR: PopularHighlight[] = [
@@ -64,7 +65,7 @@ function mockPreviewFromRecommendation(bookId: string): BookDiscoverPreview | nu
       rating: 8.6,
       ratingCount: 1200,
     },
-    popularHighlights: onShelf ? [] : MOCK_POPULAR,
+    popularHighlights: shouldShowPopularHighlights(shelfBook) ? MOCK_POPULAR : [],
     shelfProgress: shelfBook
       ? {
           status: shelfBook.status,
@@ -84,7 +85,7 @@ function mockPreview(bookId: string): BookDiscoverPreview | null {
       book: shelfBook,
       onShelf: true,
       detail: { intro: shelfBook.summary },
-      popularHighlights: [],
+      popularHighlights: shouldShowPopularHighlights(shelfBook) ? MOCK_POPULAR : [],
       shelfProgress: {
         status: shelfBook.status,
         progress: shelfBook.progress,
@@ -138,10 +139,11 @@ export async function fetchDiscoverBookPreview(bookId: string): Promise<BookDisc
   try {
     const context = createGatewayContext(apiKey);
     const info = await gateway.getBookInfo(context, normalized);
-    const popularPayload = onShelf
-      ? { items: [], chapters: [] }
-      : await gateway.getBestBookmarks(context, normalized);
-    const popularHighlights = onShelf ? [] : transformPopularHighlights(popularPayload);
+    const fetchPopular = shouldShowPopularHighlights(shelfBook);
+    const popularPayload = fetchPopular
+      ? await gateway.getBestBookmarks(context, normalized)
+      : { items: [], chapters: [] };
+    const popularHighlights = fetchPopular ? transformPopularHighlights(popularPayload) : [];
 
     return buildDiscoverPreview(info, onShelf, shelfBook, popularHighlights);
   } catch {

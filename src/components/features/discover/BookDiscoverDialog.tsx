@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/Dialog";
 import { formatDurationLabel } from "@/lib/formatters";
+import { shouldShowPopularHighlights } from "@/lib/discover-preview-rules";
 import type { BookDiscoverPreview } from "@/lib/types";
 import { statusLabel } from "@/lib/utils";
 import { wereadReadingUrl } from "@/lib/weread-links";
@@ -70,6 +71,16 @@ export function BookDiscoverDialog({
 
   const title = preview?.book.title ?? fallbackTitle ?? "书籍详情";
   const author = preview?.book.author ?? fallbackAuthor ?? "";
+  const wantsPopularHighlights =
+    preview &&
+    shouldShowPopularHighlights(
+      preview.onShelf
+        ? {
+            ...preview.book,
+            minutesRead: preview.shelfProgress?.minutesRead ?? preview.book.minutesRead,
+          }
+        : undefined,
+    );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -138,7 +149,7 @@ export function BookDiscoverDialog({
                 </div>
               ) : null}
 
-              {!preview.onShelf && preview.popularHighlights.length > 0 ? (
+              {preview.popularHighlights.length > 0 ? (
                 <div>
                   <p className="type-field-label">热门划线</p>
                   <p className="type-caption-muted mt-1">
@@ -165,7 +176,7 @@ export function BookDiscoverDialog({
                 </div>
               ) : null}
 
-              {!preview.onShelf && preview.popularHighlights.length === 0 ? (
+              {wantsPopularHighlights && preview.popularHighlights.length === 0 ? (
                 <p className="type-caption-muted">暂无热门划线数据，可在微信读书 App 中查看。</p>
               ) : null}
             </div>

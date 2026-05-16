@@ -20,7 +20,7 @@ export default async function BookDetailPage({
     notFound();
   }
 
-  const { book, highlights: bookHighlights } = detail;
+  const { book, highlights: bookHighlights, popularHighlights = [] } = detail;
 
   return (
     <Section
@@ -74,6 +74,7 @@ export default async function BookDetailPage({
           bookTitle={book.title}
           bookAuthor={book.author}
           items={bookHighlights}
+          popularHighlights={popularHighlights}
           noteCount={book.notes}
           highlightCount={book.highlights}
         />
