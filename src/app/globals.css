@@ -1,16 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #0a0a0a;
-  --paper: #f7f0df;
-  --white: #ffffff;
-  --yellow: #ffdd33;
-  --pink: #ff7ab6;
-  --green: #6ee7a8;
-  --blue: #7cc7ff;
-  --orange: #ff9f43;
-  --muted: #e8dcc4;
-  --muted-2: #d9cfb8;
+  --ink: #1a1814;
+  --paper: #f4efe6;
+  --white: #fdfcfa;
+
+  --yellow: #c4a574;
+  --pink: #c49a9a;
+  --green: #8fa894;
+  --blue: #8a9bab;
+  --purple: #a398b5;
+  --orange: #c49a6e;
+
+  --muted: #e5ddd0;
+  --muted-2: #d4ccc0;
+
   --border: 3px solid var(--ink);
   --border-thin: 2px solid var(--ink);
   --shadow: 4px 4px 0 var(--ink);
@@ -18,6 +22,9 @@
   --radius: 0.75rem;
   --radius-sm: 0.4rem;
   --container: 1120px;
+
+  --font-serif: var(--font-source-serif), var(--font-noto-serif-sc), "Songti SC", "Noto Serif SC",
+    Georgia, "Times New Roman", serif;
 }
 
 * {
@@ -32,8 +39,9 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family:
-    "Space Grotesk", Inter, "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.55;
 }
 
 a {
@@ -62,7 +70,7 @@ select {
   top: 0;
   z-index: 40;
   border-bottom: var(--border);
-  background: color-mix(in srgb, var(--paper) 92%, white 8%);
+  background: color-mix(in srgb, var(--paper) 94%, white 6%);
 }
 
 .neo-btn {
@@ -73,9 +81,10 @@ select {
   gap: 0.5rem;
   border: var(--border);
   border-radius: var(--radius-sm);
-  background: var(--yellow);
+  background: var(--ink);
+  color: var(--paper);
   padding: 0.9rem 1.15rem;
-  font-weight: 800;
+  font-weight: 600;
   box-shadow: var(--shadow);
   transition:
     transform 120ms ease,
@@ -95,13 +104,19 @@ select {
 
 .neo-btn-secondary {
   background: var(--white);
+  color: var(--ink);
+}
+
+.neo-btn-accent {
+  background: var(--yellow);
+  color: var(--ink);
 }
 
 .neo-btn:focus-visible,
 .neo-input:focus-visible,
 button:focus-visible,
 a:focus-visible {
-  outline: 4px solid var(--blue);
+  outline: 3px solid var(--ink);
   outline-offset: 3px;
 }
 
@@ -120,7 +135,7 @@ a:focus-visible {
   border-radius: 999px;
   padding: 0.35rem 0.65rem;
   font-size: 0.85rem;
-  font-weight: 850;
+  font-weight: 600;
   box-shadow: 2px 2px 0 var(--ink);
 }
 
@@ -128,32 +143,34 @@ a:focus-visible {
   display: inline-flex;
   border: var(--border-thin);
   border-radius: 999px;
-  background: var(--green);
+  background: var(--muted);
   padding: 0.45rem 0.7rem;
   font-size: 0.9rem;
-  font-weight: 850;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   box-shadow: 2px 2px 0 var(--ink);
 }
 
 .section-title {
   font-size: clamp(2.1rem, 5vw, 4rem);
-  line-height: 0.92;
-  letter-spacing: -0.05em;
-  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 700;
 }
 
 .section-copy {
   max-width: 64ch;
   font-size: 1.06rem;
-  line-height: 1.6;
-  font-weight: 600;
+  line-height: 1.65;
+  font-weight: 400;
+  color: color-mix(in srgb, var(--ink) 82%, transparent);
 }
 
 .hero-title {
   font-size: clamp(3.3rem, 10vw, 7.3rem);
-  line-height: 0.9;
-  letter-spacing: -0.06em;
-  font-weight: 950;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  font-weight: 700;
 }
 
 .neo-input {
@@ -163,36 +180,48 @@ a:focus-visible {
   border-radius: var(--radius-sm);
   background: var(--white);
   padding: 0.9rem 1rem;
-  font-weight: 700;
-  box-shadow: inset 2px 2px 0 rgb(0 0 0 / 0.08);
+  font-weight: 500;
+  box-shadow: inset 2px 2px 0 rgb(0 0 0 / 0.06);
 }
 
 .neo-input::placeholder {
-  color: rgb(10 10 10 / 0.55);
+  color: rgb(26 24 20 / 0.45);
 }
 
 .metric-card {
   min-height: 180px;
 }
 
+.metric-card-accent {
+  border-left: 6px solid var(--yellow);
+}
+
 .neo-yellow {
-  background: var(--yellow);
+  background: color-mix(in srgb, var(--yellow) 28%, var(--white));
 }
 
 .neo-green {
-  background: var(--green);
+  background: color-mix(in srgb, var(--green) 24%, var(--white));
 }
 
 .neo-blue {
-  background: var(--blue);
+  background: color-mix(in srgb, var(--blue) 24%, var(--white));
 }
 
 .neo-pink {
-  background: var(--pink);
+  background: color-mix(in srgb, var(--pink) 24%, var(--white));
 }
 
 .neo-white {
   background: var(--white);
+}
+
+.neo-paper {
+  background: var(--paper);
+}
+
+.neo-muted {
+  background: var(--muted);
 }
 
 @media (max-width: 640px) {

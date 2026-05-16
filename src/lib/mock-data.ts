@@ -164,9 +164,9 @@ export const dashboardData: DashboardData = {
     "From bookshelf to highlights, this MVP turns WeRead data into a plain, bold reading dashboard you can actually review.",
   metrics: [
     { label: "Reading time", value: "1,226 min", hint: "Last 90 days", tone: "yellow" },
-    { label: "Active days", value: "24", hint: "Past 30 days", tone: "green" },
-    { label: "Finished books", value: "2", hint: "This month", tone: "blue" },
-    { label: "Highlights", value: "84", hint: "Across all books", tone: "pink" },
+    { label: "Active days", value: "24", hint: "Past 30 days", tone: "white" },
+    { label: "Finished books", value: "2", hint: "This month", tone: "white" },
+    { label: "Highlights", value: "84", hint: "Across all books", tone: "white" },
   ],
   readingTrend,
   categoryDistribution,

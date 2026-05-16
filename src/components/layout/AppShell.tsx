@@ -15,12 +15,12 @@ export function AppShell({ children }: { children: ReactNode }) {
     <>
       <header className="neo-nav">
         <div className="container-shell flex min-h-[72px] items-center justify-between gap-4 py-3">
-          <Link className="text-2xl font-black tracking-[-0.05em]" href="/">
+          <Link className="text-2xl font-bold tracking-[-0.03em]" href="/">
             WeReadAura
           </Link>
           <nav className="hidden items-center gap-3 md:flex">
             {navItems.map((item) => (
-              <Link key={item.href} className="font-extrabold" href={item.href}>
+              <Link key={item.href} className="font-semibold" href={item.href}>
                 {item.label}
               </Link>
             ))}
@@ -31,7 +31,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <footer className="border-t-[3px] border-[var(--ink)] py-8">
         <div className="container-shell flex flex-col gap-2 text-sm font-semibold md:flex-row md:items-center md:justify-between">
           <p>Minimal MVP for personal WeRead analytics.</p>
-          <p>Plain neo-brutalism, mock data first, real gateway later.</p>
+          <p>Document-style reading dashboard, mock data first.</p>
         </div>
       </footer>
     </>

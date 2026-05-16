@@ -19,14 +19,14 @@ export default function StatsPage() {
       </div>
       <div className="mt-8 grid gap-5 lg:grid-cols-2">
         <Card>
-          <p className="text-sm font-black uppercase tracking-[0.08em]">Last 5 weeks</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.06em]">Last 5 weeks</p>
           <p className="mt-2 text-lg font-semibold">Momentum is trending up after a slower week 3.</p>
           <div className="mt-6">
             <TrendChart data={readingTrend} />
           </div>
         </Card>
         <Card>
-          <p className="text-sm font-black uppercase tracking-[0.08em]">Subject balance</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.06em]">Subject balance</p>
           <p className="mt-2 text-lg font-semibold">Current reading is top-heavy toward history and product thinking.</p>
           <div className="mt-6">
             <DistributionChart data={categoryDistribution} />

@@ -25,21 +25,21 @@ export default function HomePage() {
               </Button>
             </div>
           </div>
-          <Card className="neo-yellow p-5 shadow-[var(--shadow-lg)]">
+          <Card className="neo-paper p-5 shadow-[var(--shadow-lg)]">
             <div className="rounded-[var(--radius)] border-[3px] border-[var(--ink)] bg-white p-6">
-              <p className="text-sm font-black uppercase tracking-[0.08em]">Last sync</p>
-              <p className="mt-4 text-5xl font-black tracking-[-0.06em]">
+              <p className="text-sm font-semibold uppercase tracking-[0.06em]">Last sync</p>
+              <p className="mt-4 text-5xl font-bold tracking-[-0.04em]">
                 {dashboardData.syncStatus.lastSyncedAt}
               </p>
               <p className="mt-3 text-lg font-semibold">{dashboardData.syncStatus.source}</p>
               <div className="mt-6 grid gap-3 md:grid-cols-2">
-                <div className="rounded-[var(--radius-sm)] border-[2px] border-[var(--ink)] bg-[var(--green)] p-4">
-                  <p className="text-sm font-black uppercase">Now reading</p>
-                  <p className="mt-2 text-2xl font-black">{dashboardData.activeBooks.length}</p>
+                <div className="rounded-[var(--radius-sm)] border-[2px] border-[var(--ink)] bg-[var(--muted)] p-4">
+                  <p className="text-sm font-semibold uppercase tracking-[0.04em]">Now reading</p>
+                  <p className="mt-2 text-2xl font-bold">{dashboardData.activeBooks.length}</p>
                 </div>
-                <div className="rounded-[var(--radius-sm)] border-[2px] border-[var(--ink)] bg-[var(--pink)] p-4">
-                  <p className="text-sm font-black uppercase">Fresh highlights</p>
-                  <p className="mt-2 text-2xl font-black">{dashboardData.recentHighlights.length}</p>
+                <div className="rounded-[var(--radius-sm)] border-[2px] border-[var(--ink)] bg-[var(--muted)] p-4">
+                  <p className="text-sm font-semibold uppercase tracking-[0.04em]">Fresh highlights</p>
+                  <p className="mt-2 text-2xl font-bold">{dashboardData.recentHighlights.length}</p>
                 </div>
               </div>
             </div>
@@ -66,14 +66,14 @@ export default function HomePage() {
       >
         <div className="grid gap-5 lg:grid-cols-2">
           <Card>
-            <p className="text-sm font-black uppercase tracking-[0.08em]">Weekly reading trend</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.06em]">Weekly reading trend</p>
             <p className="mt-2 text-lg font-semibold">Reading time climbed again in week 5.</p>
             <div className="mt-6">
               <TrendChart data={dashboardData.readingTrend} />
             </div>
           </Card>
           <Card>
-            <p className="text-sm font-black uppercase tracking-[0.08em]">Category distribution</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.06em]">Category distribution</p>
             <p className="mt-2 text-lg font-semibold">History and product books currently dominate the stack.</p>
             <div className="mt-6">
               <DistributionChart data={dashboardData.categoryDistribution} />

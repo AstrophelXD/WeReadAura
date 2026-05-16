@@ -11,8 +11,8 @@ export default function DiscoverPage() {
       description="This MVP keeps discovery simple: a visible search surface plus a recommendation block driven by recent reading patterns."
     >
       <div className="mb-8 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
-        <Card className="neo-blue">
-          <p className="text-sm font-black uppercase tracking-[0.08em]">Search books</p>
+        <Card>
+          <p className="text-sm font-semibold uppercase tracking-[0.06em]">Search books</p>
           <input className="neo-input mt-4" readOnly value="Search results are mocked in this first version" />
           <div className="mt-5 grid gap-4">
             {books.slice(0, 3).map((book) => (
@@ -20,15 +20,15 @@ export default function DiscoverPage() {
                 key={book.id}
                 className="rounded-[var(--radius-sm)] border-[2px] border-[var(--ink)] bg-white p-4"
               >
-                <p className="text-xl font-black tracking-[-0.04em]">{book.title}</p>
+                <p className="text-xl font-bold tracking-[-0.03em]">{book.title}</p>
                 <p className="mt-1 font-semibold">{book.author}</p>
                 <p className="mt-2 text-sm font-medium">{book.category}</p>
               </div>
             ))}
           </div>
         </Card>
-        <Card className="neo-yellow">
-          <p className="text-sm font-black uppercase tracking-[0.08em]">Why these suggestions</p>
+        <Card className="neo-paper">
+          <p className="text-sm font-semibold uppercase tracking-[0.06em]">Why these suggestions</p>
           <p className="mt-4 text-lg font-semibold leading-7">
             Your recent mix leans toward systems, institutions, and practical product thinking.
           </p>

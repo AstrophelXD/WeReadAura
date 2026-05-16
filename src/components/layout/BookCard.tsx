@@ -10,7 +10,7 @@ export function BookCard({ book }: { book: Book }) {
     <Card className="h-full">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-2xl font-black tracking-[-0.05em]">{book.title}</h3>
+          <h3 className="text-2xl font-bold tracking-[-0.03em]">{book.title}</h3>
           <p className="mt-1 font-semibold">{book.author}</p>
         </div>
         <Badge tone={book.coverTone}>{book.category}</Badge>
@@ -34,7 +34,7 @@ export function BookCard({ book }: { book: Book }) {
           <p>Last: {book.lastReadAt}</p>
         </div>
       </div>
-      <Link className="mt-6 inline-flex font-black underline underline-offset-4" href={`/books/${book.id}`}>
+      <Link className="mt-6 inline-flex font-semibold underline underline-offset-4" href={`/books/${book.id}`}>
         Open book profile
       </Link>
     </Card>
