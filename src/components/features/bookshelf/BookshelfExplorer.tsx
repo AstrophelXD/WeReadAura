@@ -54,7 +54,7 @@ export function BookshelfExplorer({ allBooks, initialQuery }: BookshelfExplorerP
 
   return (
     <>
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-sm font-semibold">
+      <div className="type-caption mb-3 flex flex-wrap items-center justify-between gap-2">
         <p>
           显示 {filtered.length} / {allBooks.length} 本
           {isPending ? " · 更新中…" : null}
@@ -105,7 +105,7 @@ export function BookshelfExplorer({ allBooks, initialQuery }: BookshelfExplorerP
       </form>
 
       {filtered.length === 0 ? (
-        <p className="font-semibold leading-6">没有匹配的书籍，试试调整关键词或筛选条件。</p>
+        <p className="type-empty">没有匹配的书籍，试试调整关键词或筛选条件。</p>
       ) : (
         <div className="grid gap-5 xl:grid-cols-2">
           {filtered.map((book) => (

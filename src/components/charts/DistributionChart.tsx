@@ -3,14 +3,14 @@ import { formatPercent } from "@/lib/utils";
 
 export function DistributionChart({ data }: { data: DistributionPoint[] }) {
   if (data.length === 0) {
-    return <p className="font-semibold">暂无分类数据，请先同步微信读书统计。</p>;
+    return <p className="type-empty">暂无分类数据，请先同步微信读书统计。</p>;
   }
 
   return (
     <div className="space-y-4">
       {data.map((item) => (
         <div key={item.label} className="space-y-2">
-          <div className="flex items-center justify-between text-sm font-semibold">
+          <div className="type-caption flex items-center justify-between">
             <span>{item.label}</span>
             <span>{formatPercent(item.value)}</span>
           </div>

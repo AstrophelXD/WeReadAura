@@ -26,7 +26,7 @@ type ButtonProps = LinkButtonProps | ActionButtonProps;
 
 export function Button(props: ButtonProps) {
   const variant = props.secondary ? "neutral" : "default";
-  const className = cn("min-h-12 px-5 text-base font-semibold max-sm:w-full", props.className);
+  const className = cn("min-h-12 px-5 text-sm font-base max-sm:w-full md:text-base", props.className);
 
   if ("href" in props && props.href) {
     return (

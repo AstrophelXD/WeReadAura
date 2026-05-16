@@ -121,12 +121,12 @@ export function SettingsPanel({
   return (
     <div className="grid gap-5 lg:grid-cols-3">
       <Card>
-        <p className="text-sm font-semibold uppercase tracking-[0.06em]">数据源</p>
-        <p className="mt-3 text-2xl font-bold">{source}</p>
-        <p className="mt-3 font-medium leading-6">
+        <p className="type-label">数据源</p>
+        <p className="type-metric-sm mt-3">{source}</p>
+        <p className="type-body mt-3">
           当前状态：<strong>{modeLabel(mode)}</strong>。请使用微信读书官方 Skill 页面获取 API Key。
         </p>
-        <p className="mt-3 text-sm font-medium">
+        <p className="type-caption mt-3">
           <a className="underline" href="https://weread.qq.com/r/weread-skills" target="_blank" rel="noreferrer">
             前往微信读书获取 API Key
           </a>
@@ -134,9 +134,9 @@ export function SettingsPanel({
       </Card>
 
       <Card>
-        <p className="text-sm font-semibold uppercase tracking-[0.06em]">上次同步</p>
-        <p className="mt-3 text-2xl font-bold">{lastSyncedAt}</p>
-        <p className="mt-3 font-medium leading-6">
+        <p className="type-label">上次同步</p>
+        <p className="type-metric-sm mt-3">{lastSyncedAt}</p>
+        <p className="type-body mt-3">
           {hasApiKey
             ? "保存密钥后点击同步，将拉取书架、统计、划线与推荐。"
             : "请先保存 API Key，或在 .env.local 中配置 WEREAD_API_KEY。"}
@@ -154,8 +154,8 @@ export function SettingsPanel({
       </Card>
 
       <Card className="neo-paper">
-        <p className="text-sm font-semibold uppercase tracking-[0.06em]">API Key</p>
-        <p className="mt-3 font-medium leading-6">
+        <p className="type-label">API Key</p>
+        <p className="type-body mt-3">
           密钥保存在本机 HTTP-only Cookie，不会写入代码仓库。也可在 <code>.env.local</code> 中设置{" "}
           <code>WEREAD_API_KEY</code>。
         </p>
@@ -178,7 +178,7 @@ export function SettingsPanel({
             返回总览
           </Button>
         </div>
-        {message ? <p className="mt-4 font-semibold leading-6">{message}</p> : null}
+        {message ? <p className="type-body mt-4">{message}</p> : null}
       </Card>
     </div>
   );

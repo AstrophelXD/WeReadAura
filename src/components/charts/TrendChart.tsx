@@ -2,7 +2,7 @@ import type { TrendPoint } from "@/lib/types";
 
 export function TrendChart({ data }: { data: TrendPoint[] }) {
   if (data.length === 0) {
-    return <p className="font-semibold">暂无趋势数据，请先同步微信读书统计。</p>;
+    return <p className="type-empty">暂无趋势数据，请先同步微信读书统计。</p>;
   }
 
   const max = Math.max(...data.map((item) => item.minutes), 1);
@@ -17,7 +17,7 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
               style={{ height: `${Math.max(16, (item.minutes / max) * 100)}%` }}
             />
           </div>
-          <div className="text-center text-sm font-semibold">
+          <div className="type-caption text-center">
             <p>{item.label}</p>
             <p>{item.minutes} 分</p>
           </div>

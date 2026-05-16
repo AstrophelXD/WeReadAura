@@ -29,19 +29,17 @@ export default async function HomePage() {
           </div>
           <Card className="neo-paper p-5 shadow-[var(--shadow-lg)]">
             <div className="rounded-[var(--radius)] border-[3px] border-[var(--ink)] bg-white p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.06em]">上次同步</p>
-              <p className="mt-4 text-5xl font-bold tracking-[-0.04em]">
-                {dashboardData.syncStatus.lastSyncedAt}
-              </p>
-              <p className="mt-3 text-lg font-semibold">{dashboardData.syncStatus.source}</p>
+              <p className="type-label">上次同步</p>
+              <p className="type-metric-lg mt-4">{dashboardData.syncStatus.lastSyncedAt}</p>
+              <p className="type-card-subtitle mt-3">{dashboardData.syncStatus.source}</p>
               <div className="mt-6 grid gap-3 md:grid-cols-2">
                 <div className="rounded-[var(--radius-sm)] border-[2px] border-[var(--ink)] bg-[var(--muted)] p-4">
-                  <p className="text-sm font-semibold uppercase tracking-[0.04em]">在读</p>
-                  <p className="mt-2 text-2xl font-bold">{dashboardData.activeBooks.length}</p>
+                  <p className="type-label">在读</p>
+                  <p className="type-metric-sm mt-2">{dashboardData.activeBooks.length}</p>
                 </div>
                 <div className="rounded-[var(--radius-sm)] border-[2px] border-[var(--ink)] bg-[var(--muted)] p-4">
-                  <p className="text-sm font-semibold uppercase tracking-[0.04em]">近期划线</p>
-                  <p className="mt-2 text-2xl font-bold">{dashboardData.recentHighlights.length}</p>
+                  <p className="type-label">近期划线</p>
+                  <p className="type-metric-sm mt-2">{dashboardData.recentHighlights.length}</p>
                 </div>
               </div>
             </div>
@@ -68,15 +66,15 @@ export default async function HomePage() {
       >
         <div className="grid gap-5 lg:grid-cols-2">
           <Card>
-            <p className="text-sm font-semibold uppercase tracking-[0.06em]">阅读趋势</p>
-            <p className="mt-2 text-lg font-semibold">按日分桶展示本月阅读时长。</p>
+            <p className="type-label">阅读趋势</p>
+            <p className="type-caption mt-2">按日分桶展示本月阅读时长。</p>
             <div className="mt-6">
               <TrendChart data={dashboardData.readingTrend} />
             </div>
           </Card>
           <Card>
-            <p className="text-sm font-semibold uppercase tracking-[0.06em]">分类占比</p>
-            <p className="mt-2 text-lg font-semibold">来自微信读书偏好分类的相对权重。</p>
+            <p className="type-label">分类占比</p>
+            <p className="type-caption mt-2">来自微信读书偏好分类的相对权重。</p>
             <div className="mt-6">
               <DistributionChart data={dashboardData.categoryDistribution} />
             </div>

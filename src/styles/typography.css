@@ -1,0 +1,283 @@
+/**
+ * Typography aligned with ekmas/neobrutalism-components (font-base / font-heading weights,
+ * text scale, leading). Font-family stays on body via globals.css (--font-serif).
+ */
+
+@layer base {
+  body {
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: var(--base-font-weight);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: var(--heading-font-weight);
+  }
+}
+
+@layer components {
+  .font-heading {
+    font-weight: var(--heading-font-weight);
+  }
+
+  .font-base {
+    font-weight: var(--base-font-weight);
+  }
+
+  .type-hero {
+    font-weight: var(--heading-font-weight);
+    line-height: 1.5;
+    font-size: 1.5rem;
+  }
+
+  .type-section-title {
+    font-weight: var(--heading-font-weight);
+    line-height: 1.5;
+    font-size: 1.375rem;
+  }
+
+  .type-section-copy {
+    font-weight: var(--base-font-weight);
+    line-height: 1.375;
+    font-size: 1.25rem;
+    max-width: 48rem;
+    color: color-mix(in srgb, var(--ink) 82%, transparent);
+  }
+
+  .type-eyebrow,
+  .neo-eyebrow {
+    font-weight: var(--base-font-weight);
+    font-size: 0.875rem;
+    line-height: 1.25;
+  }
+
+  .neo-eyebrow {
+    display: inline-flex;
+    border: var(--border-thin);
+    border-radius: 999px;
+    background: var(--muted);
+    padding: 0.45rem 0.7rem;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+
+  .hero-title {
+    font-weight: var(--heading-font-weight);
+    line-height: 1.5;
+    font-size: 1.5rem;
+  }
+
+  .section-title {
+    font-weight: var(--heading-font-weight);
+    line-height: 1.5;
+    font-size: 1.375rem;
+  }
+
+  .section-copy {
+    font-weight: var(--base-font-weight);
+    line-height: 1.375;
+    font-size: 1.25rem;
+    max-width: 48rem;
+    color: color-mix(in srgb, var(--ink) 82%, transparent);
+  }
+
+  .type-card-title {
+    font-weight: var(--heading-font-weight);
+    line-height: 1;
+    font-size: 1rem;
+  }
+
+  .type-card-title-lg {
+    font-weight: var(--heading-font-weight);
+    line-height: 1;
+    font-size: 1.25rem;
+  }
+
+  .type-card-subtitle {
+    font-weight: var(--base-font-weight);
+    font-size: 0.875rem;
+    line-height: 1.25;
+  }
+
+  .type-body {
+    font-weight: var(--base-font-weight);
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .type-body-lg {
+    font-weight: var(--base-font-weight);
+    font-size: 1rem;
+    line-height: 1.375;
+  }
+
+  .type-body-snug {
+    font-weight: var(--base-font-weight);
+    line-height: 1.375;
+    font-size: 1.25rem;
+  }
+
+  .type-label {
+    font-weight: var(--heading-font-weight);
+    font-size: 0.875rem;
+    line-height: 1;
+  }
+
+  .type-metric {
+    font-weight: var(--heading-font-weight);
+    line-height: 1.5;
+    font-size: 2.25rem;
+  }
+
+  .type-metric-lg {
+    font-weight: var(--heading-font-weight);
+    line-height: 1.5;
+    font-size: 3rem;
+  }
+
+  .type-metric-sm {
+    font-weight: var(--heading-font-weight);
+    line-height: 1.5;
+    font-size: 1.5rem;
+  }
+
+  .type-caption {
+    font-weight: var(--base-font-weight);
+    font-size: 0.875rem;
+    line-height: 1.25;
+  }
+
+  .type-caption-muted {
+    font-weight: var(--base-font-weight);
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: color-mix(in srgb, var(--ink) 72%, transparent);
+  }
+
+  .type-nav-brand {
+    font-weight: var(--heading-font-weight);
+    line-height: 1;
+    font-size: 1.25rem;
+  }
+
+  .type-nav-link {
+    font-weight: var(--base-font-weight);
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .type-link {
+    font-weight: var(--base-font-weight);
+    font-size: 1rem;
+    line-height: 1.5;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .type-empty {
+    font-weight: var(--base-font-weight);
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+}
+
+@media (min-width: 640px) {
+  @layer components {
+    .type-hero,
+    .hero-title {
+      font-size: 2.0625rem;
+    }
+
+    .type-section-title,
+    .section-title {
+      font-size: 1.875rem;
+    }
+
+    .type-section-copy {
+      font-size: 1.25rem;
+    }
+
+    .type-card-title {
+      font-size: 1.125rem;
+    }
+
+    .type-card-title-lg {
+      font-size: 1.5rem;
+    }
+
+    .type-card-subtitle {
+      font-size: 1rem;
+    }
+
+    .type-body-lg {
+      font-size: 1.125rem;
+    }
+
+    .type-metric {
+      font-size: 3rem;
+    }
+
+    .type-metric-lg {
+      font-size: 3.75rem;
+    }
+
+    .type-nav-brand {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  @layer components {
+    .type-hero,
+    .hero-title {
+      font-size: 3rem;
+    }
+
+    .type-section-title,
+    .section-title {
+      font-size: 2.25rem;
+    }
+
+    .type-section-copy,
+    .section-copy {
+      font-size: 1.5rem;
+    }
+
+    .type-body-snug {
+      font-size: 1.5rem;
+    }
+
+    .type-metric-lg {
+      font-size: 3.75rem;
+    }
+  }
+}
+
+@media (min-width: 1280px) {
+  @layer components {
+    .type-hero,
+    .hero-title {
+      font-size: 3.75rem;
+    }
+
+    .type-section-title,
+    .section-title {
+      font-size: 3rem;
+    }
+
+    .type-section-copy,
+    .section-copy {
+      font-size: 1.875rem;
+    }
+
+    .type-body-snug {
+      font-size: 1.875rem;
+    }
+  }
+}
+

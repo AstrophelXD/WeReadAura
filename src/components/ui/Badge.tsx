@@ -24,7 +24,7 @@ export function Badge({ children, tone = "white", className }: BadgeProps) {
     <NeoBadge
       variant="neutral"
       className={cn(
-        "rounded-full px-3 py-1 text-sm font-semibold shadow-shadow",
+        "rounded-full px-3 py-1 text-xs font-base shadow-shadow",
         toneClasses[tone],
         className,
       )}

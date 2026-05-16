@@ -43,7 +43,7 @@ export function NotesExplorer({ allItems, initialQuery }: NotesExplorerProps) {
 
   return (
     <>
-      <div className="mb-3 text-sm font-semibold">
+      <div className="type-caption mb-3">
         <p>
           显示 {filtered.length} / {allItems.length} 条
           {isPending ? " · 更新中…" : null}

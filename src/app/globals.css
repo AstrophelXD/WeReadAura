@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../styles/neobrutalism-theme.css";
+@import "../styles/typography.css";
 
 /* FangZheng YaSong: 标 / 中 for body, 粗 optional for emphasis. */
 @font-face {
@@ -67,8 +68,6 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-serif);
-  font-size: 1.0625rem;
-  line-height: 1.55;
 }
 
 a {
@@ -104,40 +103,6 @@ button:focus-visible,
 a:focus-visible {
   outline: 3px solid var(--ink);
   outline-offset: 3px;
-}
-
-.neo-eyebrow {
-  display: inline-flex;
-  border: var(--border-thin);
-  border-radius: 999px;
-  background: var(--muted);
-  padding: 0.45rem 0.7rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  box-shadow: 2px 2px 0 var(--ink);
-}
-
-.section-title {
-  font-size: clamp(2.1rem, 5vw, 4rem);
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  font-weight: 700;
-}
-
-.section-copy {
-  max-width: 64ch;
-  font-size: 1.06rem;
-  line-height: 1.65;
-  font-weight: 400;
-  color: color-mix(in srgb, var(--ink) 82%, transparent);
-}
-
-.hero-title {
-  font-size: clamp(3.3rem, 10vw, 7.3rem);
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-  font-weight: 700;
 }
 
 .metric-card {

@@ -29,31 +29,31 @@ export default async function BookDetailPage({
             <Badge tone={book.coverTone}>{book.category}</Badge>
             <Badge tone="white">{statusLabel(book.status)}</Badge>
           </div>
-          <p className="mt-5 text-lg font-semibold">{book.author}</p>
-          <p className="mt-6 text-6xl font-bold tracking-[-0.04em]">{book.progress}%</p>
-          <p className="mt-2 text-sm font-semibold uppercase tracking-[0.04em]">当前进度</p>
+          <p className="type-card-subtitle mt-5">{book.author}</p>
+          <p className="type-metric-lg mt-6">{book.progress}%</p>
+          <p className="type-label mt-2">当前进度</p>
           <div className="mt-6 h-5 rounded-[999px] border-[2px] border-[var(--ink)] bg-[var(--muted)]">
             <div className="h-full rounded-[999px] bg-[var(--ink)]" style={{ width: `${book.progress}%` }} />
           </div>
         </Card>
         <Card>
-          <p className="text-sm font-semibold uppercase tracking-[0.04em]">阅读轨迹</p>
+          <p className="type-label">阅读轨迹</p>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.04em]">开始阅读</p>
-              <p className="mt-2 text-xl font-bold">{book.startedAt || "—"}</p>
+              <p className="type-label">开始阅读</p>
+              <p className="type-card-title mt-2">{book.startedAt || "—"}</p>
             </div>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.04em]">最近阅读</p>
-              <p className="mt-2 text-xl font-bold">{book.lastReadAt || "—"}</p>
+              <p className="type-label">最近阅读</p>
+              <p className="type-card-title mt-2">{book.lastReadAt || "—"}</p>
             </div>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.04em]">阅读时长</p>
-              <p className="mt-2 text-xl font-bold">{book.minutesRead} 分钟</p>
+              <p className="type-label">阅读时长</p>
+              <p className="type-card-title mt-2">{book.minutesRead} 分钟</p>
             </div>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.04em]">想法 / 划线</p>
-              <p className="mt-2 text-xl font-bold">
+              <p className="type-label">想法 / 划线</p>
+              <p className="type-card-title mt-2">
                 {book.notes} / {book.highlights}
               </p>
             </div>
@@ -61,7 +61,7 @@ export default async function BookDetailPage({
         </Card>
       </div>
       <div className="mt-8">
-        <p className="mb-4 text-sm font-semibold">
+        <p className="type-caption mb-4">
           共 {bookHighlights.length} 条划线与想法
           {bookHighlights.length < book.highlights + book.notes
             ? `（笔记本统计：${book.highlights} 条划线、${book.notes} 条想法）`

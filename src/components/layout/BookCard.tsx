@@ -10,14 +10,14 @@ export function BookCard({ book }: { book: Book }) {
     <Card className="h-full">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-2xl font-bold tracking-[-0.03em]">{book.title}</h3>
-          <p className="mt-1 font-semibold">{book.author}</p>
+          <h3 className="type-card-title-lg">{book.title}</h3>
+          <p className="type-card-subtitle mt-1">{book.author}</p>
         </div>
         <Badge tone={book.coverTone}>{book.category}</Badge>
       </div>
-      <p className="text-sm font-medium leading-6">{book.summary}</p>
+      <p className="type-caption">{book.summary}</p>
       <div className="mt-5 space-y-3">
-        <div className="flex items-center justify-between text-sm font-bold">
+        <div className="type-caption flex items-center justify-between font-heading">
           <span>{statusLabel(book.status)}</span>
           <span>{book.progress}%</span>
         </div>
@@ -27,14 +27,14 @@ export function BookCard({ book }: { book: Book }) {
             style={{ width: `${book.progress}%` }}
           />
         </div>
-        <div className="grid grid-cols-2 gap-3 text-sm font-semibold">
+        <div className="type-caption grid grid-cols-2 gap-3">
           <p>已读 {book.minutesRead} 分钟</p>
           <p>{book.highlights} 条划线</p>
           <p>{book.notes} 条想法</p>
           <p>最近：{book.lastReadAt || "—"}</p>
         </div>
       </div>
-      <Link className="mt-6 inline-flex font-semibold underline underline-offset-4" href={`/books/${book.id}`}>
+      <Link className="type-link mt-6 inline-flex" href={`/books/${book.id}`}>
         查看书籍详情
       </Link>
     </Card>

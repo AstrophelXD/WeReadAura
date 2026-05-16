@@ -5,7 +5,7 @@ export function HighlightList({ items }: { items: HighlightItem[] }) {
   if (items.length === 0) {
     return (
       <Card>
-        <p className="font-semibold leading-6">暂无划线或笔记。同步微信读书数据后，这里会展示最近内容。</p>
+        <p className="type-empty">暂无划线或笔记。同步微信读书数据后，这里会展示最近内容。</p>
       </Card>
     );
   }
@@ -14,10 +14,10 @@ export function HighlightList({ items }: { items: HighlightItem[] }) {
     <div className="grid gap-5 md:grid-cols-3">
       {items.map((item) => (
         <Card key={item.id}>
-          <p className="text-sm font-semibold uppercase tracking-[0.06em]">{item.bookTitle}</p>
-          <p className="mt-4 text-lg font-medium leading-7">「{item.quote}」</p>
-          {item.note ? <p className="mt-4 text-sm font-medium leading-6">想法：{item.note}</p> : null}
-          <p className="mt-4 text-sm font-semibold">
+          <p className="type-label">{item.bookTitle}</p>
+          <p className="type-body-lg mt-4">「{item.quote}」</p>
+          {item.note ? <p className="type-caption mt-4">想法：{item.note}</p> : null}
+          <p className="type-caption mt-4 font-heading">
             {item.chapter} · {item.createdAt}
           </p>
         </Card>

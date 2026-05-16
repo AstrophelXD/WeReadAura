@@ -56,7 +56,7 @@ export function DiscoverExplorer({ recommendations, hasLiveData }: DiscoverExplo
     <>
       <div className="mb-8 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
         <Card>
-          <p className="text-sm font-semibold uppercase tracking-[0.06em]">搜索书城</p>
+          <p className="type-label">搜索书城</p>
           <form className="mt-4 flex flex-wrap gap-3" onSubmit={runSearch}>
             <Input
               className="min-w-[12rem] flex-1"
@@ -71,15 +71,15 @@ export function DiscoverExplorer({ recommendations, hasLiveData }: DiscoverExplo
 
           <div className="mt-5 space-y-4">
             {!searched ? (
-              <p className="font-medium leading-6 text-[color-mix(in_srgb,var(--ink)_75%,transparent)]">
+              <p className="type-body text-[color-mix(in_srgb,var(--ink)_75%,transparent)]">
                 {hasLiveData
                   ? "在上方输入关键词搜索微信读书书城；结果会标注是否已在你的书架中。"
                   : "连接并同步微信读书后，可搜索书城。未连接时仅在本地演示数据中搜索。"}
               </p>
             ) : null}
-            {error ? <p className="font-semibold leading-6">{error}</p> : null}
+            {error ? <p className="type-body">{error}</p> : null}
             {searched && !loading && hits.length === 0 && !error ? (
-              <p className="font-semibold leading-6">没有找到相关书籍，换个关键词试试。</p>
+              <p className="type-body">没有找到相关书籍，换个关键词试试。</p>
             ) : null}
             {hits.map((hit) => (
               <StoreSearchHitCard key={hit.book.id} hit={hit} />
@@ -87,8 +87,8 @@ export function DiscoverExplorer({ recommendations, hasLiveData }: DiscoverExplo
           </div>
         </Card>
         <Card className="neo-paper">
-          <p className="text-sm font-semibold uppercase tracking-[0.06em]">提示</p>
-          <ul className="mt-4 space-y-3 text-base font-medium leading-7">
+          <p className="type-label">提示</p>
+          <ul className="type-body mt-4 space-y-3">
             <li>已在书架的书可点进详情查看进度与划线。</li>
             <li>推荐区在下方，来自微信读书「为你推荐」。</li>
             <li>搜索依赖 API Key；请确保设置页已配置并同步。</li>

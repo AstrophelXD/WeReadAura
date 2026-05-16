@@ -28,15 +28,15 @@ export default async function StatsPage() {
       </div>
       <div className="mt-8 grid gap-5 lg:grid-cols-2">
         <Card>
-          <p className="text-sm font-semibold uppercase tracking-[0.06em]">阅读趋势</p>
-          <p className="mt-2 text-lg font-semibold">按日展示本月阅读时长分布。</p>
+          <p className="type-label">阅读趋势</p>
+          <p className="type-caption mt-2">按日展示本月阅读时长分布。</p>
           <div className="mt-6">
             <TrendChart data={readingTrend} />
           </div>
         </Card>
         <Card>
-          <p className="text-sm font-semibold uppercase tracking-[0.06em]">分类占比</p>
-          <p className="mt-2 text-lg font-semibold">偏好分类在阅读时长中的相对权重。</p>
+          <p className="type-label">分类占比</p>
+          <p className="type-caption mt-2">偏好分类在阅读时长中的相对权重。</p>
           <div className="mt-6">
             <DistributionChart data={categoryDistribution} />
           </div>

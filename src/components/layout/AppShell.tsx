@@ -24,12 +24,12 @@ export function AppShell({
     <>
       <header className="neo-nav">
         <div className="container-shell flex min-h-[72px] items-center justify-between gap-4 py-3">
-          <Link className="text-2xl font-bold tracking-[-0.03em]" href="/">
+          <Link className="type-nav-brand" href="/">
             WeReadAura
           </Link>
           <nav className="hidden items-center gap-3 md:flex">
             {navItems.map((item) => (
-              <Link key={item.href} className="font-semibold" href={item.href}>
+              <Link key={item.href} className="type-nav-link" href={item.href}>
                 {item.label}
               </Link>
             ))}
@@ -39,7 +39,7 @@ export function AppShell({
       <DataStatusBanner info={dataSource} />
       <main>{children}</main>
       <footer className="border-t-[3px] border-[var(--ink)] py-8">
-        <div className="container-shell flex flex-col gap-2 text-sm font-semibold md:flex-row md:items-center md:justify-between">
+        <div className="type-caption container-shell flex flex-col gap-2 sm:text-base md:flex-row md:items-center md:justify-between">
           <p>微信读书个人阅读分析工具</p>
           <p>连接 Skill API · 书架 · 统计 · 划线 · 推荐</p>
         </div>

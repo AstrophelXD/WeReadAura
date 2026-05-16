@@ -157,34 +157,41 @@
 
 组件库内的 `font-base` / `font-heading` 仅表示字重，不替换上述 font-family。
 
-### 5.2 字级建议
+### 5.2 字级与行距（对齐 neobrutalism-components）
 
-- Hero H1：`clamp(3rem, 9vw, 8rem)`
-- 页面主标题：`clamp(2.5rem, 7vw, 5.5rem)`
-- Section H2：`clamp(2rem, 5vw, 4rem)`
-- 卡片标题：`1.25rem` 到 `2rem`
-- 正文：`1rem` 到 `1.125rem`
-- 按钮：`0.95rem` 到 `1rem`
+排版 token 集中在 `src/styles/typography.css`，页面与组件应使用语义 class，避免散落 `text-*` / `leading-*`：
+
+| 语义 class | 用途 | 规格要点（与 [neobrutalism 首页](https://github.com/ekmas/neobrutalism-components) 一致） |
+| --- | --- | --- |
+| `type-hero` | Hero H1 | `font-heading`，`leading-normal`，响应式 `text-2xl` → `2xl:text-6xl` |
+| `type-section-title` | Section H2 | `font-heading`，`leading-normal`，`text-[22px]` → `2xl:text-5xl` |
+| `type-section-copy` | Section 说明 | `font-base`，`leading-snug`，`text-xl` → `2xl:text-3xl` |
+| `type-eyebrow` | 区块眉标（配合 `.neo-eyebrow` 边框） | `font-base`，`text-sm` |
+| `type-card-title` / `type-card-title-lg` | 卡片标题 | `font-heading`，`leading-none` |
+| `type-card-subtitle` | 作者、副标题 | `font-base`，`text-sm` → `sm:text-base` |
+| `type-body` / `type-body-lg` | 正文 | `font-base`，`text-base`，`leading-normal` |
+| `type-body-snug` | 较长引导文案 | `font-base`，`leading-snug` |
+| `type-label` | 卡片内小标题、指标名 | `font-heading`，`text-sm`，`leading-none` |
+| `type-metric` / `type-metric-lg` / `type-metric-sm` | 大数字 | `font-heading`，`leading-normal` |
+| `type-caption` / `type-caption-muted` | 辅助说明 | `font-base`，`text-sm` |
+| `type-nav-brand` / `type-nav-link` | 导航 | 见 typography.css |
+| `type-link` | 文内链接 | `font-base`，下划线 |
+| `type-empty` | 空态、提示 | `font-base`，`text-base` |
+
+全局别名（`globals.css`）：`.hero-title`、`.section-title`、`.section-copy`、`.neo-eyebrow` 分别 `@apply` 上述类型。
+
+组件默认字号：
+
+- `Button`：`text-sm`（桌面 CTA 可用 `md:text-base`）
+- `Input` / `Select`：`text-sm`
+- `Badge`：`text-xs`
 
 ### 5.3 字体风格
 
-- 标题加粗，尽量紧凑
-- 标题可用轻微负字距
-- 正文保持清晰，不追求花哨排版
-- 大段说明文字尽量拆短，适合快速扫读
-
-推荐规则：
-
-```css
-letter-spacing: -0.04em;
-line-height: 0.95;
-```
-
-正文规则：
-
-```css
-line-height: 1.5;
-```
+- 标题使用 `font-heading`（字重 700），正文使用 `font-base`（字重 500）
+- 标题行高优先 `leading-normal` 或 `leading-none`，正文 `leading-normal` / `leading-snug`
+- 不使用大段 `uppercase` + 宽字距标签；小标题用 `type-label`（`font-heading text-sm leading-none`）
+- 大段说明尽量拆短，适合快速扫读
 
 ## 6. 组件级规范
 
