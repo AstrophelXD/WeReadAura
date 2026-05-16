@@ -23,7 +23,13 @@ export default async function BookDetailPage({
   const { book, highlights: bookHighlights } = detail;
 
   return (
-    <Section title={book.title} eyebrow="书籍详情" description={book.summary}>
+    <Section
+      title={book.title}
+      eyebrow="书籍详情"
+      description={book.summary}
+      looseHeader
+      descriptionClassName="type-book-intro font-biao"
+    >
       <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
         <Card>
           <div className="flex flex-wrap items-center gap-3">

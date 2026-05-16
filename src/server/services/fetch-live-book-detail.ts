@@ -78,7 +78,7 @@ export async function fetchLiveBookDetail(
       };
 
   const book = transformShelfBook(shelfItem, progress, notebookMeta);
-  book.summary = info.intro?.trim().slice(0, 200) || book.summary;
+  book.summary = info.intro?.trim() || book.summary;
 
   const progressPercent = resolveBookProgress({
     finishReading: shelfItem.finishReading,

@@ -119,6 +119,15 @@
     line-height: 1.375;
   }
 
+  /* 书籍详情页 · 书名下方简介（标雅宋，正文级字号） */
+  .type-book-intro {
+    font-weight: var(--biao-font-weight);
+    font-size: 1rem;
+    line-height: 1.75;
+    color: color-mix(in srgb, var(--ink) 76%, transparent);
+    text-wrap: pretty;
+  }
+
   /* 划线 / 想法引用原文（聚珍新仿） */
   .type-quote-preview {
     font-weight: var(--base-font-weight);
