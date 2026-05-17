@@ -8,8 +8,8 @@ type PopularHighlightsListProps = {
 export function PopularHighlightsList({ items }: PopularHighlightsListProps) {
   return (
     <div>
-      <p className="type-field-label">热门划线</p>
-      <p className="type-caption-muted mt-1">
+      <h3 className="type-card-title-lg">热门划线</h3>
+      <p className="type-caption-muted mt-2">
         你还没有个人划线或想法；以下为微信读书全书热度 Top，共 {items.length} 条
       </p>
       <ul className="mt-4 grid gap-5 md:grid-cols-3">

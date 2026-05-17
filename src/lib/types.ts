@@ -25,6 +25,11 @@ export interface HighlightItem {
   note?: string;
   createdAt: string;
   chapter: string;
+  chapterUid?: number;
+  /** 全书目录中的顺序（0 起），用于按章节排序 */
+  chapterOrder?: number;
+  /** Unix 秒，用于按时间排序 */
+  createdAtTime?: number;
 }
 
 export interface Book {

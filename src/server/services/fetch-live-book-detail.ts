@@ -1,4 +1,5 @@
 import { shouldFetchPopularForBookPage } from "@/lib/discover-preview-rules";
+import { buildChapterTitleOrderMap, enrichHighlightSortFields } from "@/lib/highlight-sort";
 import { parseWeReadRecommend } from "@/lib/weread-recommend";
 import type { Book, HighlightItem, PopularHighlight } from "@/lib/types";
 import { formatDurationMinutes, formatUnixDate } from "@/lib/formatters";
@@ -34,12 +35,20 @@ export async function fetchLiveBookDetail(
   bookId: string,
   cachedBook?: Book,
 ): Promise<{ book: Book; highlights: HighlightItem[]; popularHighlights: PopularHighlight[] }> {
-  const [info, progress, bookmarkList, reviewHighlights] = await Promise.all([
+  const bookTitleEarly = cachedBook?.title ?? "";
+  const [info, progress, bookmarkList] = await Promise.all([
     gateway.getBookInfo(context, bookId),
     gateway.getBookProgress(context, bookId),
     gateway.getBookmarkList(context, bookId),
-    fetchAllMyReviewsForBook(gateway, context, bookId, cachedBook?.title ?? ""),
   ]);
+  const chapterTitleOrderMap = buildChapterTitleOrderMap(bookmarkList.chapters ?? []);
+  const reviewHighlights = await fetchAllMyReviewsForBook(
+    gateway,
+    context,
+    bookId,
+    info.title || bookTitleEarly || "",
+    chapterTitleOrderMap,
+  );
 
   const bookTitle = info.title || cachedBook?.title || "微信读书书籍";
   const bookmarkHighlights = transformHighlightsFromBookmarkList({
@@ -53,8 +62,10 @@ export async function fetchLiveBookDetail(
     bookmarkCreateTimes.length > 0 ? Math.min(...bookmarkCreateTimes) : undefined;
 
   const highlights = [...bookmarkHighlights, ...reviewHighlights];
-  const uniqueHighlights = Array.from(new Map(highlights.map((item) => [item.id, item])).values());
-  uniqueHighlights.sort((left, right) => right.createdAt.localeCompare(left.createdAt));
+  const uniqueHighlights = enrichHighlightSortFields(
+    Array.from(new Map(highlights.map((item) => [item.id, item])).values()),
+    bookmarkList.chapters,
+  );
 
   const notebookMeta: NotebookBookMeta = {
     highlights: Math.max(cachedBook?.highlights ?? 0, bookmarkHighlights.length),

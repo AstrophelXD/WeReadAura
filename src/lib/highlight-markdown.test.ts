@@ -37,15 +37,17 @@ describe("highlight-markdown", () => {
     expect(md).toContain("整段想法内容");
   });
 
-  it("builds book document with header and separators", () => {
+  it("builds book document grouped by chapter", () => {
     const md = buildBookHighlightsMarkdown(
       { title: "小镇喧嚣", author: "吴毅", exportedAt: "2026-05-16" },
       [bookmark, thought],
     );
     expect(md).toMatch(/^# 小镇喧嚣/);
     expect(md).toContain("**作者：** 吴毅");
-    expect(md).toContain("---");
-    expect(md).toContain("第 1 章");
+    expect(md).toContain("## 第 1 章");
+    expect(md).toContain("### 2026-05-15 · 划线");
+    expect(md).toContain("## 想法");
     expect(md).toContain("整段想法内容");
+    expect(md).not.toContain("### 第 1 章 · 2026-05-15");
   });
 });

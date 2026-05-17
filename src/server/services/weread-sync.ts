@@ -49,17 +49,33 @@ async function fetchRecentHighlights(
     ranked.map(async (item) => {
       const bookTitle = item.book?.title ?? "WeRead Book";
       try {
-        const [bookmarkList, reviewHighlights] = await Promise.all([
-          gateway.getBookmarkList(context, item.bookId),
-          fetchAllMyReviewsForBook(gateway, context, item.bookId, bookTitle),
-        ]);
+        const bookmarkList = await gateway.getBookmarkList(context, item.bookId);
 
-        const chapterMap = new Map(
-          (bookmarkList.chapters ?? []).map((chapter) => [chapter.chapterUid, chapter.title]),
+        const chapters = bookmarkList.chapters ?? [];
+        const chapterMap = new Map(chapters.map((chapter) => [chapter.chapterUid, chapter.title]));
+        const chapterOrderMap = new Map(
+          [...chapters]
+            .sort((left, right) => {
+              if (left.chapterIdx !== undefined && right.chapterIdx !== undefined) {
+                return left.chapterIdx - right.chapterIdx;
+              }
+              return left.chapterUid - right.chapterUid;
+            })
+            .map((chapter, index) => [chapter.chapterUid, index]),
+        );
+        const chapterTitleOrderMap = new Map(
+          chapters.map((chapter) => [chapter.title, chapterOrderMap.get(chapter.chapterUid) ?? 9999]),
         );
 
         const bookmarkHighlights = (bookmarkList.updated ?? []).map((bookmark) =>
-          transformBookmarkHighlight(bookmark, bookTitle, chapterMap),
+          transformBookmarkHighlight(bookmark, bookTitle, chapterMap, chapterOrderMap),
+        );
+        const reviewHighlights = await fetchAllMyReviewsForBook(
+          gateway,
+          context,
+          item.bookId,
+          bookTitle,
+          chapterTitleOrderMap,
         );
 
         return [...bookmarkHighlights, ...reviewHighlights];

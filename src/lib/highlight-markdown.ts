@@ -1,4 +1,5 @@
 import { highlightKindLabel, isThoughtHighlight } from "@/lib/highlight-content";
+import { groupHighlightsByChapter } from "@/lib/highlight-sort";
 import type { HighlightItem } from "@/lib/types";
 
 export type BookMarkdownMeta = {
@@ -11,10 +12,20 @@ function escapeMarkdownInline(text: string): string {
   return text.replace(/\r\n/g, "\n");
 }
 
+export type HighlightMarkdownItemOptions = {
+  /** 已按章节分组导出时，条目标题不再重复章节名 */
+  omitChapterInHeading?: boolean;
+};
+
 /** Single highlight / thought entry as Markdown fragment. */
-export function highlightItemToMarkdown(item: HighlightItem): string {
+export function highlightItemToMarkdown(
+  item: HighlightItem,
+  options?: HighlightMarkdownItemOptions,
+): string {
   const kind = highlightKindLabel(item);
-  const heading = `### ${item.chapter} · ${item.createdAt} · ${kind}`;
+  const heading = options?.omitChapterInHeading
+    ? `### ${item.createdAt} · ${kind}`
+    : `### ${item.chapter} · ${item.createdAt} · ${kind}`;
   const quote = escapeMarkdownInline(item.quote.trim());
 
   if (isThoughtHighlight(item)) {
@@ -52,10 +63,14 @@ export function buildBookHighlightsMarkdown(meta: BookMarkdownMeta, items: Highl
     return `${header}_暂无划线或想法。_\n`;
   }
 
-  const body = items.map((item, index) => {
-    const block = highlightItemToMarkdown(item);
-    return index === 0 ? block : `---\n\n${block}`;
+  const groups = groupHighlightsByChapter(items);
+  const sections = groups.map(({ chapter, items: chapterItems }) => {
+    const chapterHeading = `## ${escapeMarkdownInline(chapter)}\n\n`;
+    const entries = chapterItems
+      .map((item) => highlightItemToMarkdown(item, { omitChapterInHeading: true }))
+      .join("");
+    return chapterHeading + entries;
   });
 
-  return header + body.join("");
+  return header + sections.join("");
 }

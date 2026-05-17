@@ -137,7 +137,7 @@ export interface ExternalBookmark {
 
 export interface ExternalBookmarkListResponse {
   updated: ExternalBookmark[];
-  chapters?: Array<{ chapterUid: number; title: string }>;
+  chapters?: Array<{ chapterUid: number; title: string; chapterIdx?: number }>;
   book?: { title: string; author: string };
 }
 

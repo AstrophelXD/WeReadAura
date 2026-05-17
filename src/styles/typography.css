@@ -128,9 +128,9 @@
     text-wrap: pretty;
   }
 
-  /* 划线 / 想法引用原文（聚珍新仿） */
+  /* 划线 / 想法引用原文（聚珍新仿，标重以免压过区块标题） */
   .type-quote-preview {
-    font-weight: var(--base-font-weight);
+    font-weight: var(--biao-font-weight);
     font-size: 1.0625rem;
     line-height: 1.6;
   }

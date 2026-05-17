@@ -126,13 +126,13 @@ export function BookDiscoverDialog({
               ) : null}
 
               <div>
-                <p className="type-field-label">简介</p>
-                <p className="type-body mt-2 leading-relaxed">{preview.detail.intro}</p>
+                <h3 className="type-card-title-lg">简介</h3>
+                <p className="type-book-intro font-biao mt-3">{preview.detail.intro}</p>
               </div>
 
               {preview.onShelf && preview.shelfProgress ? (
                 <div className="rounded-[var(--radius-sm)] border-2 border-[var(--ink)] bg-[var(--muted)] p-4">
-                  <p className="type-field-label">我的阅读</p>
+                  <h3 className="type-card-title-lg">我的阅读</h3>
                   <div className="mt-3 grid gap-3 sm:grid-cols-2">
                     <div>
                       <p className="type-caption">状态</p>
@@ -162,8 +162,8 @@ export function BookDiscoverDialog({
 
               {preview.popularHighlights.length > 0 ? (
                 <div>
-                  <p className="type-field-label">热门划线</p>
-                  <p className="type-caption-muted mt-1">
+                  <h3 className="type-card-title-lg">热门划线</h3>
+                  <p className="type-caption-muted mt-2">
                     来自微信读书全书热度 Top，共展示 {preview.popularHighlights.length} 条
                   </p>
                   <ul className="mt-4 space-y-4">

@@ -183,6 +183,7 @@ export function transformBookmarkHighlight(
   bookmark: ExternalBookmark,
   bookTitle: string,
   chapterMap: Map<number, string>,
+  chapterOrderMap?: Map<number, number>,
 ): HighlightItem {
   const chapter =
     bookmark.chapterUid !== undefined
@@ -196,6 +197,10 @@ export function transformBookmarkHighlight(
     quote: bookmark.markText,
     createdAt: formatUnixDate(bookmark.createTime),
     chapter,
+    chapterUid: bookmark.chapterUid,
+    chapterOrder:
+      bookmark.chapterUid !== undefined ? chapterOrderMap?.get(bookmark.chapterUid) : undefined,
+    createdAtTime: bookmark.createTime > 0 ? bookmark.createTime : undefined,
   };
 }
 
@@ -203,14 +208,20 @@ export function transformReviewHighlight(
   item: ExternalReviewItem,
   bookId: string,
   bookTitle: string,
+  chapterTitleOrderMap?: Map<string, number>,
 ): HighlightItem {
+  const chapter = item.review.chapterName?.trim() || "想法";
+  const chapterOrder = chapterTitleOrderMap?.get(chapter);
+
   return {
     id: item.review.reviewId,
     bookId,
     bookTitle,
     quote: item.review.content,
     createdAt: formatUnixDate(item.review.createTime),
-    chapter: item.review.chapterName?.trim() || "想法",
+    chapter,
+    chapterOrder,
+    createdAtTime: item.review.createTime > 0 ? item.review.createTime : undefined,
   };
 }
 
@@ -218,12 +229,20 @@ export function transformHighlightsFromBookmarkList(
   payload: ExternalBookmarkListResponse,
 ): HighlightItem[] {
   const bookTitle = payload.book?.title ?? "微信读书书籍";
-  const chapterMap = new Map(
-    (payload.chapters ?? []).map((chapter) => [chapter.chapterUid, chapter.title]),
+  const chapters = payload.chapters ?? [];
+  const chapterMap = new Map(chapters.map((chapter) => [chapter.chapterUid, chapter.title]));
+  const chapterOrderMap = new Map(
+    [...chapters]
+      .sort((left, right) => {
+        if (left.chapterIdx !== undefined && right.chapterIdx !== undefined) {
+          return left.chapterIdx - right.chapterIdx;
+        }
+        return left.chapterUid - right.chapterUid;
+      })
+      .map((chapter, index) => [chapter.chapterUid, index]),
   );
-
   return (payload.updated ?? []).map((bookmark) =>
-    transformBookmarkHighlight(bookmark, bookTitle, chapterMap),
+    transformBookmarkHighlight(bookmark, bookTitle, chapterMap, chapterOrderMap),
   );
 }
 

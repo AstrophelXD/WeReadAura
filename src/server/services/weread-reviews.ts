@@ -7,6 +7,7 @@ export async function fetchAllMyReviewsForBook(
   context: GatewayContext,
   bookId: string,
   bookTitle: string,
+  chapterTitleOrderMap?: Map<string, number>,
 ): Promise<HighlightItem[]> {
   const items: HighlightItem[] = [];
   let synckey = 0;
@@ -14,7 +15,7 @@ export async function fetchAllMyReviewsForBook(
   for (let page = 0; page < 20; page += 1) {
     const response = await gateway.getMyReviews(context, bookId, synckey, 20);
     for (const entry of response.reviews ?? []) {
-      items.push(transformReviewHighlight(entry, bookId, bookTitle));
+      items.push(transformReviewHighlight(entry, bookId, bookTitle, chapterTitleOrderMap));
     }
     if (response.hasMore !== 1) {
       break;
