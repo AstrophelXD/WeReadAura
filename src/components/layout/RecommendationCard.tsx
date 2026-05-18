@@ -20,13 +20,18 @@ export function RecommendationCard({ item, onViewDetails }: RecommendationCardPr
         </div>
         <Badge tone={item.coverTone}>{item.tag}</Badge>
       </div>
-      <p className="type-body mt-5">{item.reason}</p>
+      <p className="type-book-intro font-biao mt-4 line-clamp-4">{item.reason}</p>
       {onViewDetails ? (
-        <Button className="mt-6 w-full sm:w-auto" type="button" onClick={() => onViewDetails(item)}>
+        <Button
+          plain
+          className="mt-4"
+          type="button"
+          onClick={() => onViewDetails(item)}
+        >
           查看详情
         </Button>
       ) : (
-        <Button className="mt-6 w-full sm:w-auto" href={`/discover?bookId=${encodeURIComponent(item.id)}`}>
+        <Button plain className="mt-4" href={`/discover?bookId=${encodeURIComponent(item.id)}`}>
           查看详情
         </Button>
       )}

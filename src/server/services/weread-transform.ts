@@ -251,7 +251,7 @@ export function transformRecommendation(item: ExternalRecommendBook, index: numb
     id: item.bookId || `rec-${index}`,
     title: item.title,
     author: item.author,
-    reason: item.reason?.trim() || "根据你最近的阅读偏好推荐。",
+    reason: item.intro?.trim() || "暂无简介。",
     tag: item.newRatingDetail?.title || item.category?.trim() || "推荐",
     coverTone: pickCoverTone(item.bookId || String(index)),
   };

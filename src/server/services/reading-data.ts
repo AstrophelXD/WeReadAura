@@ -20,11 +20,11 @@ import {
 import { fetchLiveBookDetail } from "@/server/services/fetch-live-book-detail";
 import { fetchPopularHighlightsForBook } from "@/server/services/fetch-popular-highlights";
 import { buildTrendForPeriod } from "@/server/services/stats-analytics";
+import { fetchRecommendationsWithIntros } from "@/server/services/weread-recommendations";
 import { syncFromWeRead } from "@/server/services/weread-sync";
 import {
   buildCategoryDistribution,
   buildMetricsFromReadData,
-  transformRecommendation,
   transformSearchResult,
 } from "@/server/services/weread-transform";
 
@@ -303,8 +303,8 @@ export async function searchRecommendationsFromGateway(): Promise<Recommendation
   }
 
   try {
-    const response = await gateway.getRecommendations(createGatewayContext(apiKey), 12);
-    return (response.books ?? []).map(transformRecommendation);
+    const context = createGatewayContext(apiKey);
+    return await fetchRecommendationsWithIntros(gateway, context, 12);
   } catch {
     return getRecommendations();
   }

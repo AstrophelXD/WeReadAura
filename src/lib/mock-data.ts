@@ -120,7 +120,8 @@ export const recommendations: RecommendationItem[] = [
     id: "r-1",
     title: "信息为什么会增长",
     author: "塞萨尔·伊达尔戈",
-    reason: "你最近在划线里常出现系统思维与集体知识。",
+    reason:
+      "从物质世界到经济秩序，作者用「信息」解释增长与繁荣从何而来。适合喜欢系统思维、经济学与认知科学的读者。",
     tag: "系统",
     coverTone: "yellow",
   },
@@ -128,7 +129,8 @@ export const recommendations: RecommendationItem[] = [
     id: "r-2",
     title: "公众的反叛",
     author: "马丁·古里",
-    reason: "近期历史与社会类阅读偏向制度与公共辩论。",
+    reason:
+      "讨论民主制度在信息过载与极化时代的张力，梳理媒体、政党与公民角色如何被重塑。",
     tag: "社会",
     coverTone: "pink",
   },
@@ -136,7 +138,7 @@ export const recommendations: RecommendationItem[] = [
     id: "r-3",
     title: "水平思考法",
     author: "爱德华·德·波诺",
-    reason: "与你在产品策略笔记里的重构习惯相近。",
+    reason: "提出跳出逻辑链的创造性思考工具，用简单练习帮助打破思维定势与固定框架。",
     tag: "思维",
     coverTone: "blue",
   },

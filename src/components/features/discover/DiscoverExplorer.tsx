@@ -106,7 +106,7 @@ export function DiscoverExplorer({
     <>
       <div className="mb-8 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
         <Card>
-          <p className="type-label">搜索书城</p>
+          <h2 className="type-card-title-lg">搜索书城</h2>
           <form className="mt-4 flex flex-wrap gap-3" onSubmit={runSearch}>
             <Input
               className="min-w-[12rem] flex-1"
@@ -121,15 +121,15 @@ export function DiscoverExplorer({
 
           <div className="mt-5 space-y-4">
             {!searched ? (
-              <p className="type-body text-[color-mix(in_srgb,var(--ink)_75%,transparent)]">
+              <p className="type-book-intro font-biao">
                 {hasLiveData
                   ? "搜索书城后点击「查看详情」：未在书架的书可预览热门划线；已在书架的可查看阅读进度。"
                   : "连接并同步微信读书后，可搜索书城并查看详情。未连接时仅在本地演示数据中搜索。"}
               </p>
             ) : null}
-            {error ? <p className="type-body">{error}</p> : null}
+            {error ? <p className="type-caption-muted">{error}</p> : null}
             {searched && !loading && hits.length === 0 && !error ? (
-              <p className="type-body">没有找到相关书籍，换个关键词试试。</p>
+              <p className="type-caption-muted">没有找到相关书籍，换个关键词试试。</p>
             ) : null}
             {pageHits.map((hit) => (
               <StoreSearchHitCard key={hit.book.id} hit={hit} onViewDetails={openFromBook} />
@@ -149,8 +149,8 @@ export function DiscoverExplorer({
           </div>
         </Card>
         <Card className="neo-paper">
-          <p className="type-label">提示</p>
-          <ul className="type-body mt-4 space-y-3">
+          <h2 className="type-card-title-lg">提示</h2>
+          <ul className="type-book-intro font-biao mt-4 list-disc space-y-3 pl-5">
             <li>「查看详情」拉取书城简介；未加入书架时展示热门划线（约 Top 20）。</li>
             <li>已在书架的书可进入「我的阅读」查看进度与个人划线。</li>
             <li>加入书架需在微信读书 App 内完成；详情页可跳转打开。</li>
@@ -159,8 +159,9 @@ export function DiscoverExplorer({
       </div>
 
       <div>
-        <p className="neo-eyebrow mb-4">为你推荐</p>
-        <div className="grid gap-5 lg:grid-cols-3">
+        <p className="neo-eyebrow">推荐</p>
+        <h2 className="type-card-title-lg mt-2">为你推荐</h2>
+        <div className="mt-5 grid gap-5 sm:grid-cols-2">
           {recommendations.map((item) => (
             <RecommendationCard key={item.id} item={item} onViewDetails={openFromRecommendation} />
           ))}

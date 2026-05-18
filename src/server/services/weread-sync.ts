@@ -8,13 +8,13 @@ import {
   pickBooksNeedingProgressFetch,
 } from "@/server/services/weread-progress";
 import { buildTrendFromReadData } from "@/server/services/stats-analytics";
+import { fetchRecommendationsWithIntros } from "@/server/services/weread-recommendations";
 import { fetchAllMyReviewsForBook } from "@/server/services/weread-reviews";
 import {
   buildCategoryDistribution,
   buildDashboardHero,
   buildMetricsFromReadData,
   transformBookmarkHighlight,
-  transformRecommendation,
   transformShelfAlbum,
   transformShelfBook,
 } from "@/server/services/weread-transform";
@@ -97,7 +97,7 @@ export async function syncFromWeRead(
     gateway.getReadingStats(context, "monthly"),
     gateway.getReadingStats(context, "overall"),
     fetchAllNotebookBooks(gateway, context),
-    gateway.getRecommendations(context, 12),
+    fetchRecommendationsWithIntros(gateway, context, 12),
   ]);
 
   const notebookMetaByBook = buildNotebookMetaMap(notebookBooks);
@@ -129,7 +129,7 @@ export async function syncFromWeRead(
     source: "微信读书 Skill",
     books,
     highlights,
-    recommendations: (recommendations.books ?? []).map(transformRecommendation),
+    recommendations,
     metrics: buildMetricsFromReadData(monthlyStats, overallStats),
     readingTrend: buildTrendFromReadData(monthlyStats, { maxPoints: 7, labelDates: true }),
     categoryDistribution: buildCategoryDistribution(monthlyStats),

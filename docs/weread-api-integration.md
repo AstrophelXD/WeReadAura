@@ -21,7 +21,7 @@
 | 热门划线 | `/book/bestbookmarks` |
 | 阅读进度 | `/book/getprogress` |
 | 书城搜索 | `/store/search` |
-| 个性化推荐 | `/book/recommend` |
+| 个性化推荐 | `/book/recommend`（卡片简介优先 `books[].intro`，缺失时补调 `/book/info`） |
 
 实现位置：`src/server/adapters/weread/`。
 
