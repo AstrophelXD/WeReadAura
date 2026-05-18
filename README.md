@@ -159,7 +159,7 @@ WeReadAura/
 
 界面方向：**朴素、直接、像印刷品** —— 受 Gumroad 首页式 plain neo-brutalism 启发，但色板、字体与业务组件（`MetricCard`、`BookCard` 等）均为 WeReadAura 自有 token。
 
-- 纸张感浅底 · 黑色描边 · 无 blur 硬阴影  
+- 纸张感浅底 · 黑色描边 · 无 blur硬阴影  
 - 字体栈以 `layout.tsx` / `globals.css` 为准（非组件库默认字体）  
 - 禁止 glassmorphism、模板化 SaaS 渐变与「为炫而炫」的 landing 堆砌  
 
