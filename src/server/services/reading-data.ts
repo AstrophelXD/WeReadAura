@@ -1,11 +1,17 @@
 import { applyBookshelfQuery, type BookshelfQuery } from "@/lib/bookshelf-query";
 import { applyNotesQuery, type NotesQuery } from "@/lib/notes-query";
 import { markReadingDataVolatile } from "@/lib/server-cache";
+import type { HeatmapDateRange } from "@/lib/reading-heatmap";
 import {
-  parseStatsPeriod,
-  statsPeriodLabel,
-  statsPeriodToWeReadMode,
-  type StatsPeriod,
+  trendChartDescription,
+  trendChartVariant,
+  type TrendChartVariant,
+} from "@/lib/stats-chart";
+import {
+  parseReadDataMode,
+  readDataModeLabel,
+  readDataModeScopeHint,
+  type ReadDataMode,
 } from "@/lib/stats-query";
 import { books as mockBooks, dashboardData, findBook, findHighlightsForBook } from "@/lib/mock-data";
 import { shouldFetchPopularForBookPage } from "@/lib/discover-preview-rules";
@@ -19,7 +25,7 @@ import {
 } from "@/server/cache/sync-cache";
 import { fetchLiveBookDetail } from "@/server/services/fetch-live-book-detail";
 import { fetchPopularHighlightsForBook } from "@/server/services/fetch-popular-highlights";
-import { buildTrendForPeriod } from "@/server/services/stats-analytics";
+import { resolveStatsTrend } from "@/server/services/stats-analytics";
 import { fetchRecommendationsWithIntros } from "@/server/services/weread-recommendations";
 import { syncFromWeRead } from "@/server/services/weread-sync";
 import {
@@ -129,19 +135,33 @@ export async function getBookshelfPageData(query: BookshelfQuery = {}) {
   return { all, items, total: items.length, totalAll: all.length };
 }
 
-export async function getStatsPayload(periodInput?: StatsPeriod) {
+export type StatsPayload = {
+  mode: ReadDataMode;
+  modeLabel: string;
+  trendVariant: TrendChartVariant;
+  trendDescription: string;
+  heatmapRange?: HeatmapDateRange;
+  heatmapBuckets?: Record<string, number>;
+  metrics: Awaited<ReturnType<typeof getDashboardData>>["metrics"];
+  readingTrend: Awaited<ReturnType<typeof getDashboardData>>["readingTrend"];
+  categoryDistribution: Awaited<ReturnType<typeof getDashboardData>>["categoryDistribution"];
+  preferTime?: number[];
+  preferTimeWord?: string;
+};
+
+export async function getStatsPayload(modeInput?: ReadDataMode): Promise<StatsPayload> {
   markReadingDataVolatile();
-  const period = periodInput ?? "30d";
+  const mode = modeInput ?? "monthly";
+  const scopeHint = readDataModeScopeHint(mode);
   const apiKey = await getWeReadApiKey();
   const gateway = getWeReadGateway(apiKey);
 
   if (gateway && apiKey) {
     try {
-      const mode = statsPeriodToWeReadMode(period);
       const context = createGatewayContext(apiKey);
       const detail = await gateway.getReadingStats(context, mode);
       const overall =
-        period === "30d" ? await gateway.getReadingStats(context, "overall") : undefined;
+        mode !== "overall" ? await gateway.getReadingStats(context, "overall") : undefined;
 
       let categoryDistribution = buildCategoryDistribution(detail);
       if (categoryDistribution.length === 0 && mode !== "monthly") {
@@ -149,12 +169,20 @@ export async function getStatsPayload(periodInput?: StatsPeriod) {
         categoryDistribution = buildCategoryDistribution(monthlyDetail);
       }
 
+      const { trend, heatmapRange, heatmapBuckets } = resolveStatsTrend(detail, mode);
+
       return {
-        metrics: buildMetricsFromReadData(detail, overall),
-        readingTrend: buildTrendForPeriod(detail, period),
+        metrics: buildMetricsFromReadData(detail, overall, scopeHint),
+        readingTrend: trend,
         categoryDistribution,
-        period,
-        periodLabel: statsPeriodLabel(period),
+        mode,
+        modeLabel: readDataModeLabel(mode),
+        trendVariant: trendChartVariant(mode, detail),
+        trendDescription: trendChartDescription(mode, detail),
+        heatmapRange,
+        heatmapBuckets,
+        preferTime: detail.preferTime,
+        preferTimeWord: detail.preferTimeWord,
       };
     } catch {
       // fall back to cached snapshot / mock below
@@ -162,20 +190,28 @@ export async function getStatsPayload(periodInput?: StatsPeriod) {
   }
 
   const dashboard = await getDashboardData();
+  const mockDetail = { readTimes: Object.fromEntries(dashboard.readingTrend.map((p, i) => [String(1_700_000_000 + i * 86_400), p.minutes * 60])) };
+  const { trend, heatmapRange, heatmapBuckets } = resolveStatsTrend(mockDetail, mode);
+
   return {
     metrics: dashboard.metrics,
-    readingTrend: dashboard.readingTrend,
+    readingTrend: trend,
     categoryDistribution: dashboard.categoryDistribution,
-    period,
-    periodLabel: statsPeriodLabel(period),
+    mode,
+    modeLabel: readDataModeLabel(mode),
+    trendVariant: trendChartVariant(mode, mockDetail),
+    trendDescription: trendChartDescription(mode, mockDetail),
+    heatmapRange,
+    heatmapBuckets,
   };
 }
 
 export function parseStatsPeriodFromSearchParams(
   raw?: Record<string, string | string[] | undefined>,
-): StatsPeriod {
-  const value = typeof raw?.period === "string" ? raw.period : undefined;
-  return parseStatsPeriod(value);
+): ReadDataMode {
+  const mode = typeof raw?.mode === "string" ? raw.mode : undefined;
+  const period = typeof raw?.period === "string" ? raw.period : undefined;
+  return parseReadDataMode(mode ?? period);
 }
 
 export async function getAllNotesItems(): Promise<HighlightItem[]> {

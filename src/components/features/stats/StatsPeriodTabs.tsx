@@ -1,11 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
-import { STATS_PERIOD_OPTIONS, type StatsPeriod } from "@/lib/stats-query";
+import { READ_DATA_MODE_OPTIONS, type ReadDataMode } from "@/lib/stats-query";
 import { useQueryParams } from "@/lib/use-query-params";
 
 interface StatsPeriodTabsProps {
-  current: StatsPeriod;
+  current: ReadDataMode;
 }
 
 export function StatsPeriodTabs({ current }: StatsPeriodTabsProps) {
@@ -13,13 +13,18 @@ export function StatsPeriodTabs({ current }: StatsPeriodTabsProps) {
 
   return (
     <div className="mb-6 flex flex-wrap gap-3">
-      {STATS_PERIOD_OPTIONS.map((option) => (
+      {READ_DATA_MODE_OPTIONS.map((option) => (
         <Button
           key={option.value}
           type="button"
           secondary={current !== option.value}
           disabled={isPending}
-          onClick={() => replaceParams({ period: option.value === "30d" ? null : option.value })}
+          onClick={() =>
+            replaceParams({
+              mode: option.value === "monthly" ? null : option.value,
+              period: null,
+            })
+          }
         >
           {option.label}
         </Button>

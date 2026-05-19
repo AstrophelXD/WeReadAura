@@ -87,6 +87,7 @@ export interface ExternalBestBookmarksResponse {
 }
 
 export interface ExternalReadDataDetail {
+  baseTime?: number;
   totalReadTime?: number;
   readDays?: number;
   dayAverageReadTime?: number;
@@ -94,6 +95,9 @@ export interface ExternalReadDataDetail {
   readTimes?: Record<string, number>;
   /** Daily buckets (seconds); common in annually mode for calendar views. */
   dailyReadTimes?: Record<string, number>;
+  /** 24 slots from 6:00 through next-day 5:00, values in seconds. */
+  preferTime?: number[];
+  preferTimeWord?: string;
   preferCategory?: Array<{
     categoryTitle: string;
     val?: number;

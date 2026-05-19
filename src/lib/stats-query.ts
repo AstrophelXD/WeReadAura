@@ -1,28 +1,52 @@
-export type StatsPeriod = "7d" | "30d" | "90d";
+/** Matches `/readdata/detail` `mode` — natural calendar periods only. */
+export type ReadDataMode = "weekly" | "monthly" | "annually" | "overall";
 
-export const STATS_PERIOD_OPTIONS: { value: StatsPeriod; label: string }[] = [
-  { value: "7d", label: "近 7 天" },
-  { value: "30d", label: "近 30 天" },
-  { value: "90d", label: "近 90 天" },
+export const READ_DATA_MODE_OPTIONS: { value: ReadDataMode; label: string }[] = [
+  { value: "weekly", label: "本周" },
+  { value: "monthly", label: "本月" },
+  { value: "annually", label: "本年" },
+  { value: "overall", label: "总计" },
 ];
 
-export function parseStatsPeriod(raw?: string | null): StatsPeriod {
-  if (raw === "7d" || raw === "90d") {
+const LEGACY_MODE_MAP: Record<string, ReadDataMode> = {
+  "7d": "weekly",
+  "30d": "monthly",
+  "90d": "annually",
+};
+
+export function parseReadDataMode(raw?: string | null): ReadDataMode {
+  if (raw === "weekly" || raw === "monthly" || raw === "annually" || raw === "overall") {
     return raw;
   }
-  return "30d";
-}
-
-export function statsPeriodLabel(period: StatsPeriod): string {
-  return STATS_PERIOD_OPTIONS.find((option) => option.value === period)?.label ?? "近 30 天";
-}
-
-export function statsPeriodToWeReadMode(period: StatsPeriod): "weekly" | "monthly" | "annually" {
-  if (period === "7d") {
-    return "weekly";
-  }
-  if (period === "90d") {
-    return "annually";
+  if (raw && raw in LEGACY_MODE_MAP) {
+    return LEGACY_MODE_MAP[raw]!;
   }
   return "monthly";
+}
+
+/** @deprecated Use `parseReadDataMode` — kept for URL param name `period`. */
+export const parseStatsPeriod = parseReadDataMode;
+
+export type StatsPeriod = ReadDataMode;
+
+export const STATS_PERIOD_OPTIONS = READ_DATA_MODE_OPTIONS;
+
+export function readDataModeLabel(mode: ReadDataMode): string {
+  return READ_DATA_MODE_OPTIONS.find((option) => option.value === mode)?.label ?? "本月";
+}
+
+/** @deprecated Use `readDataModeLabel`. */
+export const statsPeriodLabel = readDataModeLabel;
+
+export function readDataModeScopeHint(mode: ReadDataMode): string {
+  switch (mode) {
+    case "weekly":
+      return "本周";
+    case "monthly":
+      return "本月";
+    case "annually":
+      return "本年";
+    case "overall":
+      return "累计";
+  }
 }

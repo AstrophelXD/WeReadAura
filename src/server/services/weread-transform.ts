@@ -128,36 +128,42 @@ export function notebookCounts(item: ExternalNotebookBook) {
   return { highlights, notes, total: highlights + notes + bookmarks };
 }
 
-export function buildMetricsFromReadData(monthly: ExternalReadDataDetail, overall?: ExternalReadDataDetail): Metric[] {
+export function buildMetricsFromReadData(
+  detail: ExternalReadDataDetail,
+  overall?: ExternalReadDataDetail,
+  scopeHint = "本月",
+): Metric[] {
   const totalNotes =
     overall?.readStat?.find((item) => item.stat === "笔记")?.counts ??
-    monthly.readStat?.find((item) => item.stat === "笔记")?.counts;
+    detail.readStat?.find((item) => item.stat === "笔记")?.counts;
+
+  const finishedHint = scopeHint === "累计" ? "当前周期" : scopeHint;
 
   return [
     {
       label: "阅读时长",
-      value: formatDurationLabel(monthly.totalReadTime),
-      hint: "本月",
+      value: formatDurationLabel(detail.totalReadTime),
+      hint: scopeHint,
       tone: "yellow",
     },
     {
       label: "阅读天数",
-      value: String(monthly.readDays ?? 0),
-      hint: formatPercentChange(monthly.compare),
+      value: String(detail.readDays ?? 0),
+      hint: formatPercentChange(detail.compare),
       tone: "white",
     },
     {
       label: "读完书籍",
       value:
-        monthly.readStat?.find((item) => item.stat === "读完")?.counts?.replace(/本$/, "") ??
+        detail.readStat?.find((item) => item.stat === "读完")?.counts?.replace(/本$/, "") ??
         "0",
-      hint: "本月",
+      hint: finishedHint,
       tone: "white",
     },
     {
       label: "笔记",
       value: totalNotes?.replace(/条$/, "") ?? "0",
-      hint: "全库累计",
+      hint: overall ? "全库累计" : scopeHint,
       tone: "white",
     },
   ];

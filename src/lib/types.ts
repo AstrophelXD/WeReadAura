@@ -10,6 +10,8 @@ export interface Metric {
 export interface TrendPoint {
   label: string;
   minutes: number;
+  /** Unix seconds (UTC date buckets); used by reading heatmap layout. */
+  timestamp?: number;
 }
 
 export interface DistributionPoint {

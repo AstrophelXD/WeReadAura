@@ -2,20 +2,26 @@
 
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
+import { ReadingTrendHeatmap } from "@/components/charts/ReadingTrendHeatmap";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { readingTrendChartConfig } from "@/lib/chart-theme";
+import type { HeatmapDateRange } from "@/lib/reading-heatmap";
+import type { TrendChartVariant } from "@/lib/stats-chart";
 import { formatDurationLabel } from "@/lib/formatters";
 import type { TrendPoint } from "@/lib/types";
 
-export function TrendChart({ data }: { data: TrendPoint[] }) {
-  if (data.length === 0) {
-    return <p className="type-empty">暂无趋势数据，请先同步微信读书统计。</p>;
-  }
+type TrendChartProps = {
+  data: TrendPoint[];
+  variant?: TrendChartVariant;
+  heatmapRange?: HeatmapDateRange;
+  heatmapBuckets?: Record<string, number>;
+};
 
+function TrendBarChart({ data }: { data: TrendPoint[] }) {
   const chartData = data.map((item) => ({
     label: item.label,
     minutes: item.minutes,
@@ -26,10 +32,11 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
       config={readingTrendChartConfig}
       className="[--chart-bar-fill:var(--color-minutes)] [&_.recharts-cartesian-grid_line]:stroke-[color-mix(in_srgb,var(--ink)_14%,transparent)]"
     >
-      <BarChart
+        <BarChart
         accessibilityLayer
         data={chartData}
         margin={{ top: 12, right: 12, left: 4, bottom: 4 }}
+        barCategoryGap="18%"
       >
         <CartesianGrid vertical={false} />
         <XAxis
@@ -61,4 +68,22 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
       </BarChart>
     </ChartContainer>
   );
+}
+
+export function TrendChart({ data, variant = "bar", heatmapRange, heatmapBuckets }: TrendChartProps) {
+  if (data.length === 0) {
+    return <p className="type-empty">暂无趋势数据，请先同步微信读书统计。</p>;
+  }
+
+  if (variant === "heatmap" && heatmapRange) {
+    return (
+      <ReadingTrendHeatmap
+        data={data}
+        range={heatmapRange}
+        readTimes={heatmapBuckets}
+      />
+    );
+  }
+
+  return <TrendBarChart data={data} />;
 }

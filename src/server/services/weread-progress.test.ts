@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { buildTrendForPeriod } from "@/server/services/stats-analytics";
+import { buildTrendForMode } from "@/server/services/stats-analytics";
 import {
   normalizePercentValue,
   resolveBookProgress,
@@ -72,19 +72,45 @@ describe("resolveReadingStatus", () => {
   });
 });
 
-describe("buildTrendForPeriod", () => {
-  it("labels weekly buckets with dates", () => {
-    const trend = buildTrendForPeriod(
+describe("buildTrendForMode", () => {
+  it("always returns seven weekly bars (Mon–Sun)", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-05-19T12:00:00+08:00"));
+
+    const trend = buildTrendForMode(
       {
         readTimes: {
-          "1778000000": 1800,
-          "1778086400": 2400,
-          "1778172800": 1200,
+          [String(Math.floor(new Date("2026-05-19T08:00:00+08:00").getTime() / 1000))]: 1800,
         },
       },
-      "7d",
+      "weekly",
     );
-    expect(trend.length).toBeLessThanOrEqual(7);
-    expect(trend[0]?.label).toMatch(/^\d{2}-\d{2}$/);
+
+    expect(trend).toHaveLength(7);
+    expect(trend.map((point) => point.label)).toEqual([
+      "周一",
+      "周二",
+      "周三",
+      "周四",
+      "周五",
+      "周六",
+      "周日",
+    ]);
+    expect(trend[1]?.minutes).toBe(30);
+
+    vi.useRealTimers();
+  });
+
+  it("labels annually buckets by month when no dailyReadTimes", () => {
+    const trend = buildTrendForMode(
+      {
+        readTimes: {
+          "1704067200": 3600,
+          "1706745600": 1800,
+        },
+      },
+      "annually",
+    );
+    expect(trend[0]?.label).toMatch(/^\d{2}月$/);
   });
 });
