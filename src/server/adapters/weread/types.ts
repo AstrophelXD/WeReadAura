@@ -98,18 +98,39 @@ export interface ExternalReadDataDetail {
   /** 24 slots from 6:00 through next-day 5:00, values in seconds. */
   preferTime?: number[];
   preferTimeWord?: string;
+  preferCategoryWord?: string;
   preferCategory?: Array<{
     categoryTitle: string;
     val?: number;
     readingTime?: number;
     readingCount?: number;
   }>;
-  readStat?: Array<{ stat: string; counts: string }>;
+  readStat?: Array<{ stat: string; counts: string; scheme?: string }>;
   readLongest?: Array<{
     book?: { bookId: string; title: string; author: string };
     albumInfo?: { albumId: string; name: string };
     readTime?: number;
+    recordReadingTime?: number;
+    tags?: string[];
   }>;
+  preferAuthor?: Array<{
+    authorId?: string;
+    name: string;
+    count?: number;
+    readTime?: string;
+  }>;
+  authorCount?: number;
+  preferPublisher?: Array<{ name: string; count?: number }>;
+  preferCp?: Array<{
+    count?: number;
+    copyrightInfo?: { name?: string };
+  }>;
+  readRate?: number;
+  wrReadTime?: number;
+  wrListenTime?: number;
+  recordReadingTime?: number;
+  rank?: { text?: string; scheme?: string };
+  medals?: Array<{ name?: string; title?: string; desc?: string }>;
 }
 
 export interface ExternalNotebookBook {

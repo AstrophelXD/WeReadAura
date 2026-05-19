@@ -26,6 +26,8 @@ import {
 import { fetchLiveBookDetail } from "@/server/services/fetch-live-book-detail";
 import { fetchPopularHighlightsForBook } from "@/server/services/fetch-popular-highlights";
 import { resolveStatsTrend } from "@/server/services/stats-analytics";
+import { buildMockStatsInsights, buildStatsInsights } from "@/server/services/stats-insights";
+import type { StatsInsights } from "@/lib/types";
 import { fetchRecommendationsWithIntros } from "@/server/services/weread-recommendations";
 import { syncFromWeRead } from "@/server/services/weread-sync";
 import {
@@ -147,6 +149,7 @@ export type StatsPayload = {
   categoryDistribution: Awaited<ReturnType<typeof getDashboardData>>["categoryDistribution"];
   preferTime?: number[];
   preferTimeWord?: string;
+  insights: StatsInsights;
 };
 
 export async function getStatsPayload(modeInput?: ReadDataMode): Promise<StatsPayload> {
@@ -183,6 +186,7 @@ export async function getStatsPayload(modeInput?: ReadDataMode): Promise<StatsPa
         heatmapBuckets,
         preferTime: detail.preferTime,
         preferTimeWord: detail.preferTimeWord,
+        insights: buildStatsInsights(detail, mode),
       };
     } catch {
       // fall back to cached snapshot / mock below
@@ -203,6 +207,7 @@ export async function getStatsPayload(modeInput?: ReadDataMode): Promise<StatsPa
     trendDescription: trendChartDescription(mode, mockDetail),
     heatmapRange,
     heatmapBuckets,
+    insights: buildMockStatsInsights(),
   };
 }
 

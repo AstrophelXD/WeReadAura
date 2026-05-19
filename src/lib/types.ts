@@ -19,6 +19,53 @@ export interface DistributionPoint {
   value: number;
 }
 
+export interface StatsInsightMetric {
+  label: string;
+  value: string;
+  hint?: string;
+}
+
+export interface ReadLongestEntry {
+  id: string;
+  title: string;
+  subtitle?: string;
+  durationLabel: string;
+  durationSeconds: number;
+  tags: string[];
+  href?: string;
+  kind: "book" | "album";
+}
+
+export interface PreferAuthorEntry {
+  name: string;
+  bookCount: number;
+  readTimeLabel: string;
+}
+
+export interface PreferPublisherEntry {
+  name: string;
+  bookCount: number;
+}
+
+export interface ReadingMixInsight {
+  readRate: number;
+  readTimeLabel: string;
+  listenTimeLabel: string;
+}
+
+export interface StatsInsights {
+  highlights: string[];
+  secondaryMetrics: StatsInsightMetric[];
+  readStats: StatsInsightMetric[];
+  readLongest: ReadLongestEntry[];
+  preferAuthors: PreferAuthorEntry[];
+  preferPublishers: PreferPublisherEntry[];
+  preferCopyright: PreferPublisherEntry[];
+  readingMix?: ReadingMixInsight;
+  medals: string[];
+  authorCount?: number;
+}
+
 export interface HighlightItem {
   id: string;
   bookId: string;
