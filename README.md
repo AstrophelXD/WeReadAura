@@ -148,6 +148,7 @@ WeReadAura/
 | --- | --- |
 | [weread-reading-analytics-prd.md](docs/weread-reading-analytics-prd.md) | 产品需求与范围 |
 | [technical-architecture.md](docs/technical-architecture.md) | 技术方案与分层 |
+| [ai-assistant-architecture.md](docs/ai-assistant-architecture.md) | AI 助手接入方案 |
 | [frontend-visual-style-guide.md](docs/frontend-visual-style-guide.md) | Plain neo-brutalism 视觉规范 |
 | [field-typography-guide.md](docs/field-typography-guide.md) | 字段排版与 `type-*` 用法 |
 | [weread-api-integration.md](docs/weread-api-integration.md) | WeRead 接入说明 |
