@@ -3,15 +3,15 @@
 ## 1. 文档信息
 
 - 项目名称：`WeReadAura`
-- 文档版本：`v0.1`
-- 文档状态：技术方案草案
-- 编写日期：`2026-05-16`
+- 文档版本：`v0.2`
+- 文档状态：技术方案迭代中
+- 编写日期：`2026-05-19`
 - 对应需求文档：[docs/weread-reading-analytics-prd.md](D:\WeReadAura\docs\weread-reading-analytics-prd.md)
 - 对应视觉规范：[docs/frontend-visual-style-guide.md](D:\WeReadAura\docs\frontend-visual-style-guide.md)
 
 ## 2. 架构结论
 
-本项目首版采用 `Next.js App Router + TypeScript + PostgreSQL` 的单仓全栈方案，不单独拆分第二个后端服务。
+本项目长期目标仍采用 `Next.js App Router + TypeScript + PostgreSQL` 的单仓全栈方案，不单独拆分第二个后端服务。
 
 核心判断如下：
 
@@ -20,6 +20,27 @@
 - 微信读书接入存在字段与权限不确定性，先通过适配层隔离，而不是过早拆成多服务
 - 统计聚合、列表查询、详情查询都能在同一套 TypeScript 代码中完成，能显著降低 MVP 成本
 - 后续如果同步任务、报告生成或多用户规模明显增长，再从当前架构平滑拆出独立 worker / API 服务
+
+### 2.1 当前实现快照
+
+截至 `2026-05-19`，仓库中的真实运行形态为：
+
+- `Next.js App Router + TypeScript`
+- `Route Handlers` 作为内部 BFF
+- `src/server/services/*` 作为聚合与编排层
+- `src/server/adapters/weread/*` 作为微信读书 Skill 适配层
+- `src/server/cache/sync-cache.ts` 作为当前同步快照缓存层
+- 微信读书 API Key 通过服务端环境变量或 `HTTP-only cookie` 保存
+
+当前尚未落地的部分：
+
+- PostgreSQL 持久化
+- Drizzle ORM
+- 独立 repositories / db 层
+- Zod DTO 校验层
+- TanStack Query
+
+因此本文件后续若提到数据库、ORM、repository 等内容，应理解为“目标架构”，不是“当前已完成实现”。
 
 ## 3. 目标架构
 
@@ -42,6 +63,22 @@ flowchart LR
 - `Adapter Layer`：封装微信读书 skill 或后续替代接入方式
 - `Database`：保存标准化后的业务数据、同步快照和用户偏好
 
+### 3.1 当前运行架构
+
+当前运行中的简化架构更接近：
+
+```mermaid
+flowchart LR
+  U["User Browser"] --> W["Next.js Web App"]
+  W --> R["Route Handlers / BFF"]
+  R --> S["Application Services"]
+  S --> A["WeRead Adapter Layer"]
+  S --> C["Disk + Memory Sync Snapshot"]
+  A --> X["WeRead Skill Gateway"]
+```
+
+这套简化架构已经能支撑当前首页、书架、统计、笔记、发现、书籍详情和设置页面。
+
 ## 4. 技术栈
 
 ### 4.1 核心栈
@@ -58,7 +95,27 @@ flowchart LR
 | 客户端服务端状态 | `TanStack Query` | 仅用于高交互客户端数据 | 对筛选、分页、刷新、缓存更稳；但不在全站滥用 |
 | 测试 | `Vitest + Testing Library + Playwright` | 单元、组件、端到端测试 | 分别覆盖纯逻辑、UI 行为和关键流程 |
 
-### 4.2 不采用的方案
+### 4.2 当前已落地技术
+
+当前仓库已实际使用：
+
+- `Next.js App Router`
+- `React`
+- `TypeScript`
+- `Tailwind CSS`
+- `Recharts`
+- `Vitest`
+- `HTTP-only cookie` 保存 WeRead API Key
+- `.data/sync-snapshot.json + memory cache` 保存同步快照
+
+当前仓库尚未安装和使用：
+
+- `PostgreSQL`
+- `Drizzle ORM`
+- `Zod`
+- `TanStack Query`
+
+### 4.3 不采用的方案
 
 ### 不采用前后端双仓或双服务
 
@@ -138,6 +195,8 @@ MVP 阶段采用“单用户连接”的简化模型：
 
 ## 6. 数据流
 
+### 6.1 当前同步流程
+
 首次同步流程：
 
 1. 用户进入首页
@@ -145,18 +204,26 @@ MVP 阶段采用“单用户连接”的简化模型：
 3. 如未完成首次同步，前端引导用户连接并触发 `POST /api/sync`
 4. 服务端调用 `WeReadGateway`
 5. 原始数据进入 `raw sync snapshot`
-6. 服务层完成标准化、去重、聚合、入库
+6. 服务层完成标准化、去重、聚合，并写入本地同步快照
 7. 页面重新拉取 dashboard 数据并展示
 
 日常访问流程：
 
-1. 页面优先读取数据库中的标准化数据
+1. 页面优先读取当前同步快照中的标准化数据
 2. 当用户手动点击“立即同步”时触发新一轮同步
 3. 同步完成后失效相关缓存并刷新页面
 
+### 6.2 目标数据流
+
+在 PostgreSQL 落地后，数据流再切换为：
+
+1. 页面优先读取数据库中的标准化数据
+2. 同步任务写入数据库和快照表
+3. 统计、洞察和后续 AI 报告优先基于标准化持久化数据生成
+
 ## 7. 目录结构
 
-建议采用单仓 `src/` 结构：
+目标结构建议采用单仓 `src/` 结构：
 
 ```text
 WeReadAura/
@@ -213,14 +280,14 @@ WeReadAura/
       layout/
       feedback/
       charts/
-    features/
-      dashboard/
-      bookshelf/
-      stats/
-      notes/
-      discover/
-      book-detail/
-      settings/
+      features/
+        home/
+        bookshelf/
+        stats/
+        notes/
+        discover/
+        books/
+        settings/
     server/
       adapters/
         weread/
@@ -264,9 +331,11 @@ WeReadAura/
 - 放可跨 feature 复用的通用组件
 - 不放具体业务口径
 
-### `features/`
+### `components/features/`（当前） / `features/`（目标可选）
 
 - 每个业务域自己的 UI 组合、hooks、view model、列定义、筛选配置
+- 当前仓库实际使用 `src/components/features/*`
+- 若未来做结构调整，可再评估是否抽出顶层 `src/features/*`
 - 允许出现领域语义，例如 `ReadingTrendPanel`、`BookshelfFilters`
 
 ### `server/`
@@ -301,19 +370,29 @@ WeReadAura/
 - 页面组件里直接调用外部微信读书接口
 - 一个 service 同时处理请求解析、数据库查询、图表数据拼装和 HTML 文案
 
+### 8.3 当前已落地目录
+
+当前仓库实际目录与上面的目标结构存在少量差异，主要表现为：
+
+- 业务组件位于 `src/components/features/*`
+- 当前未拆出独立 `src/features/*`
+- 当前未落地 `src/server/db/*` 与 `src/server/repositories/*`
+
+后续若继续新增能力，应优先延续当前真实目录，除非先做一轮结构调整。
+
 ## 9. MVP 页面拆分
 
 ### 9.1 MVP 页面清单
 
 | 路由 | 页面名称 | MVP 目标 | 主要模块 |
 | --- | --- | --- | --- |
-| `/` | 仪表盘首页 | 让用户打开即看到阅读全貌 | hero、核心指标、最近趋势、在读/已读、最近笔记、推荐洞察 |
+| `/` | 仪表盘首页 | 让用户打开即看到阅读全貌 | hero、核心指标、最近趋势、在读/已读、最近笔记、推荐与洞察 |
 | `/bookshelf` | 书架页 | 浏览和筛选个人书架 | 搜索、状态筛选、排序、书籍卡片列表 |
 | `/stats` | 阅读统计页 | 查看趋势与结构分析 | 累计指标、趋势图、分类分布、高峰时段 |
 | `/notes` | 划线与笔记页 | 回顾阅读产出 | 搜索、筛选、摘录时间线、按书聚合 |
 | `/books/[bookId]` | 单书详情页 | 复盘单本书阅读情况 | 基础信息、进度、阅读轨迹、摘录、笔记数 |
-| `/discover` | 搜索与推荐页 | 搜书并接收推荐 | 搜索框、结果列表、推荐列表、加入待读 CTA |
-| `/settings` | 设置页 | 管理连接与同步 | 连接状态、同步时间、手动同步、偏好设置 |
+| `/discover` | 搜索与推荐页 | 搜书并接收推荐 | 搜索框、结果列表、推荐列表、推荐解释 |
+| `/settings` | 设置页 | 管理连接与同步 | 连接状态、同步时间、手动同步、密钥管理 |
 
 ### 9.2 首页模块顺序
 
@@ -330,13 +409,13 @@ WeReadAura/
 
 ### 9.3 暂不单独拆出的页面
 
-以下内容暂不单独拆路由：
+以下内容当前暂不单独拆路由：
 
 - 独立 `insights` 页
 - 年度报告页
 - 导出页
 
-这些能力先以内嵌模块或卡片形式存在于首页 / 发现页 / 设置页。
+这些能力先以内嵌模块或卡片形式存在于首页 / 发现页 / 统计页，后续再视 AI 能力成熟度决定是否拆成独立路由。
 
 ## 10. API 设计
 
@@ -353,7 +432,7 @@ MVP 阶段统一走内部 BFF API：
 | `GET` | `/api/discover/recommendations` | 个性化推荐 |
 | `POST` | `/api/sync` | 手动触发同步 |
 | `GET` | `/api/settings` | 设置页基础数据 |
-| `PATCH` | `/api/settings` | 更新用户偏好 |
+| `PATCH` | `/api/settings` | 保存或清除 WeRead API Key |
 
 接口规则：
 
@@ -362,6 +441,23 @@ MVP 阶段统一走内部 BFF API：
 - 分页、筛选、排序参数统一规范化
 - 所有时间字段统一返回 ISO 8601 字符串
 - 所有数值字段明确单位，例如 `minutes`、`count`、`percent`
+
+### 10.1 当前已落地 API
+
+当前仓库已落地：
+
+- `GET /api/dashboard`
+- `GET /api/bookshelf`
+- `GET /api/stats`
+- `GET /api/notes`
+- `GET /api/books/[bookId]`
+- `GET /api/discover/search`
+- `GET /api/discover/recommendations`
+- `POST /api/sync`
+- `GET /api/settings`
+- `PATCH /api/settings`
+
+AI 能力相关接口（如 `/api/assistant/chat`、`/api/insights`、`/api/reports/annual`）仍属于新增规划。
 
 ## 11. 组件分层
 
@@ -483,7 +579,7 @@ MVP 阶段统一走内部 BFF API：
 
 ## 12. 数据模型
 
-MVP 先落以下表：
+目标持久化阶段建议先落以下表：
 
 - `users`
 - `weread_connections`
@@ -511,7 +607,8 @@ MVP 先落以下表：
 
 ### 13.1 缓存原则
 
-- 页面默认读数据库，不直接读外部源
+- 当前实现默认读同步快照，不直接读外部源
+- PostgreSQL 落地后再切换为页面默认读数据库
 - 同步完成后再更新数据库快照
 - 首页、统计页接口可以做短时缓存
 - 搜索接口默认不做长缓存

@@ -62,7 +62,7 @@ flowchart LR
 - `reading-preference`
 - `reading-behavior`
 - `period-summary`
-- `annual-report`
+- `period-report`
 
 后续可扩展：
 
@@ -213,7 +213,7 @@ flowchart LR
 - `L1`：周期核心指标与同比/环比信号
 - `L2`：代表书籍、代表笔记、代表趋势点
 
-#### `annual-report`
+#### `period-report`
 
 建议上下文：
 
@@ -245,7 +245,7 @@ interface InsightBase {
 
 - `evidence` 至少 1 条，最多 4 条
 - `summary` 控制在 1 到 3 句
-- `disclaimer` 在人格和年报场景建议始终保留
+- `disclaimer` 在人格和阶段性总结场景建议始终保留
 
 ### 7.2 阅读人格 Schema
 
@@ -253,7 +253,7 @@ interface InsightBase {
 
 - 首页卡片
 - 统计页洞察卡片
-- 年报中的阶段性画像
+- 阶段性总结视图中的阶段画像
 
 建议结构：
 
@@ -383,25 +383,25 @@ interface PeriodSummaryInsight extends InsightBase {
 - `nextSuggestions`
   - 可选，用于轻量建议
 
-### 7.6 年度总结 Schema
+### 7.6 阶段性总结视图 Schema
 
 用途：
 
-- 独立年度阅读报告页
-- 年度分享海报内容来源
+- 独立阶段性总结视图
+- 周期性图文总结内容来源
 
 建议结构：
 
 ```ts
-interface AnnualReportInsight {
-  type: "annual-report";
-  period: "annually";
+interface PeriodReportInsight {
+  type: "period-report";
+  period: "weekly" | "monthly" | "annually" | "overall";
   generatedAt: string;
   sourceMode: "mock" | "live";
   headline: string;
   subheadline: string;
-  persona: string;
-  yearKeywords: string[];
+  persona?: string;
+  periodKeywords: string[];
   keyMoments: string[];
   readingPatterns: string[];
   booksToRemember: Array<{
@@ -418,7 +418,7 @@ interface AnnualReportInsight {
 
 字段规则：
 
-- `yearKeywords`
+- `periodKeywords`
   - 3 到 5 个
 - `keyMoments`
   - 3 到 6 条
@@ -469,11 +469,13 @@ interface PeriodInsightFacts {
 }
 ```
 
-### 8.2 年报 Facts
+### 8.2 阶段性总结视图 Facts
 
 ```ts
-interface AnnualReportFacts {
-  year: number;
+interface PeriodReportFacts {
+  period: "weekly" | "monthly" | "annually" | "overall";
+  periodStart: string;
+  periodEnd: string;
   sourceMode: "mock" | "live";
   totals: {
     totalReadMinutes: number;
@@ -482,7 +484,7 @@ interface AnnualReportFacts {
     highlightCount: number;
     noteCount: number;
   };
-  quarterlyOrMonthlySegments: Array<{
+  segments: Array<{
     label: string;
     minutes: number;
     finishedBooks: number;
@@ -515,7 +517,7 @@ interface AnnualReportFacts {
 - 洞察标题命名
 - 人格标签归纳
 - 多信号合成一句自然语言
-- 阶段总结与年报叙事
+- 阶段总结与阶段性总结视图叙事
 - 把证据压缩为更短、更可读的说明
 
 ### 9.3 不应让模型决定的部分
@@ -563,7 +565,7 @@ interface AnnualReportFacts {
 - 偏好卡片回退为分类/作者/时段的确定性总结
 - 行为卡片回退为趋势与活跃度摘要
 - 阶段总结回退为指标摘要卡
-- 年报回退为年度指标版报告
+- 阶段性总结视图回退为周期指标版报告
 
 ### 11.2 Schema 失败降级
 
@@ -602,16 +604,16 @@ interface AnnualReportFacts {
 建议按以下顺序推进：
 
 1. 先定义 signal layer
-2. 再定义 `PeriodInsightFacts` 和 `AnnualReportFacts`
+2. 再定义 `PeriodInsightFacts` 和 `PeriodReportFacts`
 3. 完成 `reading-preference` 与 `reading-behavior`
 4. 再做 `reading-persona`
 5. 再做 `period-summary`
-6. 最后做 `annual-report`
+6. 最后做 `period-report`
 
 这样安排的原因是：
 
 - 偏好和行为更接近确定性信号，容易先做稳
-- 人格和年报更依赖模型表达，适合放后面
+- 人格和阶段性总结视图更依赖模型表达，适合放后面
 
 ## 14. 结论
 
@@ -622,4 +624,4 @@ WeReadAura 的页面式 AI 洞察不应被实现成“把一堆数据扔给模�
 - 再用模型完成有限归纳和表达
 - 最终返回稳定、可测、可降级的结构化 DTO
 
-如果这一层设计先定清楚，后续无论接聊天助手、首页洞察卡片还是年度阅读总结，都会更稳，也更符合项目对数据正确性和可维护性的要求。
+如果这一层设计先定清楚，后续无论接聊天助手、首页洞察卡片还是阶段性阅读总结，都会更稳，也更符合项目对数据正确性和可维护性的要求。
