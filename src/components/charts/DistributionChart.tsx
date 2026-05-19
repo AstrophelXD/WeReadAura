@@ -4,12 +4,14 @@ import { Pie, PieChart } from "recharts";
 
 import {
   ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { buildDistributionChartConfig, chartKeyForIndex } from "@/lib/chart-theme";
+import {
+  buildDistributionChartConfig,
+  CHART_THEME_COLORS,
+  chartKeyForIndex,
+} from "@/lib/chart-theme";
 import type { DistributionPoint } from "@/lib/types";
 import { formatPercent } from "@/lib/utils";
 
@@ -31,12 +33,12 @@ export function DistributionChart({ data }: { data: DistributionPoint[] }) {
   const chartConfig = buildDistributionChartConfig(data.map((item) => item.label));
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
       <ChartContainer
         config={chartConfig}
-        className="mx-auto max-h-[300px] [&_.recharts-pie-label-text]:fill-[var(--ink)]"
+        className="mx-auto h-[min(200px,42vw)] min-h-[160px] max-h-[220px] w-full max-w-[220px] shrink-0 sm:mx-0 [&_.recharts-pie-label-text]:fill-[var(--ink)]"
       >
-        <PieChart margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
+        <PieChart margin={{ top: 4, right: 4, bottom: 4, left: 4 }}>
           <ChartTooltip
             cursor={false}
             content={
@@ -54,17 +56,29 @@ export function DistributionChart({ data }: { data: DistributionPoint[] }) {
               />
             }
           />
-          <Pie data={chartData} dataKey="value" nameKey="key" stroke="var(--ink)" strokeWidth={2} />
-          <ChartLegend
-            content={<ChartLegendContent nameKey="key" />}
-            className="-translate-y-2 flex-wrap gap-2 *:basis-1/2 *:justify-start sm:*:basis-1/3"
+          <Pie
+            data={chartData}
+            dataKey="value"
+            nameKey="key"
+            stroke="var(--ink)"
+            strokeWidth={2}
+            outerRadius="88%"
           />
         </PieChart>
       </ChartContainer>
-      <ul className="space-y-2 border-t-2 border-[var(--ink)] pt-4">
-        {data.map((item) => (
+      <ul className="flex min-w-0 flex-1 flex-col justify-center space-y-2 sm:border-l-2 sm:border-[var(--ink)] sm:pl-6">
+        {data.map((item, index) => (
           <li key={item.label} className="type-caption flex items-center justify-between gap-3">
-            <span className="truncate">{item.label}</span>
+            <span className="flex min-w-0 items-center gap-2">
+              <span
+                className="size-3 shrink-0 border-2 border-[var(--ink)]"
+                style={{
+                  backgroundColor: CHART_THEME_COLORS[index % CHART_THEME_COLORS.length],
+                }}
+                aria-hidden
+              />
+              <span className="truncate">{item.label}</span>
+            </span>
             <span className="shrink-0 font-medium">{formatPercent(item.value)}</span>
           </li>
         ))}
