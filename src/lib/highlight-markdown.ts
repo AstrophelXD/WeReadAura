@@ -1,3 +1,6 @@
+/**
+ * Book highlight Markdown export — structure follows docs/neo-brutalism-markdown-guide.md §6.
+ */
 import { highlightKindLabel, isThoughtHighlight } from "@/lib/highlight-content";
 import { groupHighlightsByChapter } from "@/lib/highlight-sort";
 import type { HighlightItem } from "@/lib/types";

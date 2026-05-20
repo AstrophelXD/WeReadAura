@@ -219,7 +219,9 @@ export interface ExternalRecommendBook {
   intro?: string;
   category?: string;
   reason?: string;
+  readingCount?: number;
   newRating?: number;
+  newRatingCount?: number;
   newRatingDetail?: { title?: string };
   searchIdx?: number;
 }

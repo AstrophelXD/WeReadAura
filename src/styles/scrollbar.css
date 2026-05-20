@@ -1,26 +1,25 @@
-/* Neo-brutalism page scrollbar — from neobrutalism-components-local/src/styling/globals.css */
+/* Neo-brutalism scrollbars — unified gutter width; one border per edge */
 
 body,
 .scrollbar {
+  --sb-gutter-width: 18px;
   --sb-track-color: var(--white);
   --sb-thumb-color: var(--ink);
+  --sb-track-border-width: 3px;
+  --sb-track-border: var(--sb-track-border-width) solid var(--ink);
 }
 
-body::-webkit-scrollbar {
-  width: 20px;
-}
-
+body::-webkit-scrollbar,
 .scrollbar::-webkit-scrollbar {
-  width: 16px;
+  width: var(--sb-gutter-width);
+  height: var(--sb-gutter-width);
 }
 
 body::-webkit-scrollbar-track,
 .scrollbar::-webkit-scrollbar-track {
   background: var(--sb-track-color);
-}
-
-body::-webkit-scrollbar-track {
-  border-left: 4px solid var(--ink);
+  border: 0;
+  border-left: var(--sb-track-border);
 }
 
 body::-webkit-scrollbar-thumb,
@@ -28,9 +27,25 @@ body::-webkit-scrollbar-thumb,
   background: var(--sb-thumb-color);
 }
 
+/* --- Main column (assistant closed): viewport edge on container --- */
+.app-shell__main-scroll.scrollbar--page-gutter {
+  border-right: var(--sb-track-border);
+}
+
+/* --- Main column (assistant open): split line on container (track border-right unreliable in WebKit) --- */
+.app-shell__main-scroll.scrollbar--split-edge {
+  border-right: var(--sb-track-border);
+}
+
+/* --- Assistant: viewport edge on container; inner line on track (same as main) --- */
+.assistant-scroll.scrollbar--edge-right {
+  border-right: var(--sb-track-border);
+}
+
 @supports not selector(::-webkit-scrollbar) {
   body,
   .scrollbar {
     scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+    scrollbar-width: thin;
   }
 }

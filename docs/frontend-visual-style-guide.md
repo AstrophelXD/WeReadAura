@@ -158,6 +158,8 @@
 
 组件库内的 `font-base` / `font-heading` 仅表示字重，不替换上述 font-family。
 
+Markdown 长文、导出与 `NeoProse` 容器见 [neo-brutalism-markdown-guide.md](./neo-brutalism-markdown-guide.md)。
+
 ### 5.2 字级与行距（对齐 neobrutalism-components）
 
 排版 token 集中在 `src/styles/typography.css`，页面与组件应使用语义 class，避免散落 `text-*` / `leading-*`。

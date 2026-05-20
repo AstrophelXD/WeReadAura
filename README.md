@@ -153,6 +153,7 @@ WeReadAura/
 | [ai-ui-surface-plan.md](docs/ai-ui-surface-plan.md) | AI 界面落点方案 |
 | [frontend-visual-style-guide.md](docs/frontend-visual-style-guide.md) | Plain neo-brutalism 视觉规范 |
 | [field-typography-guide.md](docs/field-typography-guide.md) | 字段排版与 `type-*` 用法 |
+| [neo-brutalism-markdown-guide.md](docs/neo-brutalism-markdown-guide.md) | Neo-brutalism Markdown 适配规范（字体除外） |
 | [weread-api-integration.md](docs/weread-api-integration.md) | WeRead 接入说明 |
 | [AGENTS.md](AGENTS.md) | 编码、数据口径与安全约定 |
 

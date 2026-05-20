@@ -1,0 +1,254 @@
+/**
+ * Neo-brutalism prose — aligned with ekmas/neobrutalism-components docs prose-* modifiers.
+ * Font-family inherits from globals.css (--font-serif); weights match font-heading / font-base.
+ */
+
+.neo-prose {
+  color: var(--ink);
+  line-height: 1.625;
+  max-width: 48rem;
+  text-wrap: pretty;
+}
+
+/* Narrow assistant sidebar — tighter heading spacing */
+.neo-prose.neo-prose--assistant h2 {
+  margin-top: 1.25rem;
+}
+
+.neo-prose.neo-prose--assistant h2:first-child {
+  margin-top: 0;
+}
+
+.neo-prose.neo-prose--assistant h3 {
+  margin-top: 1rem;
+}
+
+.neo-prose > :first-child {
+  margin-top: 0;
+}
+
+/* Headings — spacing from neobrutalism docs page prose modifiers */
+.neo-prose h1 {
+  font-weight: var(--heading-font-weight);
+  font-size: 1.5rem;
+  line-height: 1.5;
+  margin: 0 0 1rem;
+  scroll-margin-top: 8rem;
+}
+
+.neo-prose h2 {
+  font-weight: var(--heading-font-weight);
+  font-size: 1.25rem;
+  line-height: 1.5;
+  margin: 2.5rem 0 1.5rem;
+  scroll-margin-top: 8rem;
+}
+
+.neo-prose h3 {
+  font-weight: var(--heading-font-weight);
+  font-size: 1.125rem;
+  line-height: 1.5;
+  margin: 2rem 0 1.5rem;
+  scroll-margin-top: 8rem;
+}
+
+.neo-prose h4,
+.neo-prose h5,
+.neo-prose h6 {
+  font-weight: var(--heading-font-weight);
+  font-size: 1rem;
+  line-height: 1.25;
+  margin: 1.5rem 0 0.75rem;
+  scroll-margin-top: 8rem;
+}
+
+@media (min-width: 640px) {
+  .neo-prose h1 {
+    font-size: 1.875rem;
+  }
+
+  .neo-prose h2 {
+    font-size: 1.5rem;
+  }
+
+  .neo-prose h3 {
+    font-size: 1.25rem;
+  }
+
+  .neo-prose h4 {
+    font-size: 1.125rem;
+  }
+}
+
+/* Paragraphs */
+.neo-prose p {
+  font-weight: var(--base-font-weight);
+  font-size: 0.875rem;
+  line-height: 1.75;
+  margin: 0;
+}
+
+.neo-prose p + p {
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .neo-prose p {
+    font-size: 1rem;
+  }
+}
+
+/* Lists */
+.neo-prose ul,
+.neo-prose ol {
+  margin: 1rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.neo-prose ul {
+  list-style-type: disc;
+}
+
+.neo-prose ol {
+  list-style-type: decimal;
+}
+
+.neo-prose li {
+  font-weight: var(--base-font-weight);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .neo-prose li {
+    font-size: 1rem;
+  }
+}
+
+.neo-prose li > ul,
+.neo-prose li > ol {
+  margin-top: 0.5rem;
+}
+
+/* Links */
+.neo-prose a {
+  color: var(--ink);
+  font-weight: var(--heading-font-weight);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.neo-prose a:hover {
+  color: color-mix(in srgb, var(--ink) 75%, transparent);
+}
+
+/* Inline code */
+.neo-prose :not(pre) > code {
+  background: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  color: var(--paper);
+  font-size: 0.875rem;
+  font-weight: var(--heading-font-weight);
+  margin: 0 0.125rem;
+  padding: 3px 5px;
+  word-break: normal;
+}
+
+/* Fenced code blocks */
+.neo-prose pre {
+  background: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  color: var(--paper);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 1.5rem 0;
+  max-height: 300px;
+  overflow: auto;
+  padding: 1rem;
+}
+
+.neo-prose pre code {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font-weight: var(--base-font-weight);
+  margin: 0;
+  padding: 0;
+}
+
+/* Blockquotes — reading excerpts use quote font */
+.neo-prose blockquote {
+  background: var(--white);
+  border: 2px solid var(--ink);
+  border-left-width: 3px;
+  box-shadow: var(--shadow);
+  font-family: var(--font-quote);
+  font-size: 1.0625rem;
+  font-weight: var(--biao-font-weight);
+  line-height: 1.6;
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+}
+
+.neo-prose blockquote p {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.neo-prose blockquote p + p {
+  margin-top: 0.75rem;
+}
+
+/* Horizontal rule */
+.neo-prose hr {
+  border: 0;
+  border-top: 3px solid var(--ink);
+  margin: 2rem 0;
+}
+
+/* Tables */
+.neo-prose table {
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  width: 100%;
+}
+
+.neo-prose th,
+.neo-prose td {
+  border: 2px solid var(--ink);
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.neo-prose th {
+  background: var(--white);
+  font-weight: var(--heading-font-weight);
+}
+
+.neo-prose td {
+  background: var(--paper);
+  font-weight: var(--base-font-weight);
+}
+
+/* Images */
+.neo-prose img {
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  height: auto;
+  max-width: 100%;
+}
+
+/* Strong / emphasis */
+.neo-prose strong {
+  font-weight: var(--heading-font-weight);
+}
+
+.neo-prose em {
+  font-style: italic;
+}

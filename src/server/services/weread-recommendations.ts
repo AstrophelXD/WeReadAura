@@ -110,7 +110,10 @@ export async function fetchRecommendationsWithIntros(
   context: GatewayContext,
   count = 12,
 ): Promise<RecommendationItem[]> {
-  const payload = (await gateway.getRecommendations(context, count)) as Record<string, unknown>;
+  const payload = (await gateway.getRecommendations(context, count)) as unknown as Record<
+    string,
+    unknown
+  >;
   const books = parseRecommendBooksResponse(payload);
 
   const enriched = await Promise.all(

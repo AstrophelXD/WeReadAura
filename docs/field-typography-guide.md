@@ -5,6 +5,7 @@
 相关文档：
 
 - 色彩、边框、组件外观：[frontend-visual-style-guide.md](./frontend-visual-style-guide.md)
+- Markdown 长文 / 导出结构：[neo-brutalism-markdown-guide.md](./neo-brutalism-markdown-guide.md)
 - Token 定义与响应式字号：[../src/styles/typography.css](../src/styles/typography.css)
 
 ---

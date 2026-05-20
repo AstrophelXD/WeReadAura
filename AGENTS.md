@@ -238,6 +238,8 @@
 - 产品需求以 [docs/weread-reading-analytics-prd.md](D:\WeReadAura\docs\weread-reading-analytics-prd.md) 为主。
 - 前端视觉规范以 [docs/frontend-visual-style-guide.md](D:\WeReadAura\docs\frontend-visual-style-guide.md) 为主。
 - 字段排版选型以 [docs/field-typography-guide.md](D:\WeReadAura\docs\field-typography-guide.md) 为准。
+- Markdown 结构与应用内长文样式以 [docs/neo-brutalism-markdown-guide.md](D:\WeReadAura\docs\neo-brutalism-markdown-guide.md) 为准（字体除外，遵循本项目字体栈）。
+- AI 阅读助手输出 Markdown 时，以 `src/server/services/assistant/assistant-markdown-rules.ts` 与 `.cursor/rules/assistant-markdown.mdc` 为准。
 - 工程实现与分层以 [docs/technical-architecture.md](D:\WeReadAura\docs\technical-architecture.md) 为主。
 - AI 能力与界面规划以以下文档为主：
   - [docs/ai-assistant-architecture.md](D:\WeReadAura\docs\ai-assistant-architecture.md)

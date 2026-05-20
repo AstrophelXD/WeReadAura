@@ -721,6 +721,7 @@ src/
 - 明确显示当前数据状态，例如“演示数据 / 已同步 / 未连接”
 - 在答案中标注统计周期、单位和时间范围
 - 支持 `prefers-reduced-motion`
+- **助手回复**：模型输出 Markdown，由 `AssistantMarkdown` + `NeoProse` 渲染；规则见 [neo-brutalism-markdown-guide.md](./neo-brutalism-markdown-guide.md) §7 与 `assistant-markdown-rules.ts`
 
 ## 17. 密钥、权限与安全
 
@@ -740,6 +741,18 @@ DeepSeek API Key 应遵循与 WeRead API Key 相同的安全原则：
 - 对页面式 AI 结果保留“证据摘要”字段，便于审查结论来源
 
 ## 18. 输出与文案规范
+
+### 18.1 对话式助手 Markdown
+
+聊天助手（`/api/assistant/chat`）的**最终用户可见正文**须为 Markdown，并符合 [neo-brutalism-markdown-guide.md](./neo-brutalism-markdown-guide.md) 的 AI 助手约定：
+
+- 提示词注入：`ASSISTANT_MARKDOWN_OUTPUT_RULES`（`src/server/services/assistant/assistant-markdown-rules.ts`）
+- 不用 `#`；用 `##` / `###`、列表、`**粗体**`、`>` 引用、` ```json ` 工具数据块
+- 禁止 HTML / JSX；字体由 `neo-prose.css` 承接，不沿用 neo 文档站字体
+
+页面式洞察卡片仍优先 **结构化 JSON DTO**（见 [ai-insight-schema-design.md](./ai-insight-schema-design.md)），与本节 Markdown 约定分离。
+
+### 18.2 通用文案规则
 
 AI 对话回答与页面文案应遵守以下规则：
 
