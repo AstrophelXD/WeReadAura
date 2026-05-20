@@ -4,13 +4,26 @@ export type AssistantRole = "user" | "assistant";
 
 export interface AssistantMessage {
   role: AssistantRole;
+  /** UI / 历史展示 */
   content: string;
+  /** 发给模型时用；嵌入「问问本书」时引用仅在上方展示，此处带完整上下文 */
+  apiContent?: string;
+}
+
+export interface QuotedHighlight {
+  id: string;
+  quote: string;
+  note?: string;
+  chapter: string;
+  createdAt: string;
 }
 
 export interface AssistantPageContext {
   pathname: string;
   bookId?: string;
   bookTitle?: string;
+  /** 用户在单书页引用的划线/想法（已截断） */
+  quotedHighlights?: QuotedHighlight[];
 }
 
 export interface AssistantChatRequest {

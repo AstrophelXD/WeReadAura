@@ -8,6 +8,7 @@
 | 模块 | 入口 | 说明 |
 | --- | --- | --- |
 | 全局阅读助手 | `/assistant`、侧栏 FAB、顶栏「助手」 | 多轮对话、页面上下文、只读工具调用 |
+| 单书笔记助手 | `/books/[bookId]` 笔记区底部 | 引用划线/想法后提问，上下文带入 API |
 | 流式回复 | `POST /api/assistant/chat/stream` | SSE 推送；工具轮次后分段输出正文 |
 | 周期阅读摘要 | 统计页卡片 + `GET /api/insights?type=period-summary` | 信号层 → LLM JSON / 规则降级 |
 | 设置说明 | `/settings` AI 卡片 | 数据边界、隐私、模型配置状态 |
@@ -36,10 +37,10 @@ flowchart LR
 
 ### 3.1 上下文管理
 
-- **请求体**：`message`、`history`（截断消毒）、`context.pathname`、`context.bookId`
+- **请求体**：`message`、`history`（截断消毒）、`context.pathname`、`context.bookId`、`context.quotedHighlights`（单书页引用笔记，最多 5 条）
 - **系统提示**：`assistant-prompts.ts` 注入数据来源、同步状态、当前路由语义（统计/笔记/单书）
 - **页面感知**：客户端从 `usePathname` / URL 解析 `bookId`；单书页快捷提问单独配置
-- **回答规范**：`assistant-markdown-rules.ts` + `.cursor/rules/assistant-markdown.mdc`
+- **回答规范**：`assistant-markdown-rules.ts` + `AGENTS.md` §11.1
 
 ### 3.2 Skill 工具层（只读）
 
@@ -116,6 +117,8 @@ flowchart LR
 | `src/server/services/insights/*` | 信号、摘要、解析 |
 | `src/server/adapters/ai/deepseek-client.ts` | DeepSeek HTTP |
 | `src/components/features/assistant/*` | 助手 UI |
+| `src/components/features/books/BookNotesAssistant.tsx` | 单书页嵌入式助手 |
+| `src/lib/assistant-quote.ts` | 引用笔记格式化与并入用户消息 |
 | `src/components/features/insights/PeriodSummaryCard.tsx` | 统计页卡片 |
 
 ## 6. 环境配置

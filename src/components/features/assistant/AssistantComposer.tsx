@@ -19,20 +19,28 @@ const BOOK_QUICK_PROMPTS = [
   },
 ] as const;
 
+type QuickPrompt = { id: string; label: string; message: string };
+
 export function AssistantComposer({
   disabled,
   onSend,
   variant = "page",
   pathname = "",
+  placeholder,
+  quickPromptsOverride,
 }: {
   disabled: boolean;
   onSend: (message: string) => void;
-  variant?: "page" | "sidebar";
+  variant?: "page" | "sidebar" | "embedded";
   pathname?: string;
+  placeholder?: string;
+  quickPromptsOverride?: QuickPrompt[];
 }) {
-  const quickPrompts = pathname.startsWith("/books/")
-    ? [...BOOK_QUICK_PROMPTS, ...ASSISTANT_QUICK_PROMPTS.slice(0, 1)]
-    : ASSISTANT_QUICK_PROMPTS;
+  const quickPrompts =
+    quickPromptsOverride ??
+    (pathname.startsWith("/books/")
+      ? [...BOOK_QUICK_PROMPTS, ...ASSISTANT_QUICK_PROMPTS.slice(0, 1)]
+      : ASSISTANT_QUICK_PROMPTS);
   const [draft, setDraft] = useState("");
 
   function submit(event?: React.FormEvent) {
@@ -45,33 +53,66 @@ export function AssistantComposer({
     setDraft("");
   }
 
+  const shellClass =
+    variant === "embedded"
+      ? "bg-[var(--white)] px-5 pb-4 pt-1"
+      : variant === "sidebar"
+        ? "border-t-[3px] border-[var(--ink)] bg-[var(--paper)]"
+        : "border-t-[3px] border-[var(--ink)] bg-[var(--paper)]";
+
+  const innerClass =
+    variant === "embedded" ? "" : variant === "sidebar" ? "px-3 py-3" : "container-shell py-4";
+
+  const pillClass =
+    variant === "embedded"
+      ? "type-caption border-[2px] border-[var(--ink)] bg-[var(--white)] px-3 py-1.5 font-biao transition-colors hover:bg-[var(--yellow)]/40 disabled:opacity-50"
+      : "type-caption rounded-[var(--radius-sm)] border-[2px] border-[var(--ink)] bg-[var(--white)] px-3 py-1.5 font-biao transition-transform hover:-translate-y-px disabled:opacity-50 motion-reduce:transition-none";
+
+  const controlClass = variant === "embedded" ? "rounded-none" : undefined;
+
   return (
-    <div className="border-t-[3px] border-[var(--ink)] bg-[var(--paper)]">
-      <div className={variant === "sidebar" ? "px-3 py-3" : "container-shell py-4"}>
-        <div className="mb-3 flex flex-wrap gap-2">
+    <div className={shellClass}>
+      <div className={innerClass}>
+        <div className={variant === "embedded" ? "mb-3 flex flex-wrap gap-2" : "mb-3 flex flex-wrap gap-2"}>
           {quickPrompts.map((item) => (
             <button
               key={item.id}
               type="button"
               disabled={disabled}
-              className="type-caption rounded-[var(--radius-sm)] border-[2px] border-[var(--ink)] bg-[var(--white)] px-3 py-1.5 font-biao transition-transform hover:-translate-y-px disabled:opacity-50 motion-reduce:transition-none"
+              className={pillClass}
               onClick={() => onSend(item.message)}
             >
               {item.label}
             </button>
           ))}
         </div>
-        <form className="flex flex-col gap-3 sm:flex-row sm:items-end" onSubmit={submit}>
+        <form
+          className={
+            variant === "embedded"
+              ? "flex items-end gap-3"
+              : "flex flex-col gap-3 sm:flex-row sm:items-end"
+          }
+          onSubmit={submit}
+        >
           <label className="flex-1">
             <span className="sr-only">输入问题</span>
             <Input
+              className={controlClass}
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
-              placeholder="例如：我最近读得怎么样？"
+              placeholder={placeholder ?? "例如：我最近读得怎么样？"}
               disabled={disabled}
             />
           </label>
-          <Button type="submit" disabled={disabled || !draft.trim()} className="sm:shrink-0">
+          <Button
+            type="submit"
+            disabled={disabled || !draft.trim()}
+            className={
+              variant === "embedded"
+                ? "min-h-11 shrink-0 rounded-none px-4"
+                : "sm:shrink-0"
+            }
+          >
             发送
           </Button>
         </form>

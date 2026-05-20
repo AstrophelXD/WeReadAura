@@ -18,9 +18,17 @@ type HighlightDetailDialogProps = {
   item: HighlightItem | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onQuote?: (item: HighlightItem) => void;
+  isQuoted?: boolean;
 };
 
-export function HighlightDetailDialog({ item, open, onOpenChange }: HighlightDetailDialogProps) {
+export function HighlightDetailDialog({
+  item,
+  open,
+  onOpenChange,
+  onQuote,
+  isQuoted = false,
+}: HighlightDetailDialogProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(async () => {
@@ -58,6 +66,17 @@ export function HighlightDetailDialog({ item, open, onOpenChange }: HighlightDet
             </div>
           </div>
           <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+            {onQuote ? (
+              <Button
+                type="button"
+                secondary
+                className="min-h-10 px-4 text-sm"
+                aria-pressed={isQuoted}
+                onClick={() => onQuote(item)}
+              >
+                {isQuoted ? "已引用" : "引用到助手"}
+              </Button>
+            ) : null}
             <Button type="button" secondary className="min-h-10 px-4 text-sm" onClick={() => void handleCopy()}>
               <Copy className="size-4" aria-hidden />
               {copied ? "已复制" : "复制"}

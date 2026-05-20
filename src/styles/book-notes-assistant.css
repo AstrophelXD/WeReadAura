@@ -1,0 +1,24 @@
+/* 单书页「问问本书」— 矩形直角，与 neo-brutalism 主界面一致 */
+
+.book-notes-assistant {
+  border-radius: 0;
+}
+
+.book-notes-assistant :where(
+  button,
+  input,
+  select,
+  textarea,
+  .neo-control,
+  .neo-button,
+  blockquote,
+  .neo-prose blockquote
+) {
+  border-radius: 0;
+}
+
+.book-notes-assistant__quote-card {
+  border: 2px solid var(--ink);
+  background: var(--white);
+  box-shadow: var(--box-shadow-x) var(--box-shadow-y) 0 var(--ink);
+}

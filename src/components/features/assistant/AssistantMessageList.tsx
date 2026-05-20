@@ -1,6 +1,7 @@
 "use client";
 
 import { AssistantMarkdown } from "@/components/features/assistant/AssistantMarkdown";
+import { embeddedUserDisplayContent } from "@/lib/assistant-quote";
 import type { AssistantMessage } from "@/lib/assistant-types";
 import { cn } from "@/lib/cn";
 
@@ -11,9 +12,12 @@ export function AssistantMessageList({
 }: {
   messages: AssistantMessage[];
   loading: boolean;
-  variant?: "page" | "sidebar";
+  variant?: "page" | "sidebar" | "embedded";
 }) {
   if (messages.length === 0 && !loading) {
+    if (variant === "embedded") {
+      return null;
+    }
     return (
       <div className="assistant-thread__empty flex flex-col justify-center gap-4 py-6">
         <p className="type-body text-[var(--ink)]/80">
@@ -32,34 +36,52 @@ export function AssistantMessageList({
       className={cn(
         "assistant-thread",
         variant === "sidebar" && "assistant-thread--sidebar",
+        variant === "embedded" && "assistant-thread--embedded",
       )}
       aria-live="polite"
     >
-      {messages.map((item, index) => (
-        <li
-          key={`${item.role}-${index}`}
-          className={cn(
-            "assistant-thread__message",
-            item.role === "user"
-              ? "assistant-thread__message--user"
-              : "assistant-thread__message--assistant",
-          )}
-        >
-          <div
-            className={
+      {messages.map((item, index) => {
+        const isEmbeddedUser = variant === "embedded" && item.role === "user";
+        const displayContent = isEmbeddedUser
+          ? embeddedUserDisplayContent(item.content)
+          : item.content;
+
+        if (isEmbeddedUser && !displayContent) {
+          return null;
+        }
+
+        return (
+          <li
+            key={`${item.role}-${index}`}
+            className={cn(
+              "assistant-thread__message",
               item.role === "user"
-                ? "assistant-thread__user-body"
-                : "assistant-thread__assistant-body"
-            }
+                ? "assistant-thread__message--user"
+                : "assistant-thread__message--assistant",
+            )}
           >
-            <AssistantMarkdown
-              content={item.content}
-              variant={variant}
-              align={item.role === "user" ? "end" : "start"}
-            />
-          </div>
-        </li>
-      ))}
+            <div
+              className={
+                item.role === "user"
+                  ? "assistant-thread__user-body"
+                  : "assistant-thread__assistant-body"
+              }
+            >
+              {isEmbeddedUser ? (
+                <p className="type-quote-preview font-biao text-right text-[var(--ink)]">
+                  {displayContent}
+                </p>
+              ) : (
+                <AssistantMarkdown
+                  content={displayContent}
+                  variant={variant}
+                  align={item.role === "user" ? "end" : "start"}
+                />
+              )}
+            </div>
+          </li>
+        );
+      })}
       {loading ? (
         <li className="assistant-thread__loading assistant-thread__message--assistant">
           <p className="type-body text-[var(--ink)]/70">正在读取数据并整理回答…</p>

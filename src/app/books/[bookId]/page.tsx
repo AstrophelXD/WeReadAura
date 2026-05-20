@@ -77,6 +77,7 @@ export default async function BookDetailPage({
       </div>
       <div className="mt-8">
         <BookHighlightsPanel
+          bookId={book.id}
           bookTitle={book.title}
           bookAuthor={book.author}
           items={bookHighlights}

@@ -177,6 +177,41 @@
 - 上下文必须按任务裁剪，只传必要字段，禁止把无关全量数据直接交给模型。
 - 对话式 AI、页面洞察、阶段性总结应优先复用同一套事实层和规则层。
 
+### 11.1 AI 阅读助手 Markdown 输出
+
+完整视觉与结构规范见 [docs/neo-brutalism-markdown-guide.md](docs/neo-brutalism-markdown-guide.md)（字体除外，遵循 WeReadAura 字体栈）。
+
+**单一事实源**
+
+- 系统提示词规则正文：`src/server/services/assistant/assistant-markdown-rules.ts` → `ASSISTANT_MARKDOWN_OUTPUT_RULES`
+- 修改输出格式时 **先改该常量**，再同步文档 §7；`assistant-prompts.ts` 已引用，勿在 prompt 里重复写一套规则
+
+**模型输出要求（摘要）**
+
+- 用 Markdown，**禁止** HTML / JSX
+- 不用 `#`；小节从 `##` / `###` 开始
+- 指标与结论用 `**粗体**`；时长与数量带单位
+- 工具原始 JSON 用 ` ```json ` 围栏代码块
+- 摘录用 `>`；勿编造未出现在工具结果中的原文
+- 单书页「问问本书」：引用已在页面卡片展示时，回复不要用「引用的笔记」标题，也不要用大段 blockquote 重复粘贴全部引用
+
+**前端渲染**
+
+- 助手消息：`AssistantMarkdown` → `NeoProse` + `react-markdown` + `remark-gfm`
+- 用户消息（全站助手页 / 侧栏）：同组件渲染 Markdown，右对齐
+- 用户消息（单书页嵌入「问问本书」）：仅展示问题纯文本（`type-quote-preview`）；引用只在上方卡片区展示，勿在对话里重复 blockquote
+- 样式：`src/styles/neo-prose.css`（对齐 neo-brutalism docs `prose-*`）
+
+**降级模式**
+
+- `assistant-fallback.ts` 在无 DeepSeek 时也应输出符合上述结构的 Markdown（JSON 放入 `json` 代码块）
+
+**相关路径（改动时优先对照）**
+
+- `src/server/services/assistant/**`
+- `src/components/features/assistant/**`
+- `src/lib/assistant-types.ts`、`src/lib/assistant-quote.ts`
+
 ## 12. 测试要求
 
 - 所有核心业务逻辑都必须配套自动化测试。
@@ -239,7 +274,7 @@
 - 前端视觉规范以 [docs/frontend-visual-style-guide.md](D:\WeReadAura\docs\frontend-visual-style-guide.md) 为主。
 - 字段排版选型以 [docs/field-typography-guide.md](D:\WeReadAura\docs\field-typography-guide.md) 为准。
 - Markdown 结构与应用内长文样式以 [docs/neo-brutalism-markdown-guide.md](D:\WeReadAura\docs\neo-brutalism-markdown-guide.md) 为准（字体除外，遵循本项目字体栈）。
-- AI 阅读助手输出 Markdown 时，以 `src/server/services/assistant/assistant-markdown-rules.ts` 与 `.cursor/rules/assistant-markdown.mdc` 为准。
+- AI 阅读助手输出 Markdown 时，以本文件 §11.1 与 `src/server/services/assistant/assistant-markdown-rules.ts` 为准。
 - 工程实现与分层以 [docs/technical-architecture.md](D:\WeReadAura\docs\technical-architecture.md) 为主。
 - AI 能力与界面规划以以下文档为主：
   - [docs/ai-assistant-architecture.md](D:\WeReadAura\docs\ai-assistant-architecture.md)

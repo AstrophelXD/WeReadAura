@@ -5,7 +5,14 @@ import { usePathname, useSearchParams } from "next/navigation";
 
 import { AssistantComposer } from "@/components/features/assistant/AssistantComposer";
 import { AssistantMessageList } from "@/components/features/assistant/AssistantMessageList";
-import type { AssistantChatResponse, AssistantMessage } from "@/lib/assistant-types";
+import { buildAssistantUserMessage, toAssistantApiMessages } from "@/lib/assistant-quote";
+import { cn } from "@/lib/cn";
+import type {
+  AssistantChatResponse,
+  AssistantMessage,
+  AssistantPageContext,
+  QuotedHighlight,
+} from "@/lib/assistant-types";
 import type { AssistantStreamEvent } from "@/lib/insight-types";
 import type { DataSourceInfo } from "@/server/services/reading-data";
 
@@ -50,21 +57,30 @@ export function AssistantChat({
   variant = "page",
   scrollClassName,
   bodyClassName,
+  fixedContext,
+  quotedHighlights = [],
 }: {
-  variant?: "page" | "sidebar";
+  variant?: "page" | "sidebar" | "embedded";
   scrollClassName?: string;
   bodyClassName?: string;
+  /** 嵌入单书页等场景：固定路由上下文 */
+  fixedContext?: AssistantPageContext;
+  quotedHighlights?: QuotedHighlight[];
 }) {
   const resolvedScrollClassName =
     scrollClassName ??
-    (variant === "sidebar"
-      ? "scrollbar scrollbar--edge-right min-h-0 flex-1 overflow-y-auto"
-      : "scrollbar scrollbar--page-gutter min-h-0 flex-1 overflow-y-auto");
+    (variant === "embedded"
+      ? "scrollbar max-h-[min(28rem,45vh)] overflow-y-auto"
+      : variant === "sidebar"
+        ? "scrollbar scrollbar--edge-right min-h-0 flex-1 overflow-y-auto"
+        : "scrollbar scrollbar--page-gutter min-h-0 flex-1 overflow-y-auto");
   const resolvedBodyClassName =
     bodyClassName ??
-    (variant === "sidebar"
-      ? "flex min-h-min flex-col px-3 py-3"
-      : "container-shell flex min-h-min flex-col py-4");
+    (variant === "embedded"
+      ? "flex min-h-min flex-col px-5 py-4"
+      : variant === "sidebar"
+        ? "flex min-h-min flex-col px-3 py-3"
+        : "container-shell flex min-h-min flex-col py-4");
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
@@ -76,7 +92,8 @@ export function AssistantChat({
   const bookIdFromPath = pathname.startsWith("/books/")
     ? pathname.split("/")[2]
     : undefined;
-  const bookId = searchParams.get("bookId") ?? bookIdFromPath ?? undefined;
+  const bookId =
+    fixedContext?.bookId ?? searchParams.get("bookId") ?? bookIdFromPath ?? undefined;
 
   const sendMessage = useCallback(
     async (text: string) => {
@@ -87,21 +104,35 @@ export function AssistantChat({
 
       setError("");
       setLastUsedTools([]);
-      const nextUser: AssistantMessage = { role: "user", content: trimmed };
+      const { display, message } = buildAssistantUserMessage(trimmed, quotedHighlights, {
+        showQuotesInDisplay: variant !== "embedded",
+      });
+      const nextUser: AssistantMessage = {
+        role: "user",
+        content: display,
+        ...(variant === "embedded" && message !== display ? { apiContent: message } : {}),
+      };
+      const apiHistory = toAssistantApiMessages([...messages, nextUser]);
       const history = [...messages, nextUser];
       setMessages([...history, { role: "assistant", content: "" }]);
       setLoading(true);
       setStreaming(true);
 
-      const context = { pathname, bookId };
+      const context: AssistantPageContext = {
+        pathname: fixedContext?.pathname ?? pathname,
+        bookId,
+        bookTitle: fixedContext?.bookTitle,
+        quotedHighlights:
+          quotedHighlights.length > 0 ? quotedHighlights : undefined,
+      };
 
       try {
         const streamResponse = await fetch("/api/assistant/chat/stream", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            message: trimmed,
-            history: messages,
+            message,
+            history: apiHistory,
             context,
           }),
         });
@@ -136,8 +167,8 @@ export function AssistantChat({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            message: trimmed,
-            history: messages,
+            message,
+            history: apiHistory,
             context,
           }),
         });
@@ -160,36 +191,77 @@ export function AssistantChat({
         setStreaming(false);
       }
     },
-    [bookId, loading, messages, pathname],
+    [bookId, fixedContext?.bookTitle, fixedContext?.pathname, loading, messages, pathname, quotedHighlights],
   );
 
+  const composerPathname = fixedContext?.pathname ?? pathname;
+
+  const showThread = messages.length > 0 || loading || streaming || Boolean(error);
+
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <div className={resolvedScrollClassName}>
-        <div className={resolvedBodyClassName}>
-          {error ? (
-            <p className="type-caption mb-3 rounded-[var(--radius-sm)] border-[2px] border-[var(--ink)] bg-[var(--pink)]/30 px-3 py-2">
-              {error}
-            </p>
-          ) : null}
-          <AssistantMessageList
-            messages={messages}
-            loading={loading && !streaming}
-            variant={variant}
-          />
-          {lastUsedTools.length > 0 ? (
-            <p className="type-caption mt-4 text-[var(--ink)]/60">
-              本次读取：{lastUsedTools.join("、")}
-            </p>
-          ) : null}
+    <div
+      className={
+        variant === "embedded" ? "flex flex-col" : "flex min-h-0 flex-1 flex-col"
+      }
+    >
+      {showThread ? (
+        <div className={resolvedScrollClassName}>
+          <div className={resolvedBodyClassName}>
+            {error ? (
+              <p
+                className={cn(
+                  "type-caption mb-3 border-[2px] border-[var(--ink)] bg-[var(--pink)]/30 px-3 py-2",
+                  variant === "embedded" ? "" : "rounded-[var(--radius-sm)]",
+                )}
+              >
+                {error}
+              </p>
+            ) : null}
+            <AssistantMessageList
+              messages={messages}
+              loading={loading && !streaming}
+              variant={variant}
+            />
+            {lastUsedTools.length > 0 ? (
+              <p className="type-caption mt-4 text-[var(--ink)]/55">
+                读取：{lastUsedTools.join(" · ")}
+              </p>
+            ) : null}
+          </div>
         </div>
-      </div>
+      ) : null}
       <div className="shrink-0">
         <AssistantComposer
           disabled={loading}
           onSend={sendMessage}
           variant={variant}
-          pathname={pathname}
+          pathname={composerPathname}
+          placeholder={
+            variant === "embedded"
+              ? quotedHighlights.length > 0
+                ? "结合已引用的笔记提问…"
+                : "可先在上方笔记卡片点「引用」，或直接提问本书…"
+              : undefined
+          }
+          quickPromptsOverride={
+            variant === "embedded"
+              ? [
+                  {
+                    id: "themes",
+                    label: "引用在讲什么",
+                    message:
+                      quotedHighlights.length > 0
+                        ? "请解读我引用的这些笔记，它们主要在讨论什么？"
+                        : "这本书里我的划线和想法主要在关注什么？",
+                  },
+                  {
+                    id: "best",
+                    label: "哪条最值得回顾",
+                    message: "哪一条划线或想法最值得我回顾？请说明理由。",
+                  },
+                ]
+              : undefined
+          }
         />
       </div>
     </div>

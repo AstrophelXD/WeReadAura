@@ -3,6 +3,7 @@
 import { Download } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { BookNotesAssistant } from "@/components/features/books/BookNotesAssistant";
 import { PopularHighlightsList } from "@/components/features/books/PopularHighlightsList";
 import { HighlightList } from "@/components/layout/HighlightList";
 import { Card } from "@/components/ui/Card";
@@ -10,12 +11,15 @@ import { ListPagination } from "@/components/layout/ListPagination";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Input";
 import { downloadTextFile, sanitizeFilenameSegment } from "@/lib/download-text";
+import { toggleQuotedHighlight } from "@/lib/assistant-quote";
+import type { QuotedHighlight } from "@/lib/assistant-types";
 import { buildBookHighlightsMarkdown } from "@/lib/highlight-markdown";
 import { HIGHLIGHT_SORT_OPTIONS, sortHighlights, type HighlightSortMode } from "@/lib/highlight-sort";
 import { BOOK_HIGHLIGHTS_PAGE_SIZE, paginateSlice } from "@/lib/pagination";
 import type { HighlightItem, PopularHighlight } from "@/lib/types";
 
 type BookHighlightsPanelProps = {
+  bookId: string;
   bookTitle: string;
   bookAuthor: string;
   items: HighlightItem[];
@@ -25,6 +29,7 @@ type BookHighlightsPanelProps = {
 };
 
 export function BookHighlightsPanel({
+  bookId,
   bookTitle,
   bookAuthor,
   items,
@@ -34,6 +39,7 @@ export function BookHighlightsPanel({
 }: BookHighlightsPanelProps) {
   const [page, setPage] = useState(1);
   const [sortMode, setSortMode] = useState<HighlightSortMode>("time");
+  const [quotedHighlights, setQuotedHighlights] = useState<QuotedHighlight[]>([]);
 
   const sortedItems = useMemo(() => sortHighlights(items, sortMode), [items, sortMode]);
 
@@ -50,6 +56,19 @@ export function BookHighlightsPanel({
   const { slice, page: safePage, pageCount } = useMemo(
     () => paginateSlice(sortedItems, page, BOOK_HIGHLIGHTS_PAGE_SIZE),
     [sortedItems, page],
+  );
+
+  const handleQuote = useCallback((item: HighlightItem) => {
+    setQuotedHighlights((current) => toggleQuotedHighlight(current, item));
+  }, []);
+
+  const handleRemoveQuote = useCallback((id: string) => {
+    setQuotedHighlights((current) => current.filter((entry) => entry.id !== id));
+  }, []);
+
+  const quotedIds = useMemo(
+    () => new Set(quotedHighlights.map((entry) => entry.id)),
+    [quotedHighlights],
   );
 
   return (
@@ -89,7 +108,12 @@ export function BookHighlightsPanel({
       </div>
       {items.length > 0 ? (
         <>
-          <HighlightList items={slice} variant="book" />
+          <HighlightList
+            items={slice}
+            variant="book"
+            quotedIds={quotedIds}
+            onQuote={handleQuote}
+          />
           <ListPagination currentPage={safePage} pageCount={pageCount} onPageChange={setPage} />
         </>
       ) : popularHighlights.length > 0 ? (
@@ -99,6 +123,13 @@ export function BookHighlightsPanel({
           <p className="type-empty">暂无划线或笔记。同步微信读书数据后，这里会展示最近内容。</p>
         </Card>
       )}
+
+      <BookNotesAssistant
+        bookId={bookId}
+        bookTitle={bookTitle}
+        quotedHighlights={quotedHighlights}
+        onRemoveQuote={handleRemoveQuote}
+      />
     </>
   );
 }

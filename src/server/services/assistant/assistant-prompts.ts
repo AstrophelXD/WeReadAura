@@ -24,6 +24,22 @@ export function buildAssistantSystemPrompt(
       "用户正在单书页：优先调用 get_book_detail，结合进度与划线回答；避免空泛励志话术。",
     );
   }
+  if (pageContext?.quotedHighlights?.length) {
+    contextLines.push(
+      `用户已引用 ${pageContext.quotedHighlights.length} 条笔记/划线，请优先围绕引用内容回答，勿忽略引用原文。`,
+    );
+    for (const [index, item] of pageContext.quotedHighlights.entries()) {
+      const notePart = item.note ? ` | 想法：${item.note}` : "";
+      contextLines.push(
+        `引用${index + 1}：「${item.quote}」（${item.chapter} · ${item.createdAt}${notePart}）`,
+      );
+    }
+    if (pageContext.pathname?.startsWith("/books/")) {
+      contextLines.push(
+        "引用已在页面「引用中的笔记」卡片展示：回复时不要使用「引用的笔记」标题，也不要用大段 blockquote 重复粘贴全部引用原文。",
+      );
+    }
+  }
   if (pageContext?.pathname?.startsWith("/stats")) {
     contextLines.push("用户正在统计页：优先 get_stats_by_period，说明周期与口径。");
   }

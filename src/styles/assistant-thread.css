@@ -47,3 +47,18 @@
 .assistant-thread--sidebar {
   gap: 1.25rem;
 }
+
+.assistant-thread--embedded {
+  gap: 1.5rem;
+}
+
+/* 与上方笔记卡片 type-quote-preview 一致 */
+.book-notes-assistant .neo-prose.neo-prose--assistant {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+.book-notes-assistant .neo-prose.neo-prose--assistant blockquote {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}

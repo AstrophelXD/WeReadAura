@@ -284,7 +284,7 @@ import { NeoProse } from "@/components/ui/NeoProse";
 | 注入系统提示 | `assistant-prompts.ts` |
 | 无模型降级 | `assistant-fallback.ts`（JSON 用 ` ```json ` 块） |
 | 界面渲染 | `AssistantMarkdown` → `NeoProse` + `react-markdown` + `remark-gfm` |
-| Cursor 规则 | `.cursor/rules/assistant-markdown.mdc` |
+| 工程规则 | `AGENTS.md` §11.1 |
 
 ### 7.1 助手专用约定（在通用规范上的收紧）
 
