@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 
+import { PeriodSummaryCard } from "@/components/features/insights/PeriodSummaryCard";
 import { StatsPeriodTabs } from "@/components/features/stats/StatsPeriodTabs";
+import { isDeepSeekConfigured } from "@/server/adapters/ai/deepseek-client";
 import { StatsHighlights } from "@/components/features/stats/StatsHighlights";
 import { StatsInsightMetrics } from "@/components/features/stats/StatsInsightMetrics";
 import { ReadStatGrid } from "@/components/features/stats/ReadStatGrid";
@@ -69,6 +71,8 @@ export default async function StatsPage({
       <Suspense fallback={null}>
         <StatsPeriodTabs current={mode} />
       </Suspense>
+
+      <PeriodSummaryCard period={mode} aiConfigured={isDeepSeekConfigured()} />
 
       {insights.highlights.length > 0 ? (
         <div className="mb-6">

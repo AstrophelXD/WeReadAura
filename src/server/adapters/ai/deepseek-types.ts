@@ -33,6 +33,7 @@ export interface DeepSeekChatRequest {
   tool_choice?: "auto" | "none";
   temperature?: number;
   max_tokens?: number;
+  stream?: boolean;
 }
 
 export interface DeepSeekChatResponse {

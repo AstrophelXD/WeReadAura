@@ -17,6 +17,7 @@ interface SettingsPanelProps {
   initialSource: string;
   initialLastSyncedAt: string;
   initialHasApiKey: boolean;
+  aiConfigured: boolean;
 }
 
 function modeLabel(mode: string): string {
@@ -28,6 +29,7 @@ export function SettingsPanel({
   initialSource,
   initialLastSyncedAt,
   initialHasApiKey,
+  aiConfigured,
 }: SettingsPanelProps) {
   const router = useRouter();
   const [mode, setMode] = useState(initialMode);
@@ -193,7 +195,21 @@ export function SettingsPanel({
         </div>
       </Card>
 
-      <Card className="neo-paper">
+      <Card className="lg:col-span-3">
+        <p className="type-label">AI 阅读助手</p>
+        <p className="type-body mt-3">
+          {aiConfigured
+            ? "已配置 DeepSeek（DEEPSEEK_API_KEY），助手与统计页周期摘要可调用模型归纳。"
+            : "未配置 DEEPSEEK_API_KEY 时，助手与周期摘要使用确定性规则降级，不访问外部模型。"}
+        </p>
+        <ul className="type-caption mt-3 grid gap-2 text-[var(--ink)]/75">
+          <li>· 仅基于本机同步快照与只读工具回答，不写入微信读书</li>
+          <li>· 笔记与划线在服务端截断后发送，不上传完整账号数据</li>
+          <li>· 不做人格/性格测试式标签，结论需能对应统计与书目事实</li>
+        </ul>
+      </Card>
+
+      <Card className="neo-paper lg:col-span-3">
         <p className="type-label">API Key</p>
         <p className="type-body mt-3">
           密钥保存在本机 HTTP-only Cookie，不会写入代码仓库。也可在 <code>.env.local</code> 中设置{" "}

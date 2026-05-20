@@ -20,6 +20,15 @@ export function buildAssistantSystemPrompt(
     contextLines.push(
       `当前书籍：${pageContext.bookTitle ?? "未知书名"}（ID: ${pageContext.bookId}）`,
     );
+    contextLines.push(
+      "用户正在单书页：优先调用 get_book_detail，结合进度与划线回答；避免空泛励志话术。",
+    );
+  }
+  if (pageContext?.pathname?.startsWith("/stats")) {
+    contextLines.push("用户正在统计页：优先 get_stats_by_period，说明周期与口径。");
+  }
+  if (pageContext?.pathname?.startsWith("/notes")) {
+    contextLines.push("用户正在笔记页：可 search_notes 按筛选条件总结主题。");
   }
 
   return [

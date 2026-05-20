@@ -6,15 +6,33 @@ import { ASSISTANT_QUICK_PROMPTS } from "@/lib/assistant-types";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
+const BOOK_QUICK_PROMPTS = [
+  {
+    id: "book-meaning",
+    label: "这本书对我意味着什么",
+    message: "结合当前这本书的阅读进度、划线和投入，帮我复盘它对我意味着什么？",
+  },
+  {
+    id: "book-reread",
+    label: "是否值得重读",
+    message: "基于当前数据，这本书是否值得我重读或继续读完？请给出依据。",
+  },
+] as const;
+
 export function AssistantComposer({
   disabled,
   onSend,
   variant = "page",
+  pathname = "",
 }: {
   disabled: boolean;
   onSend: (message: string) => void;
   variant?: "page" | "sidebar";
+  pathname?: string;
 }) {
+  const quickPrompts = pathname.startsWith("/books/")
+    ? [...BOOK_QUICK_PROMPTS, ...ASSISTANT_QUICK_PROMPTS.slice(0, 1)]
+    : ASSISTANT_QUICK_PROMPTS;
   const [draft, setDraft] = useState("");
 
   function submit(event?: React.FormEvent) {
@@ -31,7 +49,7 @@ export function AssistantComposer({
     <div className="border-t-[3px] border-[var(--ink)] bg-[var(--paper)]">
       <div className={variant === "sidebar" ? "px-3 py-3" : "container-shell py-4"}>
         <div className="mb-3 flex flex-wrap gap-2">
-          {ASSISTANT_QUICK_PROMPTS.map((item) => (
+          {quickPrompts.map((item) => (
             <button
               key={item.id}
               type="button"

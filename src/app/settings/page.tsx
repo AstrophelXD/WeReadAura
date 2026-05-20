@@ -1,5 +1,6 @@
 import { SettingsPanel } from "@/components/features/settings/SettingsPanel";
 import { Section } from "@/components/ui/Section";
+import { isDeepSeekConfigured } from "@/server/adapters/ai/deepseek-client";
 import { getDataSourceInfo } from "@/server/services/reading-data";
 
 export default async function SettingsPage() {
@@ -16,6 +17,7 @@ export default async function SettingsPage() {
         initialSource={info.source}
         initialLastSyncedAt={info.lastSyncedAt}
         initialHasApiKey={info.hasApiKey}
+        aiConfigured={isDeepSeekConfigured()}
       />
     </Section>
   );
