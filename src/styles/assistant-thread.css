@@ -1,0 +1,49 @@
+/* Assistant chat — single column; user right / assistant left; no message bubbles */
+
+.assistant-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  width: 100%;
+}
+
+.assistant-thread__message {
+  width: 100%;
+  min-width: 0;
+}
+
+.assistant-thread__message--user {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.assistant-thread__message--assistant {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.assistant-thread__user-body,
+.assistant-thread__assistant-body {
+  width: 100%;
+  min-width: 0;
+}
+
+/* User markdown — same prose styles as assistant; block aligned to the right */
+.assistant-thread__message--user .neo-prose--assistant-user {
+  text-align: right;
+}
+
+.assistant-thread__message--user .neo-prose--assistant-user ul,
+.assistant-thread__message--user .neo-prose--assistant-user ol {
+  list-style-position: inside;
+  padding-inline: 0;
+  text-align: right;
+}
+
+.assistant-thread__loading {
+  width: 100%;
+}
+
+.assistant-thread--sidebar {
+  gap: 1.25rem;
+}

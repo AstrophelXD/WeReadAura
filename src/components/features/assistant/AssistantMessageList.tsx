@@ -7,13 +7,15 @@ import { cn } from "@/lib/cn";
 export function AssistantMessageList({
   messages,
   loading,
+  variant = "page",
 }: {
   messages: AssistantMessage[];
   loading: boolean;
+  variant?: "page" | "sidebar";
 }) {
   if (messages.length === 0 && !loading) {
     return (
-      <div className="flex flex-1 flex-col justify-center gap-4 px-1 py-6">
+      <div className="assistant-thread__empty flex flex-col justify-center gap-4 py-6">
         <p className="type-body text-[var(--ink)]/80">
           可以问阅读总览、统计偏好、书架、笔记或单书复盘。回答基于当前同步快照，不会写回微信读书。
         </p>
@@ -26,31 +28,41 @@ export function AssistantMessageList({
   }
 
   return (
-    <ul className="flex flex-1 flex-col gap-4 px-1 py-2" aria-live="polite">
+    <ul
+      className={cn(
+        "assistant-thread",
+        variant === "sidebar" && "assistant-thread--sidebar",
+      )}
+      aria-live="polite"
+    >
       {messages.map((item, index) => (
         <li
           key={`${item.role}-${index}`}
           className={cn(
-            "max-w-[92%] rounded-[var(--radius-sm)] border-[2px] border-[var(--ink)] px-4 py-3",
+            "assistant-thread__message",
             item.role === "user"
-              ? "ml-auto bg-[var(--yellow)]"
-              : "mr-auto bg-[var(--white)]",
+              ? "assistant-thread__message--user"
+              : "assistant-thread__message--assistant",
           )}
         >
-          <p className="type-caption mb-1 font-biao opacity-70">
-            {item.role === "user" ? "你" : "助手"}
-          </p>
-          {item.role === "assistant" ? (
-            <AssistantMarkdown content={item.content} />
-          ) : (
-            <p className="type-body whitespace-pre-wrap">{item.content}</p>
-          )}
+          <div
+            className={
+              item.role === "user"
+                ? "assistant-thread__user-body"
+                : "assistant-thread__assistant-body"
+            }
+          >
+            <AssistantMarkdown
+              content={item.content}
+              variant={variant}
+              align={item.role === "user" ? "end" : "start"}
+            />
+          </div>
         </li>
       ))}
       {loading ? (
-        <li className="mr-auto max-w-[92%] rounded-[var(--radius-sm)] border-[2px] border-[var(--ink)] bg-[var(--muted)] px-4 py-3">
-          <p className="type-caption font-biao opacity-70">助手</p>
-          <p className="type-body">正在读取数据并整理回答…</p>
+        <li className="assistant-thread__loading assistant-thread__message--assistant">
+          <p className="type-body text-[var(--ink)]/70">正在读取数据并整理回答…</p>
         </li>
       ) : null}
     </ul>

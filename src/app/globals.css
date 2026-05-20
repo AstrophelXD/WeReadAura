@@ -6,6 +6,7 @@
 @import "../styles/neo-prose.css";
 @import "../styles/marquee.css";
 @import "../styles/scrollbar.css";
+@import "../styles/assistant-thread.css";
 
 /* FangZheng YaSong: 标 / 中 for body, 粗 optional for emphasis. */
 @font-face {
@@ -67,6 +68,9 @@
   /* Latin first; CJK: 标 (400) / 中 (500) / 粗 (700) via @font-face on WeReadAura YaSong. */
   --font-serif: var(--font-source-serif), "Source Serif 4", "WeReadAura YaSong", "方正标雅宋_GBK",
     "方正中雅宋_GBK", "方正粗雅宋_GBK", serif;
+  /* 标雅宋正文：西文仍走 Source Serif，中文固定 400 字重 */
+  --font-biao: var(--font-source-serif), "Source Serif 4", "WeReadAura YaSong", "方正标雅宋_GBK",
+    serif;
   --font-quote: "WeReadAura JuZhen", "方正聚珍新仿简繁", var(--font-serif);
   --biao-font-weight: 400;
   --zhong-font-weight: 500;
@@ -139,6 +143,24 @@ body {
   overflow-y: auto;
 }
 
+.app-shell__main-scroll--assistant-page {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.app-shell__main--assistant-page {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.assistant-page {
+  flex: 1;
+  min-height: 0;
+}
+
 .app-shell .neo-nav {
   position: relative;
   top: auto;
@@ -148,11 +170,10 @@ body {
 .app-shell__fab {
   position: fixed;
   bottom: 1.5rem;
-  right: 1.5rem;
+  right: 2.25rem;
   z-index: 30;
 }
 
-/* Desktop: main + assistant side by side */
 @media (min-width: 1024px) {
   .app-shell--assistant-open {
     flex-direction: row;
@@ -171,7 +192,6 @@ body {
     height: 100dvh;
     max-height: 100dvh;
     overflow: hidden;
-    box-shadow: none;
   }
 
   .app-shell--assistant-open .app-shell__fab {
@@ -191,8 +211,6 @@ body {
     height: 100dvh;
     max-height: 100dvh;
     overflow: hidden;
-    border-left: 0;
-    box-shadow: none;
   }
 
   .app-shell--assistant-open .app-shell__fab {

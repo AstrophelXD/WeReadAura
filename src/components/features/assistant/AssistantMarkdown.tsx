@@ -12,12 +12,24 @@ import { cn } from "@/lib/cn";
 export function AssistantMarkdown({
   content,
   className,
+  variant = "page",
+  align = "start",
 }: {
   content: string;
   className?: string;
+  variant?: "page" | "sidebar";
+  /** User messages align end; assistant messages align start. */
+  align?: "start" | "end";
 }) {
   return (
-    <NeoProse className={cn("neo-prose--assistant max-w-none text-[0.875rem] sm:text-base", className)}>
+    <NeoProse
+      className={cn(
+        "neo-prose--assistant font-biao max-w-none",
+        align === "end" && "neo-prose--assistant-user",
+        variant === "sidebar" ? "text-[0.875rem]" : "text-[0.875rem] sm:text-base",
+        className,
+      )}
+    >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{

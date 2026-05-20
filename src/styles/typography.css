@@ -29,8 +29,9 @@
     font-weight: var(--base-font-weight);
   }
 
-  /* 方正标雅宋 — 小字号辅助文案、标签、说明 */
+  /* 方正标雅宋 — 小字号辅助文案、标签、说明；西文仍用 Source Serif */
   .font-biao {
+    font-family: var(--font-biao);
     font-weight: var(--biao-font-weight);
   }
 
@@ -215,6 +216,13 @@
     font-weight: var(--base-font-weight);
     font-size: 1rem;
     line-height: 1.5;
+  }
+
+  .type-nav-link--active {
+    font-weight: var(--heading-font-weight);
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 4px;
   }
 
   .type-link {

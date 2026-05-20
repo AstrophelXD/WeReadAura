@@ -27,18 +27,16 @@ body::-webkit-scrollbar-thumb,
   background: var(--sb-thumb-color);
 }
 
-/* --- Main column (assistant closed): viewport edge on container --- */
+/* --- Scroll containers: viewport edge on container --- */
 .app-shell__main-scroll.scrollbar--page-gutter {
   border-right: var(--sb-track-border);
 }
 
-/* --- Main column (assistant open): split line on container (track border-right unreliable in WebKit) --- */
 .app-shell__main-scroll.scrollbar--split-edge {
   border-right: var(--sb-track-border);
 }
 
-/* --- Assistant: viewport edge on container; inner line on track (same as main) --- */
-.assistant-scroll.scrollbar--edge-right {
+.scrollbar--edge-right {
   border-right: var(--sb-track-border);
 }
 
